@@ -1,0 +1,41 @@
+<data name="Links">
+    <xpath expr="//div[@id='footer']" position="replace">
+        <div id="footer" class="oe_structure oe_structure_solo text-break" t-ignore="true" t-if="not no_footer">
+            <section class="s_text_block pt48 pb16" data-snippet="s_text_block" data-name="Container">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-3 col-10 offset-1 offset-lg-0 pb16">
+                            <h5>Навігація</h5>
+                            <ul class="list-unstyled">
+                                <li><a href="/">Головна</a></li>
+                                <li><a href="/zayavka">Залишити заявку</a></li>
+                                <li><a href="/appointment">Записатися на консультацію</a></li>
+                                <li><a href="/jobs">Вакансії</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-3 col-10 offset-1 offset-lg-0 pb16">
+                            <h5>Послуги</h5>
+                            <ul class="list-unstyled">
+                                <li>Розумний дім</li>
+                                <li>Електромонтаж</li>
+                                <li>Інженерні системи</li>
+                                <li>Сервісне обслуговування</li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-3 col-10 offset-1 offset-lg-0 pb16">
+                            <h5>Контакти (демо)</h5>
+                            <ul class="list-unstyled">
+                                <li><i class="oi oi-fw oi-filled me-2" data-icon="mail"/><a href="mailto:demo@example.com">demo@example.com</a></li>
+                                <li><i class="oi oi-fw oi-filled me-2" data-icon="phone"/><span class="o_force_ltr">+380 00 000 0000</span></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-3 col-10 offset-1 offset-lg-0 pb16">
+                            <h5>Про стенд</h5>
+                            <p>Неофіційний демонстраційний стенд для тестового завдання. Не є сайтом компанії Gravity. Усі дані синтетичні.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </xpath>
+</data>
