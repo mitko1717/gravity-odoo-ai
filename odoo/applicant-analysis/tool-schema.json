@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "properties": {
+    "fit": { "type": "string", "enum": ["strong", "possible", "weak", "unclear"] },
+    "profile_uk": { "type": "string", "description": "Structured profile in Ukrainian: experience, years, certifications, location, availability. Only facts from input." },
+    "skills_uk": { "type": "string", "description": "Comma-separated key skills found in input" },
+    "gaps_uk": { "type": "string", "description": "Missing or unclear data versus job requirements, in Ukrainian" },
+    "questions_uk": { "type": "string", "description": "3-5 interview questions in Ukrainian" },
+    "next_action_uk": { "type": "string", "description": "One recommended step for the recruiter in Ukrainian. Never recommend rejection automatically." }
+  },
+  "required": ["fit", "profile_uk", "skills_uk", "gaps_uk", "questions_uk", "next_action_uk"]
+}
