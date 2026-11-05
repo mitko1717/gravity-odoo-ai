@@ -14,7 +14,11 @@
     "seed:sales": "tsx --env-file=.env scripts/seed-sales.ts",
     "seed:project": "tsx --env-file=.env scripts/seed-project.ts",
     "e2e:project": "tsx --env-file=.env scripts/e2e-order-to-project.ts",
-    "eval": "tsx --env-file=.env scripts/eval-leads.ts"
+    "eval": "tsx --env-file=.env scripts/eval-leads.ts",
+    "install:modules": "tsx --env-file=.env scripts/install-modules.ts",
+    "seed:helpdesk": "tsx --env-file=.env scripts/seed-helpdesk.ts",
+    "inspect": "tsx --env-file=.env scripts/inspect-model.ts",
+    "e2e:tickets": "tsx --env-file=.env scripts/e2e-tickets.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
