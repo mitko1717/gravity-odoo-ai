@@ -11,7 +11,9 @@
     "seed:ai": "tsx --env-file=.env scripts/seed-ai.ts",
     "seed:website": "tsx --env-file=.env scripts/seed-website.ts",
     "seed:form": "tsx --env-file=.env scripts/seed-form-page.ts",
-    "seed:sales": "tsx --env-file=.env scripts/seed-sales.ts"
+    "seed:sales": "tsx --env-file=.env scripts/seed-sales.ts",
+    "seed:project": "tsx --env-file=.env scripts/seed-project.ts",
+    "e2e:project": "tsx --env-file=.env scripts/e2e-order-to-project.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
