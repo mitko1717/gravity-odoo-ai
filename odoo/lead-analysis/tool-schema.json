@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "client_type": { "type": "string", "enum": ["residential", "commercial", "developer", "partner", "unknown"], "description": "residential = private home/apartment owner; developer = residential complex or cottage town; partner = designer/architect bringing a client" },
+    "services": { "type": "array", "items": { "type": "string", "enum": ["smart_home", "lighting", "climate", "security", "electrical", "engineering", "heat_pump", "service", "other"] }, "description": "Services explicitly requested or clearly implied. Empty array if unclear" },
+    "area_m2": { "type": "number", "description": "Object area in square meters. 0 if not stated" },
+    "budget_amount": { "type": "number", "description": "Budget amount as stated. 0 if not stated. Never estimate" },
+    "budget_currency": { "type": "string", "enum": ["USD", "EUR", "UAH", "unknown"] },
+    "location": { "type": "string", "description": "City or region as stated. Empty string if not stated" },
+    "timeline": { "type": "string", "description": "Desired start or deadline in Ukrainian, as stated. Empty string if not stated" },
+    "priority": { "type": "string", "enum": ["high", "medium", "low"], "description": "Recommendation only: high = clear need + budget + near start or B2B volume; low = vague or very small" },
+    "summary_uk": { "type": "string", "description": "2-3 sentence factual summary in Ukrainian for the sales manager" },
+    "missing_fields": { "type": "array", "items": { "type": "string", "enum": ["phone_or_email", "object_type", "location", "area", "services", "budget", "timeline"] } },
+    "next_action_uk": { "type": "string", "description": "One concrete next step for the manager in Ukrainian" },
+    "reply_draft_uk": { "type": "string", "description": "Short polite reply draft to the customer in Ukrainian asking for missing data if any. Do not promise prices or dates" }
+  },
+  "required": ["client_type", "services", "area_m2", "budget_amount", "budget_currency", "location", "timeline", "priority", "summary_uk", "missing_fields", "next_action_uk", "reply_draft_uk"]
+}
