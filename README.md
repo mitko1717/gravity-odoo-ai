@@ -27,21 +27,22 @@ service tickets with AI triage and SLA. Plus HR, meetings, internal AI assistant
 
 ## Documentation
 
-| # | Area | File | AI |
-|---|---|---|---|
-| 01 | Odoo setup, configuration as code | [docs/01-odoo-setup.md](docs/01-odoo-setup.md) | — |
-| 02 | Sales: AI analysis of website leads | [docs/02-lead-ai-analysis.md](docs/02-lead-ai-analysis.md) | yes |
-| 03 | Quotation → project → tasks → escalation | [docs/03-sales-to-project.md](docs/03-sales-to-project.md) | rules |
-| 04 | Service: ticket AI triage + SLA | [docs/04-helpdesk-ai-triage.md](docs/04-helpdesk-ai-triage.md) | yes |
-| 05 | HR: AI applicant profile | [docs/05-hr-applicant-ai.md](docs/05-hr-applicant-ai.md) | yes |
-| 06 | Meetings: transcript → summary → draft tasks | [docs/06-meeting-transcript-ai.md](docs/06-meeting-transcript-ai.md) | yes |
-| 07 | Internal AI assistant on Knowledge | [docs/07-internal-ai-assistant.md](docs/07-internal-ai-assistant.md) | yes |
-| 08 | Procurement: specification → draft RFQs | [docs/08-purchase-from-spec.md](docs/08-purchase-from-spec.md) | rules |
-| 09 | Partners: contact reminders | [docs/09-partner-contact-reminders.md](docs/09-partner-contact-reminders.md) | rules |
-| 10 | Production: AI site status report | [docs/10-site-status-report.md](docs/10-site-status-report.md) | yes |
-| 11 | Finance: spreadsheet → management report | [docs/11-finance-management-report.md](docs/11-finance-management-report.md) | yes |
-| — | Evaluation on 18 synthetic leads | [docs/eval-results.md](docs/eval-results.md) | — |
-| — | Architecture decisions | [docs/decisions](docs/decisions) | — |
+| # | Area | File |
+|---|---|---|
+| 01 | Odoo setup, configuration as code | [docs/01-odoo-setup.md](docs/01-odoo-setup.md) |
+| 02 | Sales: AI analysis of website leads | [docs/02-lead-ai-analysis.md](docs/02-lead-ai-analysis.md) |
+| 03 | Quotation → project → tasks → escalation | [docs/03-sales-to-project.md](docs/03-sales-to-project.md) |
+| 04 | Service: ticket AI triage + SLA | [docs/04-helpdesk-ai-triage.md](docs/04-helpdesk-ai-triage.md) |
+| 05 | HR: AI applicant profile | [docs/05-hr-applicant-ai.md](docs/05-hr-applicant-ai.md) |
+| 06 | Meetings: transcript → summary → draft tasks | [docs/06-meeting-transcript-ai.md](docs/06-meeting-transcript-ai.md) |
+| 07 | Internal AI assistant on Knowledge | [docs/07-internal-ai-assistant.md](docs/07-internal-ai-assistant.md) |
+| 08 | Procurement: specification → draft RFQs | [docs/08-purchase-from-spec.md](docs/08-purchase-from-spec.md) |
+| 09 | Partners: contact reminders | [docs/09-partner-contact-reminders.md](docs/09-partner-contact-reminders.md) |
+| 10 | Production: AI site status report | [docs/10-site-status-report.md](docs/10-site-status-report.md) |
+| 11 | Finance: spreadsheet → management report | [docs/11-finance-management-report.md](docs/11-finance-management-report.md) |
+| 12 | Marketing: campaign efficiency report | [docs/12-marketing-campaign-report.md](docs/12-marketing-campaign-report.md) |
+| — | Evaluation on 18 synthetic leads | [docs/eval-results.md](docs/eval-results.md) |
+| — | Architecture decisions | [docs/decisions](docs/decisions) |
 
 ## Run
 

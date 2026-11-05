@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "summary_uk": { "type": "string", "description": "3-5 sentences in Ukrainian: which campaigns bring qualified leads at what cost" },
+    "demand_uk": { "type": "string", "description": "Most requested services across leads, in Ukrainian, based only on requested_services" },
+    "recommendations_uk": { "type": "string", "description": "2-4 concrete budget or targeting actions in Ukrainian, one per line" }
+  },
+  "required": ["summary_uk", "demand_uk", "recommendations_uk"]
+}
