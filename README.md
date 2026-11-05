@@ -61,6 +61,7 @@ Measured on synthetic data only; time savings for the real business are an estim
 | 14 | Design: AI draft specification (stage 4) | [docs/14-ai-draft-specification.md](docs/14-ai-draft-specification.md) |
 | 15 | Crew planning and field visits (stages 5, 7) | [docs/15-crew-planning.md](docs/15-crew-planning.md) |
 | 16 | Commissioning checklist and handover (stages 8, 9) | [docs/16-commissioning-and-handover.md](docs/16-commissioning-and-handover.md) |
+| — | **Telegram bot: user guide (stages, handoffs, commands)** | [BOT.md](BOT.md) |
 | 17 | Telegram bot: notifications and quick actions | [docs/17-telegram-bot.md](docs/17-telegram-bot.md) |
 | — | Evaluation on 18 synthetic leads | [docs/eval-results.md](docs/eval-results.md) |
 | — | Architecture decisions | [docs/decisions](docs/decisions) |
