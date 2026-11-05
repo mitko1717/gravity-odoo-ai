@@ -2,7 +2,7 @@ import { InlineKeyboard } from 'grammy';
 import type { OdooClient } from '../odoo-client.js';
 import type { BotState } from './state.js';
 import type { Notification } from './events.js';
-import { escapeHtml, recordUrl } from './format.js';
+import { escapeHtml, kyivTime, recordUrl } from './format.js';
 
 // SLA control by plain rules: Odoo Helpdesk computes deadlines, the bot only reports breaches.
 const toOdooDate = (date: Date) => date.toISOString().slice(0, 19).replace('T', ' ');
@@ -22,7 +22,7 @@ function breachNotification(row: SlaStatusRow, odooUrl: string): Notification | 
   if (row.ticket_id === false) return undefined;
 
   const [ticketId, ticketName] = row.ticket_id;
-  const deadline = row.deadline ? row.deadline.slice(0, 16) : '—';
+  const deadline = row.deadline ? kyivTime(row.deadline) : '—';
   const policy = row.sla_id ? row.sla_id[1] : '—';
   const keyboard = new InlineKeyboard()
     .text('🙋 Беру', `ticket:take:${ticketId}`)
@@ -30,7 +30,7 @@ function breachNotification(row: SlaStatusRow, odooUrl: string): Notification | 
     .url('Відкрити в Odoo', recordUrl(odooUrl, 'helpdesk.ticket', ticketId));
 
   return {
-    text: `🚨 <b>SLA прострочено</b>\nТікет #${ticketId}: ${escapeHtml(ticketName)}\nПолітика: ${escapeHtml(policy)} · дедлайн: ${deadline} (UTC)`,
+    text: `🚨 <b>SLA прострочено</b>\nТікет #${ticketId}: ${escapeHtml(ticketName)}\nПолітика: ${escapeHtml(policy)} · дедлайн: ${deadline} (Київ)`,
     keyboard,
     role: 'pm',
   };

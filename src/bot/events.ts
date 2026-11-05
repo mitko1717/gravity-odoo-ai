@@ -2,7 +2,7 @@ import { InlineKeyboard } from 'grammy';
 import type { OdooClient } from '../odoo-client.js';
 import type { BotState } from './state.js';
 import type { Role } from './roles.js';
-import { PRIORITY_LABEL, escapeHtml, missingLabels, recordUrl, serviceLabels, stripHtml } from './format.js';
+import { PRIORITY_LABEL, escapeHtml, kyivTime, missingLabels, recordUrl, serviceLabels, stripHtml } from './format.js';
 import { stageChanges } from './pipeline.js';
 import { slaBreaches } from './sla.js';
 
@@ -290,7 +290,7 @@ async function newBookings(odoo: OdooClient, state: BotState, odooUrl: string): 
   state.lastEventId = maxId(rows, state.lastEventId);
 
   return rows.map((event) => ({
-    text: `📅 <b>Клієнт записався на консультацію</b>\n${escapeHtml(event.name)}\nКлієнт: ${escapeHtml(event.appointment_booker_id ? event.appointment_booker_id[1] : '—')}\nПочаток: ${event.start.slice(0, 16)} (UTC)`,
+    text: `📅 <b>Клієнт записався на консультацію</b>\n${escapeHtml(event.name)}\nКлієнт: ${escapeHtml(event.appointment_booker_id ? event.appointment_booker_id[1] : '—')}\nПочаток: ${kyivTime(event.start)} (Київ)`,
     keyboard: new InlineKeyboard().url('Відкрити в Odoo', recordUrl(odooUrl, 'calendar.event', event.id)),
     role: 'sales' as const,
   }));

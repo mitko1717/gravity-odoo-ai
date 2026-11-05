@@ -1,6 +1,7 @@
 # Демо-сценарій для Gravity (шпаргалка, ~20 хв)
 
-Стенд: https://test6017.odoo.com · бот: https://t.me/gravity_test_promo_bot · репо: https://github.com/mitko1717/gravity-odoo-ai
+Стенд: https://test6017.odoo.com · бот: https://t.me/gravity_test_promo_bot · репо: https://github.com/mitko1717/gravity-odoo-ai · дашборд метрик: https://claude.ai/artifact/5xgb9wdaRM36gqQLHX2gT9
+Перед записом: `npm run regression` (усі наскрізні тести по кроках, ~10–15 хв) → `tmp/regression-summary.md`; наприкінці показу — дашборд (виміряне vs припущення).
 Перед показом: `npm run bot` запущений; Telegram відкритий поруч; дані синтетичні (`*.demo@example.com`).
 Головна думка: **правила рахують, AI пише чернетки, людина вирішує. Клієнтам нічого не йде автоматично.**
 

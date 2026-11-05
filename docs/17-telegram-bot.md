@@ -63,6 +63,8 @@ The 9 tasks of the project template are the stages of one object. Each stage has
 - «📅 Консультація» on a lead card returns a message draft with the booking link (the manager sends it himself) and schedules a To-Do activity «Перевірити запис на консультацію» on the lead.
 - A booking on the page → «📅 Клієнт записався на консультацію» to sales. Limitation: the booking is not linked to the lead automatically; a production version would pass the lead in an invitation link (`appointment.invite`).
 
+Times in bot messages (SLA deadline, booking start) are converted from Odoo UTC to Kyiv time (`kyivTime` in `src/bot/format.ts`).
+
 ## Guardrails
 - Whitelist: only chat IDs in `TELEGRAM_ALLOWED_CHAT_IDS` or approved via `/request` → admin approve. Others get only `/start`, `/whoami` and `/request`.
 - Button permissions (`src/bot/permissions.ts`): every action button needs its role (lead/order → sales, spec/checks → engineer, RFQ → procurement, overdue → pm, ticket → service, stage → the stage owner); PM and admin may press all; read-only buttons (card, checklist view) need none. Refusal: «Ця дія для ролі …», nothing changes in Odoo.

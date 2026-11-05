@@ -55,3 +55,13 @@ export const missingLabels = (codes: string): string =>
     .filter((code) => code.length > 0)
     .map((code) => MISSING_LABEL[code] ?? code)
     .join(', ');
+
+const KYIV_FORMAT = new Intl.DateTimeFormat('uk-UA', { timeZone: 'Europe/Kyiv', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+/** Odoo datetimes are UTC strings 'YYYY-MM-DD HH:MM:SS'; the bot shows Kyiv time. */
+export const kyivTime = (odooUtc: string): string => {
+  const date = new Date(`${odooUtc.replace(' ', 'T')}Z`);
+  if (Number.isNaN(date.getTime())) return odooUtc;
+
+  return KYIV_FORMAT.format(date);
+};

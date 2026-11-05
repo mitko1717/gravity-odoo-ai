@@ -48,6 +48,7 @@
     "seed:thank-you": "tsx --env-file=.env scripts/seed-thank-you.ts",
     "seed:appointment": "tsx --env-file=.env scripts/seed-appointment.ts",
     "metrics:export": "tsx --env-file=.env scripts/export-metrics.ts",
+    "regression": "tsx --env-file=.env scripts/regression.ts",
     "seed:quote-field": "tsx --env-file=.env scripts/seed-quotation-template-field.ts",
     "bot": "tsx --env-file=.env src/bot/index.ts"
   },

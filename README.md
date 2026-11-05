@@ -84,5 +84,6 @@ End-to-end checks (they create synthetic records in the live Odoo, so they are m
 `eval`, `e2e:project`, `e2e:tickets`, `e2e:applicants`, `e2e:meetings`, `e2e:purchase`,
 `e2e:partners`, `e2e:site-report`, `e2e:finance`, `e2e:marketing`,
 `e2e:contract`, `e2e:spec`, `e2e:planning`, `e2e:handover`.
+All of them in one go: `npm run regression` (sequential, ~10–15 min) → `tmp/regression-summary.md` (step, script, ✅/❌, time) and the full log `tmp/regression.txt`.
 
 Some modules must be installed first: `npm run install:modules -- <names>` (see each doc). Stages 5/7 need `planning_field_service`.

@@ -2,6 +2,7 @@
 
 Source: `Gravity_naskrizna_karta_biznes_protsesiv.pdf` (10 stages + supporting processes).
 This is an introductory map, not a confirmed description of Gravity's current tools.
+Metrics dashboard (measured vs estimated): https://claude.ai/artifact/5xgb9wdaRM36gqQLHX2gT9. All e2e checks in one run: `npm run regression`.
 Status: **done** = automated and verified by e2e, **partial** = native Odoo records only, **planned** = in progress.
 
 | # | Stage | Result per map | Odoo modules | Automation | Status | Doc |
