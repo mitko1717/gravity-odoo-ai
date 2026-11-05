@@ -26,6 +26,11 @@ if safe_area < 0 or safe_area > 100000:
     problems.append('area_m2')
     safe_area = 0.0
 
+# Rule: the form area and the area the AI read from the text must agree (within 10%), otherwise a person checks.
+form_area = float(record.x_area_m2 or 0)
+if form_area > 0 and safe_area > 0 and abs(form_area - safe_area) > 0.1 * max(form_area, safe_area):
+    problems.append('area_conflict (form %d vs text %d)' % (form_area, safe_area))
+
 usd_rate = DEMO_USD_RATES.get(budget_currency, 0.0)
 budget_usd = round(float(budget_amount or 0) * usd_rate, 2)
 if budget_usd < 0:

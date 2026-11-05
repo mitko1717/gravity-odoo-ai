@@ -1,7 +1,7 @@
 import { InlineKeyboard } from 'grammy';
 import type { OdooClient } from '../odoo-client.js';
 import type { BotState } from './state.js';
-import { PRIORITY_LABEL, escapeHtml, recordUrl, stripHtml } from './format.js';
+import { PRIORITY_LABEL, escapeHtml, recordUrl, serviceLabels, stripHtml } from './format.js';
 
 export interface Notification {
   text: string;
@@ -38,7 +38,7 @@ async function newLeads(odoo: OdooClient, state: BotState, odooUrl: string): Pro
       `🆕 <b>Новий лід</b>: ${escapeHtml(lead.name)}`,
       `Пріоритет (AI): ${PRIORITY_LABEL[String(lead.x_ai_priority)] ?? '—'}`,
       `Контакт: ${escapeHtml(lead.contact_name || '—')}, ${escapeHtml(lead.x_city || '—')}, ${lead.x_area_m2 || '—'} м²`,
-      `Послуги: ${escapeHtml(lead.x_ai_services || '—')} · Бюджет: ${budget}`,
+      `Послуги: ${escapeHtml(serviceLabels(lead.x_ai_services || '') || '—')} · Бюджет: ${budget}`,
       `\n${escapeHtml(lead.x_ai_summary || '')}`,
       `Бракує: ${escapeHtml(lead.x_ai_missing || 'нічого')}`,
       `Далі: ${escapeHtml(lead.x_ai_next_action || '—')}`,

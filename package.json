@@ -45,6 +45,7 @@
     "e2e:planning": "tsx --env-file=.env scripts/e2e-planning.ts",
     "seed:handover": "tsx --env-file=.env scripts/seed-handover.ts",
     "e2e:handover": "tsx --env-file=.env scripts/e2e-handover.ts",
+    "seed:thank-you": "tsx --env-file=.env scripts/seed-thank-you.ts",
     "bot": "tsx --env-file=.env src/bot/index.ts"
   },
   "devDependencies": {
