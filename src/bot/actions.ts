@@ -38,7 +38,7 @@ async function replyDraft(ctx: ActionContext, id: number): Promise<string> {
   const [lead] = await ctx.odoo.searchRead<{ x_ai_reply_draft: string | false }>('crm.lead', [['id', '=', id]], ['x_ai_reply_draft']);
   if (lead === undefined || lead.x_ai_reply_draft === false) return 'Чернетки відповіді немає.';
 
-  return `✉️ <b>AI-чернетка відповіді</b> (перевірте перед надсиланням):\n\n${escapeHtml(lead.x_ai_reply_draft)}`;
+  return `✉️ <b>AI-чернетка відповіді</b> (перевірте перед надсиланням, натисніть на блок, щоб скопіювати):\n\n<pre>${escapeHtml(lead.x_ai_reply_draft)}</pre>`;
 }
 
 async function shiftTask(ctx: ActionContext, id: number): Promise<string> {

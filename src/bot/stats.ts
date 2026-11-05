@@ -29,13 +29,14 @@ async function leadsStats(odoo: OdooClient): Promise<string> {
 }
 
 async function campaignsStats(odoo: OdooClient): Promise<string> {
-  const campaigns = await odoo.searchRead<{ id: number; name: string; x_ad_spend: number }>('utm.campaign', [['x_ad_spend', '>', 0]], ['name', 'x_ad_spend']);
+  // `title` is the human label in recent Odoo versions; `name` is the technical UTM code.
+  const campaigns = await odoo.searchRead<{ id: number; name: string; title: string | false; x_ad_spend: number }>('utm.campaign', [['x_ad_spend', '>', 0]], ['name', 'title', 'x_ad_spend']);
   const lines = ['📣 <b>Кампанії</b> (кваліфікований = пріоритет AI високий/середній)'];
   for (const campaign of campaigns) {
     const leads = await count(odoo, 'crm.lead', [['campaign_id', '=', campaign.id]]);
     const qualified = await count(odoo, 'crm.lead', [['campaign_id', '=', campaign.id], ['x_ai_priority', 'in', ['high', 'medium']]]);
     const perQualified = qualified ? Math.round(campaign.x_ad_spend / qualified) : '—';
-    lines.push(`${escapeHtml(campaign.name)}: ${leads} лідів, ${qualified} кваліф., ${perQualified} грн / кваліф. лід`);
+    lines.push(`${escapeHtml(campaign.title || campaign.name)}: ${leads} лідів, ${qualified} кваліф., ${perQualified} грн / кваліф. лід`);
   }
 
   return lines.join('\n');
