@@ -86,7 +86,9 @@ bot.use(async (ctx, next) => {
   const chatId = ctx.chat?.id;
   if (chatId === undefined || allowedChats().includes(chatId)) return next();
 
-  await ctx.reply('Доступ закрито. Надішліть /request, щоб попросити доступ.');
+  // Service updates (e.g. the user blocked the bot) get no reply: Telegram would reject it.
+  const isUserInput = ctx.message !== undefined || ctx.callbackQuery !== undefined;
+  if (isUserInput) await ctx.reply('Доступ закрито. Надішліть /request, щоб попросити доступ.');
 });
 
 bot.callbackQuery(/^access:(approve|deny):(-?\d+)$/, async (ctx) => {
@@ -99,7 +101,7 @@ bot.callbackQuery(/^access:(approve|deny):(-?\d+)$/, async (ctx) => {
   if (approve === false) state.approvedChatIds = state.approvedChatIds.filter((id) => id !== chatId);
   await saveState(state);
 
-  await bot.api.sendMessage(chatId, approve ? '✅ Доступ надано. /help — список команд.' : '❌ У доступі відмовлено.');
+  await bot.api.sendMessage(chatId, approve ? '✅ Доступ надано. /help — список команд.' : '❌ У доступі відмовлено.').catch(() => undefined);
 
   return ctx.reply(`${approve ? 'Доступ надано' : 'Відмовлено'}: ${chatId}`);
 });
@@ -122,9 +124,22 @@ bot.on('callback_query:data', async (ctx) => {
   }
 });
 
+const errorText = (error: unknown) => (error instanceof Error ? error.message : String(error));
+
+// One chat that blocked the bot must not stop notifications for the others.
 const broadcast = async (text: string, options: Record<string, unknown> = {}) => {
-  for (const chatId of allowedChats()) await bot.api.sendMessage(chatId, text, { ...html, ...options });
+  for (const chatId of allowedChats()) {
+    try {
+      await bot.api.sendMessage(chatId, text, { ...html, ...options });
+    } catch (error) {
+      console.error(`send to ${chatId} failed:`, errorText(error));
+    }
+  }
 };
+
+bot.catch((error) => {
+  console.error(`update ${error.ctx.update.update_id} failed:`, errorText(error.error));
+});
 
 const tick = async () => {
   const events = await collectEvents(odoo, state, config.odooUrl);
@@ -152,7 +167,7 @@ const main = async () => {
 
     running = true;
     tick()
-      .catch((error: unknown) => console.error('poll failed:', error instanceof Error ? error.message : error))
+      .catch((error: unknown) => console.error('poll failed:', errorText(error)))
       .finally(() => {
         running = false;
       });
