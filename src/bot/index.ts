@@ -5,6 +5,7 @@ import { collectEvents, currentCursors } from './events.js';
 import { runAction } from './actions.js';
 import { STATS_KEYBOARD, buildDigest, buildStats, isStatsKey } from './stats.js';
 import { loadState, saveState, type BotState } from './state.js';
+import { updateAllowedChatIds } from './env-file.js';
 
 const COMMANDS = [
   { command: 'help', description: 'Список команд з поясненнями' },
@@ -100,10 +101,11 @@ bot.callbackQuery(/^access:(approve|deny):(-?\d+)$/, async (ctx) => {
   if (approve && !state.approvedChatIds.includes(chatId)) state.approvedChatIds.push(chatId);
   if (approve === false) state.approvedChatIds = state.approvedChatIds.filter((id) => id !== chatId);
   await saveState(state);
+  const envUpdated = await updateAllowedChatIds(chatId, approve);
 
   await bot.api.sendMessage(chatId, approve ? '✅ Доступ надано. /help — список команд.' : '❌ У доступі відмовлено.').catch(() => undefined);
 
-  return ctx.reply(`${approve ? 'Доступ надано' : 'Відмовлено'}: ${chatId}`);
+  return ctx.reply(`${approve ? 'Доступ надано' : 'Відмовлено'}: ${chatId}${envUpdated ? ' (.env оновлено)' : ''}`);
 });
 
 bot.command('help', (ctx) => ctx.reply(HELP, html));
