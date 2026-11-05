@@ -22,7 +22,9 @@
     "seed:homepage": "tsx --env-file=.env scripts/seed-homepage.ts",
     "cleanup": "tsx --env-file=.env scripts/cleanup-test-data.ts",
     "seed:hr": "tsx --env-file=.env scripts/seed-hr.ts",
-    "e2e:applicants": "tsx --env-file=.env scripts/e2e-applicants.ts"
+    "e2e:applicants": "tsx --env-file=.env scripts/e2e-applicants.ts",
+    "seed:meetings": "tsx --env-file=.env scripts/seed-meetings.ts",
+    "e2e:meetings": "tsx --env-file=.env scripts/e2e-meetings.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",

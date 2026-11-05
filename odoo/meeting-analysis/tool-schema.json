@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "summary_uk": { "type": "string", "description": "Meeting summary in Ukrainian, 3-6 sentences" },
+    "decisions_uk": { "type": "string", "description": "Decisions made, one per line, in Ukrainian" },
+    "action_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title_uk": { "type": "string", "description": "Short task title in Ukrainian" },
+          "owner_name": { "type": "string", "description": "Owner name exactly as in transcript, empty if not stated" },
+          "due_date": { "type": "string", "description": "YYYY-MM-DD only if a date or relative date was stated, else empty" },
+          "details_uk": { "type": "string", "description": "Context from the transcript in Ukrainian" }
+        },
+        "required": ["title_uk", "owner_name", "due_date", "details_uk"]
+      }
+    }
+  },
+  "required": ["summary_uk", "decisions_uk", "action_items"]
+}
