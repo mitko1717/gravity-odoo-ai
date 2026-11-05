@@ -1,0 +1,13 @@
+import { OdooClient } from '../src/odoo-client.js';
+import { ensureAiButton } from '../src/ai-automation.js';
+
+const odoo = OdooClient.fromEnv();
+
+const actionId = await ensureAiButton(odoo, {
+  model: 'project.project',
+  dir: 'odoo/site-report',
+  actionName: 'AI: звіт по об’єкту',
+  readTool: { name: 'Gravity AI Tool: Get site data', toolName: 'gravity_get_site_data', description: 'Return tasks, stages, deadlines and notes of the current project. Call first.' },
+  applyTool: { name: 'Gravity AI Tool: Apply site report', toolName: 'gravity_apply_site_report', description: 'Save the site status report as a project update. Call exactly once.' },
+});
+console.log(`site report AI button -> ${actionId}`);

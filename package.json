@@ -29,7 +29,9 @@
     "seed:purchase": "tsx --env-file=.env scripts/seed-purchase.ts",
     "e2e:purchase": "tsx --env-file=.env scripts/e2e-purchase.ts",
     "seed:partners": "tsx --env-file=.env scripts/seed-partners.ts",
-    "e2e:partners": "tsx --env-file=.env scripts/e2e-partners.ts"
+    "e2e:partners": "tsx --env-file=.env scripts/e2e-partners.ts",
+    "seed:site-report": "tsx --env-file=.env scripts/seed-site-report.ts",
+    "e2e:site-report": "tsx --env-file=.env scripts/e2e-site-report.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",

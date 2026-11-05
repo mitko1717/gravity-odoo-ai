@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "summary_uk": { "type": "string", "description": "2-4 sentences in Ukrainian: what is done and the current stage" },
+    "blockers_uk": { "type": "string", "description": "Overdue tasks and blockers from notes, one per line, in Ukrainian; empty if none" },
+    "next_steps_uk": { "type": "string", "description": "2-4 concrete next steps for the project manager, in Ukrainian" }
+  },
+  "required": ["summary_uk", "blockers_uk", "next_steps_uk"]
+}
