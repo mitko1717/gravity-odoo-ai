@@ -4,6 +4,7 @@ import { ensureRecord } from '../src/ensure.js';
 
 const DIR = 'odoo/lead-analysis';
 const TOOL_NAME = 'Gravity AI Tool: Apply lead analysis';
+const READ_TOOL_NAME = 'Gravity AI Tool: Get lead data';
 const AUTOMATION_NAME = 'Gravity: AI-аналіз нової заявки';
 const AI_ACTION_NAME = 'Gravity: AI-аналіз ліда';
 
@@ -12,7 +13,8 @@ const [leadModelId] = await odoo.search('ir.model', [['model', '=', 'crm.lead']]
 
 if (leadModelId === undefined) throw new Error('crm.lead model not found');
 
-const [code, schema, prompt] = await Promise.all([
+const [readCode, code, schema, prompt] = await Promise.all([
+  readFile(`${DIR}/read-tool-code.py`, 'utf8'),
   readFile(`${DIR}/tool-code.py`, 'utf8'),
   readFile(`${DIR}/tool-schema.json`, 'utf8'),
   readFile(`${DIR}/prompt.html`, 'utf8'),
@@ -31,6 +33,19 @@ const toolId = await ensureRecord(odoo, 'ir.actions.server', [['name', '=', TOOL
 
 console.log(`tool -> ${toolId}`);
 
+const readToolId = await ensureRecord(odoo, 'ir.actions.server', [['name', '=', READ_TOOL_NAME]], {
+  name: READ_TOOL_NAME,
+  model_id: leadModelId,
+  state: 'code',
+  code: readCode,
+  use_in_ai: true,
+  ai_tool_name: 'gravity_get_lead_data',
+  ai_tool_description: 'Return the current lead data (untrusted customer input). Call first.',
+  ai_tool_schema: JSON.stringify({ type: 'object', properties: {}, required: [] }),
+});
+
+console.log(`read tool -> ${readToolId}`);
+
 const automationId = await ensureRecord(odoo, 'base.automation', [['name', '=', AUTOMATION_NAME]], {
   name: AUTOMATION_NAME,
   model_id: leadModelId,
@@ -46,7 +61,7 @@ const aiActionId = await ensureRecord(odoo, 'ir.actions.server', [['name', '=', 
   usage: 'base_automation',
   base_automation_id: automationId,
   ai_action_prompt: prompt,
-  ai_tool_ids: [[6, 0, [toolId]]],
+  ai_tool_ids: [[6, 0, [readToolId, toolId]]],
 });
 
 console.log(`ai action -> ${aiActionId}`);
