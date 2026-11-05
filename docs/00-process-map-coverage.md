@@ -8,13 +8,13 @@ Status: **done** = automated and verified by e2e, **partial** = native Odoo reco
 |---|---|---|---|---|---|---|
 | 1 | Marketing and partners | New requests | Website, CRM, UTM | Website form → lead; campaign efficiency report; partner contact reminders | done | 02, 09, 12 |
 | 2 | Sales | Agreed solution and price | CRM, Sales | AI lead analysis; quotation from template | done | 02, 03 |
-| 3 | Sales and finance | Confirmed order | Sales, Invoicing, Sign | Order confirmation only; prepayment invoice and contract signing | planned | — |
-| 4 | Design engineers | Ready design | Project, Sales | Task «Проєктування» and spec approval trigger; AI draft specification | planned | 03, 08 |
-| 5 | PM / production | Implementation plan | Project, Planning | Project from template, 9 tasks, deadlines, escalation; crew planning | partial | 03 |
+| 3 | Sales and finance | Confirmed order | Sales, Invoicing, Sign | Order confirmed → draft 30% prepayment invoice + activity to send the contract (Sign template); payment → PM activity | done | 13 |
+| 4 | Design engineers | Ready design | Project, Purchase | AI draft specification from catalog → engineer approves → RFQs from the approved spec | done | 14, 08 |
+| 5 | PM / production | Implementation plan | Project, Planning | Project from template, 9 tasks, deadlines, escalation; draft crew shifts per field task | done | 03, 15 |
 | 6 | Procurement | Everything needed | Purchase | Approved spec → draft RFQs per vendor | done | 08 |
-| 7 | Installation crew | Installed system | Project, Field Service (if available) | AI site status report; field visits | partial | 10 |
-| 8 | Engineers / commissioning | System works correctly | Project | Commissioning checklist and test protocol | planned | — |
-| 9 | PM / client | Handed over to client | Project, Sign, Documents | Acceptance act and client handover email draft | planned | — |
+| 7 | Installation crew | Installed system | Project, Planning (Field Service) | Field visits as planned shifts; AI site status report | done | 15, 10 |
+| 8 | Engineers / commissioning | System works correctly | Project | AI commissioning checklist from the approved spec (sub-tasks) | done | 16 |
+| 9 | PM / client | Handed over to client | Project, Sign | Gate: all checks closed → PM activity; Sign acceptance act; AI handover email draft | done | 16 |
 | 10 | Service / support | Satisfied client | Helpdesk | AI ticket triage + SLA | done | 04 |
 
 ## Supporting processes

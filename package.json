@@ -40,7 +40,11 @@
     "seed:contract": "tsx --env-file=.env scripts/seed-contract.ts",
     "e2e:contract": "tsx --env-file=.env scripts/e2e-contract.ts",
     "seed:spec": "tsx --env-file=.env scripts/seed-spec.ts",
-    "e2e:spec": "tsx --env-file=.env scripts/e2e-spec.ts"
+    "e2e:spec": "tsx --env-file=.env scripts/e2e-spec.ts",
+    "seed:planning": "tsx --env-file=.env scripts/seed-planning.ts",
+    "e2e:planning": "tsx --env-file=.env scripts/e2e-planning.ts",
+    "seed:handover": "tsx --env-file=.env scripts/seed-handover.ts",
+    "e2e:handover": "tsx --env-file=.env scripts/e2e-handover.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",

@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "checks": {
+      "type": "array",
+      "description": "5-15 commissioning checks",
+      "items": {
+        "type": "object",
+        "properties": {
+          "subsystem_uk": { "type": "string", "description": "Subsystem, e.g. Освітлення, Клімат, Безпека, Шина KNX" },
+          "check_uk": { "type": "string", "description": "Concrete check with expected result, in Ukrainian" }
+        },
+        "required": ["subsystem_uk", "check_uk"]
+      }
+    }
+  },
+  "required": ["checks"]
+}

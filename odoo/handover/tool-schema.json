@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "properties": {
+    "subject_uk": { "type": "string", "description": "Email subject in Ukrainian" },
+    "body_uk": { "type": "string", "description": "Email body in Ukrainian, paragraphs separated by blank lines" }
+  },
+  "required": ["subject_uk", "body_uk"]
+}

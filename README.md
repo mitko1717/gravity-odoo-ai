@@ -42,6 +42,10 @@ service tickets with AI triage and SLA. Plus HR, meetings, internal AI assistant
 | 10 | Production: AI site status report | [docs/10-site-status-report.md](docs/10-site-status-report.md) |
 | 11 | Finance: spreadsheet → management report | [docs/11-finance-management-report.md](docs/11-finance-management-report.md) |
 | 12 | Marketing: campaign efficiency report | [docs/12-marketing-campaign-report.md](docs/12-marketing-campaign-report.md) |
+| 13 | Contract and prepayment (stage 3) | [docs/13-contract-and-prepayment.md](docs/13-contract-and-prepayment.md) |
+| 14 | Design: AI draft specification (stage 4) | [docs/14-ai-draft-specification.md](docs/14-ai-draft-specification.md) |
+| 15 | Crew planning and field visits (stages 5, 7) | [docs/15-crew-planning.md](docs/15-crew-planning.md) |
+| 16 | Commissioning checklist and handover (stages 8, 9) | [docs/16-commissioning-and-handover.md](docs/16-commissioning-and-handover.md) |
 | — | Evaluation on 18 synthetic leads | [docs/eval-results.md](docs/eval-results.md) |
 | — | Architecture decisions | [docs/decisions](docs/decisions) |
 
@@ -54,9 +58,11 @@ service tickets with AI triage and SLA. Plus HR, meetings, internal AI assistant
     npm run seed:sales && npm run seed:project && npm run seed:helpdesk && npm run seed:homepage
     npm run seed:hr && npm run seed:meetings && npm run seed:knowledge && npm run seed:purchase
     npm run seed:partners && npm run seed:site-report && npm run seed:finance && npm run import:expenses && npm run seed:marketing
+    npm run seed:contract && npm run seed:spec && npm run seed:planning && npm run seed:handover
 
 End-to-end checks (they create synthetic records in the live Odoo, so they are manual, not in CI):
 `eval`, `e2e:project`, `e2e:tickets`, `e2e:applicants`, `e2e:meetings`, `e2e:purchase`,
-`e2e:partners`, `e2e:site-report`, `e2e:finance`, `e2e:marketing`.
+`e2e:partners`, `e2e:site-report`, `e2e:finance`, `e2e:marketing`,
+`e2e:contract`, `e2e:spec`, `e2e:planning`, `e2e:handover`.
 
-Some modules must be installed first: `npm run install:modules -- <names>` (see each doc).
+Some modules must be installed first: `npm run install:modules -- <names>` (see each doc). Stages 5/7 need `planning_field_service`.
