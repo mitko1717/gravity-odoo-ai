@@ -46,6 +46,29 @@ const state: BotState = (await loadState()) ?? {
 
 const allowedChats = () => [...new Set([config.adminChatId, ...config.allowedChatIds, ...state.approvedChatIds])];
 
+const DESCRIPTION = [
+  'Демо-бот для тестового завдання Gravity × Odoo (неофіційний стенд, усі дані синтетичні).',
+  '',
+  'Що вміє: нові заявки з AI-розбором, погодження специфікацій і закупівель, прострочені задачі, критичні сервісні тікети, статистика й ранковий дайджест.',
+  '',
+  'Натисніть Start, а потім /request, щоб попросити доступ.',
+].join('\n');
+
+const WELCOME = [
+  '👋 <b>Вітаю! Це демо-бот Gravity × Odoo.</b>',
+  '',
+  'Він показує, як команда може працювати з ERP прямо з Telegram:',
+  '• нові заявки з сайту одразу з AI-розбором і кнопкою «Взяти в роботу»;',
+  '• погодження специфікацій і закупівель однією кнопкою;',
+  '• сигнали про прострочені задачі, блокування здачі, оплати та критичні тікети;',
+  '• статистика й ранковий дайджест.',
+  '',
+  'Це неофіційний демонстраційний стенд, дані синтетичні.',
+  'Щоб отримати доступ, надішліть /request — адміністратор підтвердить запит.',
+].join('\n');
+
+bot.command('start', (ctx) => ctx.reply(allowedChats().includes(ctx.chat.id) ? HELP : WELCOME, html));
+
 bot.command('whoami', (ctx) => ctx.reply(`Ваш chat ID: <code>${ctx.chat.id}</code>`, html));
 
 bot.command('request', async (ctx) => {
@@ -81,7 +104,7 @@ bot.callbackQuery(/^access:(approve|deny):(-?\d+)$/, async (ctx) => {
   return ctx.reply(`${approve ? 'Доступ надано' : 'Відмовлено'}: ${chatId}`);
 });
 
-bot.command(['start', 'help'], (ctx) => ctx.reply(HELP, html));
+bot.command('help', (ctx) => ctx.reply(HELP, html));
 bot.command('stats', (ctx) => ctx.reply('Оберіть звіт:', { reply_markup: STATS_KEYBOARD }));
 bot.command('digest', async (ctx) => ctx.reply(await buildDigest(odoo), html));
 bot.command('overdue', async (ctx) => ctx.reply(await buildStats(odoo, 'stats:overdue'), html));
@@ -120,6 +143,8 @@ const tick = async () => {
 const main = async () => {
   await saveState(state);
   await bot.api.setMyCommands(COMMANDS);
+  await bot.api.setMyDescription(DESCRIPTION);
+  await bot.api.setMyShortDescription('Демо: Odoo + AI для smart home компанії. Ліди, погодження, статистика.');
 
   let running = false;
   setInterval(() => {
