@@ -59,7 +59,7 @@ export function leadFormSection(): string {
     <h1>Залишити заявку</h1>
     <p class="lead">Розкажіть про ваш об’єкт — інженер зв’яжеться з вами та уточнить деталі.</p>
     <form action="/website/form/" method="post" enctype="multipart/form-data" class="o_mark_required" data-mark="*"
-          data-model_name="crm.lead" data-success-mode="redirect" data-success-page="/contactus-thank-you">
+          data-model_name="crm.lead" data-success-mode="redirect" data-success-page="/zayavka-dyakuyemo">
       <div class="s_website_form_rows row s_col_no_bgcolor">
         ${hiddenTitle}
         ${rows}

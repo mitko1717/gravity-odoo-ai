@@ -18,6 +18,8 @@ Lead created (website form /zayavka, API or manual)
 
 Evaluation on 18 synthetic leads: [eval-results.md](eval-results.md).
 
+After submitting, the form redirects to an own Ukrainian page `/zayavka-dyakuyemo` (`npm run seed:thank-you`, after `seed:form`). The generic `/contactus-thank-you` page comes from Odoo base templates and translations, so it is left untouched.
+
 ## Design decisions
 
 - **The LLM never writes fields directly.** It can only call a tool with a strict JSON schema

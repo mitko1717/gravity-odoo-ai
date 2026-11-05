@@ -72,7 +72,7 @@ Measured on synthetic data only; time savings for the real business are an estim
     npm ci
     cp .env.example .env   # ODOO_URL, ODOO_API_KEY (Odoo → Preferences → Account Security → API key)
     npm run check
-    npm run seed:crm && npm run seed:views && npm run seed:ai && npm run seed:website && npm run seed:form
+    npm run seed:crm && npm run seed:views && npm run seed:ai && npm run seed:website && npm run seed:form && npm run seed:thank-you
     npm run seed:sales && npm run seed:project && npm run seed:helpdesk && npm run seed:homepage
     npm run seed:hr && npm run seed:meetings && npm run seed:knowledge && npm run seed:purchase
     npm run seed:partners && npm run seed:site-report && npm run seed:finance && npm run import:expenses && npm run seed:marketing
