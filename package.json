@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "check": "tsx --env-file=.env scripts/check.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "seed:crm": "tsx --env-file=.env scripts/seed-crm.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
