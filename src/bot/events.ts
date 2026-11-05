@@ -3,6 +3,7 @@ import type { OdooClient } from '../odoo-client.js';
 import type { BotState } from './state.js';
 import type { Role } from './roles.js';
 import { PRIORITY_LABEL, escapeHtml, missingLabels, recordUrl, serviceLabels, stripHtml } from './format.js';
+import { stageChanges } from './pipeline.js';
 
 export interface Notification {
   text: string;
@@ -280,11 +281,12 @@ export async function collectEvents(odoo: OdooClient, state: BotState, odooUrl: 
   result.push(...(await criticalTickets(odoo, state, odooUrl)));
   result.push(...(await draftRfqs(odoo, state, odooUrl)));
   result.push(...(await newApplicants(odoo, state, odooUrl)));
+  result.push(...(await stageChanges(odoo, state, odooUrl)));
 
   return result;
 }
 
-export async function currentCursors(odoo: OdooClient): Promise<Omit<BotState, 'lastDigestDate' | 'users'>> {
+export async function currentCursors(odoo: OdooClient): Promise<Omit<BotState, 'lastDigestDate' | 'users' | 'lastTaskWrite' | 'taskStages'>> {
   const last = async (model: string) => {
     const [row] = await odoo.call<Array<{ id: number }>>(model, 'search_read', { domain: [], fields: ['id'], order: 'id desc', limit: 1 });
 

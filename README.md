@@ -19,6 +19,21 @@ service tickets with AI triage and SLA. Plus HR, meetings, internal AI assistant
 - Customer / candidate / field text is treated as untrusted input (prompt injection tested in e2e).
 - Humans decide: drafts, recommendations and activities, never automatic rejection or sending.
 
+## Measured results
+
+AI lead analysis on 18 synthetic leads (incl. vague, duplicate, spam, English, surzhyk and prompt injection),
+full table in [docs/eval-results.md](docs/eval-results.md), rerun with `npm run eval`:
+
+| Metric | Result |
+|---|---|
+| Processed by AI | 18/18 |
+| Client type / priority in expected range | 18/18 / 18/18 |
+| Services detected / budget extracted (±15%, UAH and EUR converted) | 15/15 / 12/12 |
+| Duplicate flagged / prompt injection ignored | 1/1 / 1/1 |
+| Lead creation incl. AI, avg / p95 | 7.2 s / 8.9 s |
+
+Measured on synthetic data only; time savings for the real business are an estimate, not a measurement.
+
 ## Stack
 
 - Odoo 20 Enterprise (Online trial): Website, CRM, Sales, Project, Purchase, Helpdesk, Recruitment,

@@ -11,6 +11,10 @@ export interface BotState {
   lastRfqId: number;
   lastDigestDate: string;
   lastApplicantId: number;
+  /** Max write_date of pipeline tasks already seen ('' = not initialised). */
+  lastTaskWrite: string;
+  /** Last known stage name per pipeline task, to detect transitions. */
+  taskStages: Record<string, string>;
   /** Approved users by chat ID (admin is implicit). */
   users: Record<string, BotUser>;
 }
@@ -24,7 +28,7 @@ export interface BotUser {
 
 const STATE_FILE = process.env.BOT_STATE_FILE ?? 'tmp/bot-state.json';
 
-const EMPTY: BotState = { lastLeadId: 0, lastActivityId: 0, lastMessageId: 0, lastTicketId: 0, lastRfqId: 0, lastDigestDate: '', lastApplicantId: 0, users: {} };
+const EMPTY: BotState = { lastLeadId: 0, lastActivityId: 0, lastMessageId: 0, lastTicketId: 0, lastRfqId: 0, lastDigestDate: '', lastApplicantId: 0, lastTaskWrite: '', taskStages: {}, users: {} };
 
 export async function loadState(): Promise<BotState | undefined> {
   try {

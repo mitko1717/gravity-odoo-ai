@@ -26,4 +26,10 @@ Status: **done** = automated and verified by e2e, **partial** = native Odoo reco
 | Management / meetings | Transcript → summary → draft tasks | done | 06 |
 | AI Hub | Internal assistant on Knowledge with citations | done | 07 |
 
+## Measured quality
+
+Lead AI on 18 synthetic leads: 18/18 client type and priority, 15/15 services, 12/12 budgets, duplicate and prompt
+injection handled, ~7 s per lead. Details: [eval-results.md](eval-results.md). Other features are verified by e2e
+scripts (see each doc's «Verified» section).
+
 This table is updated as each stage is closed.

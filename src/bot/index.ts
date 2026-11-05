@@ -6,11 +6,13 @@ import { runAction } from './actions.js';
 import { STATS_KEYBOARD, buildDigest, buildStats, isStatsKey } from './stats.js';
 import { loadState, saveState, type BotState } from './state.js';
 import { createAccess } from './access.js';
+import { projectCard, projectsList, runPipelineAction } from './pipeline.js';
 import type { Role } from './roles.js';
 
 const COMMANDS = [
   { command: 'help', description: 'Список команд з поясненнями' },
   { command: 'leads', description: 'Список лідів без пропозиції (далі /lead_ID — картка з кнопками)' },
+  { command: 'projects', description: 'Проєкти по етапах: хто зараз відповідає (далі /project_ID — картка)' },
   { command: 'stats', description: 'Статистика: ліди, кампанії, прострочення, сервіс, воронка' },
   { command: 'digest', description: 'Дайджест зараз (щодня приходить зранку сам)' },
   { command: 'overdue', description: 'Прострочені задачі проєктів' },
@@ -26,6 +28,8 @@ const HELP = [
   '',
   '<b>Сповіщення приходять самі:</b>',
   '📋 /leads — список, /lead_ID — картка ліда з кнопками',
+  '📁 /projects — етапи об’єктів; /project_ID — статус кожного етапу, кнопки «В роботу / На перевірку / Готово», 🧪 чекліст',
+  '👉 «Ваша черга» — коли попередній етап завершено, відповідальний за наступний отримує сповіщення',
   '🆕 новий лід з AI-розбором → «Взяти в роботу», «Чернетка відповіді», «Створити пропозицію»',
   '📄 чернетка пропозиції → «Підтвердити замовлення» (проєкт + рахунок на передоплату)',
   '📐 AI-чернетка специфікації → «Погодити» (створює RFQ)',
@@ -56,6 +60,8 @@ if (loaded !== undefined && loaded.lastApplicantId === 0) loaded.lastApplicantId
 const state: BotState = loaded ?? {
   ...cursors,
   lastDigestDate: new Date().toISOString().slice(0, 10),
+  lastTaskWrite: '',
+  taskStages: {},
   users: {},
 };
 
@@ -98,6 +104,28 @@ bot.hears(/^\/lead(?:_|\s+)(\d+)/, async (ctx) => {
   if (card === undefined) return ctx.reply('Лід не знайдено.');
 
   return ctx.reply(card.text, { ...html, reply_markup: card.keyboard });
+});
+
+bot.command('projects', async (ctx) => ctx.reply(await projectsList(odoo), html));
+
+bot.hears(/^\/project(?:_|\s+)(\d+)/, async (ctx) => {
+  const card = await projectCard(odoo, config.odooUrl, Number(ctx.match[1]));
+  if (card === undefined) return ctx.reply('Проєкт не знайдено.');
+
+  return ctx.reply(card.text, { ...html, reply_markup: card.keyboard });
+});
+
+// Registered before the generic handler: pipeline buttons edit nothing but Odoo task stages and checks.
+bot.callbackQuery(/^(pcard|pstage|pchk):(\w+):(\d+)$/, async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const actor = ctx.from.username ? `@${ctx.from.username}` : ctx.from.first_name;
+
+  try {
+    const result = await runPipelineAction({ odoo, odooUrl: config.odooUrl, actor }, String(ctx.match[1]), String(ctx.match[2]), Number(ctx.match[3]));
+    await ctx.reply(result.text, { ...html, reply_markup: result.keyboard });
+  } catch (error) {
+    await ctx.reply(`Помилка: ${error instanceof Error ? error.message : String(error)}`);
+  }
 });
 
 bot.command('stats', (ctx) => ctx.reply('Оберіть звіт:', { reply_markup: STATS_KEYBOARD }));
