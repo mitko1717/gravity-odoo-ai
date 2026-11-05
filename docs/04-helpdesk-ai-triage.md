@@ -1,3 +1,4 @@
+<!-- note: see «Known limitation» at the end -->
 # 04 — Service tickets: AI triage + SLA (Helpdesk)
 
 ## Problem
@@ -43,3 +44,8 @@ low = change request or information.
   change it and the chatter shows it was set by AI.
 - The reply draft is stored as a field only; nothing is sent to the customer automatically.
 - In Odoo 20 SLA policies select tickets with `criteria_domain`, not a priority field.
+
+## Known limitation
+Urgency on borderline tickets is not fully deterministic: in regression runs «застосунок не працює» was classified
+once as normal and once as high. The engineer can change priority (and SLA) on the ticket; a production version
+should add explicit rules for safety keywords (smell of burning, sparks) and a review queue for borderline cases.

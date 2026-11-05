@@ -28,6 +28,15 @@ const report = async (title: string) => {
   return rows;
 };
 
+// Repeatable start: restore demo dates and close reminders left by previous runs.
+const daysAgo = (days: number) => new Date(Date.now() - days * 86_400_000).toISOString().slice(0, 10);
+for (const partner of DEMO_PARTNERS) {
+  const ids = await odoo.search('res.partner', [['name', '=', partner.name]]);
+  await odoo.write('res.partner', ids, { x_partner_last_contact: daysAgo(partner.daysSinceContact) });
+}
+const oldReminderIds = await odoo.search('mail.activity', [['res_model', '=', 'res.partner'], ['summary', '=like', 'Зв’язатися з партнером%']]);
+if (oldReminderIds.length > 0) await odoo.call('mail.activity', 'unlink', { ids: oldReminderIds });
+
 await runScheduler();
 await report('after scheduler run 1 (expect reminders only for 40 and 90 days):');
 
