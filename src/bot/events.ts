@@ -1,7 +1,7 @@
 import { InlineKeyboard } from 'grammy';
 import type { OdooClient } from '../odoo-client.js';
 import type { BotState } from './state.js';
-import { PRIORITY_LABEL, escapeHtml, recordUrl, serviceLabels, stripHtml } from './format.js';
+import { PRIORITY_LABEL, escapeHtml, missingLabels, recordUrl, serviceLabels, stripHtml } from './format.js';
 
 export interface Notification {
   text: string;
@@ -20,22 +20,41 @@ interface LeadRow {
   x_ai_summary: string | false;
   x_ai_missing: string | false;
   x_ai_next_action: string | false;
+  stage_id?: [number, string] | false;
+  user_id?: [number, string] | false;
 }
 
 const maxId = (rows: Array<{ id: number }>, current: number) => rows.reduce((max, row) => Math.max(max, row.id), current);
 
 const LEAD_FIELDS = ['name', 'contact_name', 'x_city', 'x_area_m2', 'x_ai_priority', 'x_ai_services', 'x_ai_budget_usd', 'x_ai_summary', 'x_ai_missing', 'x_ai_next_action'];
 
-// /leads: recent analysed leads that have no quotation yet, with the same buttons as the push.
-export async function openLeads(odoo: OdooClient, odooUrl: string, limit = 5): Promise<Notification[]> {
+// /leads: compact list; /lead_<id>: one card with buttons.
+export async function leadsList(odoo: OdooClient, limit = 15): Promise<string> {
   const rows = await odoo.call<LeadRow[]>('crm.lead', 'search_read', {
     domain: [['x_ai_status', '!=', 'pending'], ['order_ids', '=', false], ['type', '=', 'opportunity']],
-    fields: LEAD_FIELDS,
+    fields: ['name', 'x_ai_priority', 'stage_id', 'user_id'],
     order: 'id desc',
     limit,
   });
+  if (rows.length === 0) return 'Немає лідів без пропозиції.';
 
-  return rows.map((lead) => leadNotification(lead, odooUrl));
+  const lines = rows.map((lead) => {
+    const priority = (PRIORITY_LABEL[String(lead.x_ai_priority)] ?? '—').split(' ')[0];
+    const stage = lead.stage_id ? lead.stage_id[1] : '—';
+    const owner = lead.user_id ? lead.user_id[1] : 'без менеджера';
+    const name = lead.name.length > 40 ? `${lead.name.slice(0, 40)}…` : lead.name;
+
+    return `${priority} /lead_${lead.id} · ${escapeHtml(stage)} · ${escapeHtml(owner)}\n    ${escapeHtml(name)}`;
+  });
+
+  return [`📋 <b>Ліди без пропозиції</b> (останні ${rows.length}). Натисніть /lead_ID, щоб відкрити картку.`, '', ...lines].join('\n');
+}
+
+export async function leadCard(odoo: OdooClient, odooUrl: string, id: number): Promise<Notification | undefined> {
+  const [lead] = await odoo.call<LeadRow[]>('crm.lead', 'search_read', { domain: [['id', '=', id]], fields: [...LEAD_FIELDS, 'stage_id', 'user_id'] });
+  if (lead === undefined) return undefined;
+
+  return leadNotification(lead, odooUrl, `📇 <b>Лід #${lead.id}</b>`);
 }
 
 async function newLeads(odoo: OdooClient, state: BotState, odooUrl: string): Promise<Notification[]> {
@@ -46,18 +65,19 @@ async function newLeads(odoo: OdooClient, state: BotState, odooUrl: string): Pro
   });
   state.lastLeadId = maxId(rows, state.lastLeadId);
 
-  return rows.map((lead) => leadNotification(lead, odooUrl));
+  return rows.map((lead) => leadNotification(lead, odooUrl, '🆕 <b>Новий лід</b>'));
 }
 
-function leadNotification(lead: LeadRow, odooUrl: string): Notification {
+function leadNotification(lead: LeadRow, odooUrl: string, title: string): Notification {
   const budget = lead.x_ai_budget_usd ? `$${lead.x_ai_budget_usd}` : 'не вказано';
   const lines = [
-    `🆕 <b>Новий лід</b>: ${escapeHtml(lead.name)}`,
+    `${title}: ${escapeHtml(lead.name)}`,
+    ...(lead.stage_id ? [`Етап: ${escapeHtml(lead.stage_id[1])} · Менеджер: ${escapeHtml(lead.user_id ? lead.user_id[1] : 'не призначено')}`] : []),
     `Пріоритет (AI): ${PRIORITY_LABEL[String(lead.x_ai_priority)] ?? '—'}`,
     `Контакт: ${escapeHtml(lead.contact_name || '—')}, ${escapeHtml(lead.x_city || '—')}, ${lead.x_area_m2 || '—'} м²`,
     `Послуги: ${escapeHtml(serviceLabels(lead.x_ai_services || '') || '—')} · Бюджет: ${budget}`,
     `\n${escapeHtml(lead.x_ai_summary || '')}`,
-    `Бракує: ${escapeHtml(lead.x_ai_missing || 'нічого')}`,
+    `Бракує: ${escapeHtml(missingLabels(lead.x_ai_missing || '') || 'нічого')}`,
     `Далі: ${escapeHtml(lead.x_ai_next_action || '—')}`,
   ];
   const keyboard = new InlineKeyboard()

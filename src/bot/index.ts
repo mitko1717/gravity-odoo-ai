@@ -1,7 +1,7 @@
 import { Bot, InlineKeyboard } from 'grammy';
 import { OdooClient } from '../odoo-client.js';
 import { loadConfig } from './config.js';
-import { collectEvents, currentCursors, openLeads } from './events.js';
+import { collectEvents, currentCursors, leadCard, leadsList } from './events.js';
 import { runAction } from './actions.js';
 import { STATS_KEYBOARD, buildDigest, buildStats, isStatsKey } from './stats.js';
 import { loadState, saveState, type BotState } from './state.js';
@@ -9,7 +9,7 @@ import { updateAllowedChatIds } from './env-file.js';
 
 const COMMANDS = [
   { command: 'help', description: 'Список команд з поясненнями' },
-  { command: 'leads', description: 'Останні ліди без пропозиції, з кнопками' },
+  { command: 'leads', description: 'Список лідів без пропозиції (далі /lead_ID — картка з кнопками)' },
   { command: 'stats', description: 'Статистика: ліди, кампанії, прострочення, сервіс, воронка' },
   { command: 'digest', description: 'Дайджест зараз (щодня приходить зранку сам)' },
   { command: 'overdue', description: 'Прострочені задачі проєктів' },
@@ -23,6 +23,7 @@ const HELP = [
   ...COMMANDS.map((item) => `/${item.command} — ${item.description}`),
   '',
   '<b>Сповіщення приходять самі:</b>',
+  '📋 /leads — список, /lead_ID — картка ліда з кнопками',
   '🆕 новий лід з AI-розбором → «Взяти в роботу», «Чернетка відповіді», «Створити пропозицію»',
   '📄 чернетка пропозиції → «Підтвердити замовлення» (проєкт + рахунок на передоплату)',
   '📐 AI-чернетка специфікації → «Погодити» (створює RFQ)',
@@ -111,12 +112,16 @@ bot.callbackQuery(/^access:(approve|deny):(-?\d+)$/, async (ctx) => {
 });
 
 bot.command('help', (ctx) => ctx.reply(HELP, html));
-bot.command('leads', async (ctx) => {
-  const leads = await openLeads(odoo, config.odooUrl);
-  if (leads.length === 0) return ctx.reply('Немає лідів без пропозиції.');
+bot.command('leads', async (ctx) => ctx.reply(await leadsList(odoo), html));
 
-  for (const lead of leads) await ctx.reply(lead.text, { ...html, reply_markup: lead.keyboard });
+// /lead_61 (clickable in the list) or /lead 61
+bot.hears(/^\/lead(?:_|\s+)(\d+)/, async (ctx) => {
+  const card = await leadCard(odoo, config.odooUrl, Number(ctx.match[1]));
+  if (card === undefined) return ctx.reply('Лід не знайдено.');
+
+  return ctx.reply(card.text, { ...html, reply_markup: card.keyboard });
 });
+
 bot.command('stats', (ctx) => ctx.reply('Оберіть звіт:', { reply_markup: STATS_KEYBOARD }));
 bot.command('digest', async (ctx) => ctx.reply(await buildDigest(odoo), html));
 bot.command('overdue', async (ctx) => ctx.reply(await buildStats(odoo, 'stats:overdue'), html));

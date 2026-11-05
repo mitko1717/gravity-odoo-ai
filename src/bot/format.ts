@@ -33,3 +33,25 @@ export const serviceLabels = (codes: string): string =>
     .filter((code) => code.length > 0)
     .map((code) => SERVICE_LABEL[code] ?? code)
     .join(', ');
+
+const MISSING_LABEL: Record<string, string> = {
+  phone_or_email: 'телефон або email',
+  phone: 'телефон',
+  email: 'email',
+  object_type: 'тип об’єкта',
+  location: 'локація',
+  city: 'місто',
+  area: 'площа',
+  area_m2: 'площа',
+  budget: 'бюджет',
+  timeline: 'строки',
+  services: 'послуги',
+};
+
+export const missingLabels = (codes: string): string =>
+  codes
+    .split(',')
+    .map((code) => code.trim())
+    .filter((code) => code.length > 0)
+    .map((code) => MISSING_LABEL[code] ?? code)
+    .join(', ');
