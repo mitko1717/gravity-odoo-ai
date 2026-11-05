@@ -59,6 +59,18 @@ export function createAccess(deps: AccessDeps) {
   const isAdmin = (chatId: number | undefined) => chatId === adminChatId;
 
   const register = () => {
+    // Keep display names fresh: users approved by ID get their Telegram name on the next message.
+    bot.use(async (ctx, next) => {
+      const user = ctx.chat ? state.users[String(ctx.chat.id)] : undefined;
+      const name = ctx.from?.username ? `@${ctx.from.username}` : ctx.from?.first_name;
+      if (user !== undefined && name !== undefined && user.name !== name) {
+        user.name = name;
+        await saveState(state);
+      }
+
+      return next();
+    });
+
     bot.command('request', async (ctx) => {
       const chatId = ctx.chat.id;
       if (allowedChats().includes(chatId)) return ctx.reply('У вас уже є доступ. /help — список команд.');
@@ -116,7 +128,6 @@ export function createAccess(deps: AccessDeps) {
       user.roles = user.roles.includes(role) ? user.roles.filter((item) => item !== role) : [...user.roles, role];
       await saveState(state);
       await ctx.editMessageText(userText(chatId), { ...html, reply_markup: userKeyboard(chatId) });
-      await bot.api.sendMessage(Number(chatId), `Ваші ролі в боті: ${roleLabels(user.roles)}`).catch(() => undefined);
     });
 
     bot.callbackQuery(/^user:active:(-?\d+):(on|off)$/, async (ctx) => {
@@ -163,17 +174,6 @@ export function createAccess(deps: AccessDeps) {
       await ctx.editMessageText(`🗑 Користувача <code>${chatId}</code> видалено.`, html);
     });
 
-    // Keep display names fresh: users approved by ID get their Telegram name on the next message.
-    bot.use(async (ctx, next) => {
-      const user = ctx.chat ? state.users[String(ctx.chat.id)] : undefined;
-      const name = ctx.from?.username ? `@${ctx.from.username}` : ctx.from?.first_name;
-      if (user !== undefined && name !== undefined && user.name !== name) {
-        user.name = name;
-        await saveState(state);
-      }
-
-      return next();
-    });
   };
 
   return { allowedChats, recipients, register, isAdmin };

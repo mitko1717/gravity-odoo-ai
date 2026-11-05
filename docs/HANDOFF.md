@@ -16,3 +16,15 @@
 - New scripts: seed:{hr,meetings,knowledge,purchase,partners,site-report,finance,marketing}, import:expenses,
   e2e:{applicants,meetings,purchase,partners,site-report,finance,marketing}.
 - Next: cleanup of e2e data, UI walkthrough, presentation.
+
+## 2026-11-05 — session 3
+- Map stages 3, 4, 5/7, 8/9 closed (docs 13–16, `docs/00` coverage table): prepayment invoice + Sign templates, AI draft
+  specification → RFQs from approved spec, crew shifts in Planning (`planning_field_service`), AI commissioning checklist,
+  handover gate + AI client email draft.
+- Website: Ukrainian footer as code (`odoo/website/footer-links.xml`), demo phone, text logo, CTA → /zayavka;
+  quotation template field next to customer (`seed:quote-field`).
+- Lead AI: form-vs-text area conflict rule. Site report ignores sub-tasks. Cleanup handles invoices, RFQs, shifts, duplicates.
+- Telegram bot (`src/bot/`, `npm run bot`, local polling): lead/spec/RFQ/overdue/payment/handover/ticket/applicant
+  notifications by role, action buttons, `/leads`, `/lead_ID`, `/stats`, `/digest`, `/request`, `/users`.
+  Env: TELEGRAM_BOT_TOKEN, TELEGRAM_ADMIN_CHAT_ID, TELEGRAM_ALLOWED_CHAT_IDS, BOT_POLL_SECONDS, BOT_DIGEST_HOUR.
+- Next: bot docs (local + Railway on Monday, then delete), doc cleanup, UI walkthrough end, presentation.
