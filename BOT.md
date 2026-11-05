@@ -20,11 +20,13 @@ The bot is the channel between departments: Odoo holds the data, the bot tells e
 | 10 | Service | «🚨 SLA прострочено»: the ticket missed its SLA deadline (escalation) | PM | Беру |
 | — | HR | New applicant with AI profile (no automatic rejection) | HR | Відкрити в Odoo |
 
+All scenarios in Ukrainian (what comes, to whom, how to reproduce): [docs/bot-scenarios-uk.md](docs/bot-scenarios-uk.md).
+
 ## Handoff between departments
 
 - `/projects` — all objects: progress (5/9), current stage and who owns it, overdue mark.
 - `/project_ID` — the 9 stages with status, deadline, owner, «waiting for previous stage»; buttons for the current stage: В роботу / На перевірку / Готово, 🧪 Чекліст.
-- A stage set to «Готово» (in the bot or in Odoo) → the owner of the next stage gets «👉 Ваша черга» with «Взяти в роботу». The PM sees every change.
+- A stage set to «Готово» (in the bot or in Odoo) → the owner of the next stage gets «👉 Ваша черга» with «Взяти в роботу» (only when the previous stage in order was finished; stages closed out of order notify the PM only). The PM sees every change.
 
 | Stage | Owner role |
 |---|---|

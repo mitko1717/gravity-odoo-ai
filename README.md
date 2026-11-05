@@ -65,6 +65,7 @@ Metrics dashboard (measured Odoo counts + eval, estimates labelled separately): 
 | 15 | Crew planning and field visits (stages 5, 7) | [docs/15-crew-planning.md](docs/15-crew-planning.md) |
 | 16 | Commissioning checklist and handover (stages 8, 9) | [docs/16-commissioning-and-handover.md](docs/16-commissioning-and-handover.md) |
 | — | **Telegram bot: user guide (stages, handoffs, commands)** | [BOT.md](BOT.md) |
+| — | **Сценарії бота українською: що приходить, кому, як відтворити** | [docs/bot-scenarios-uk.md](docs/bot-scenarios-uk.md) |
 | 17 | Telegram bot: notifications and quick actions | [docs/17-telegram-bot.md](docs/17-telegram-bot.md) |
 | — | Evaluation on 18 synthetic leads | [docs/eval-results.md](docs/eval-results.md) |
 | — | Architecture decisions | [docs/decisions](docs/decisions) |

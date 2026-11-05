@@ -254,8 +254,14 @@ async function transitionNotices(odoo: OdooClient, odooUrl: string, task: TaskRo
   };
   if (current !== DONE) return [changed];
 
-  const next = currentTask(await projectTasks(odoo, projectId));
+  const tasks = await projectTasks(odoo, projectId);
+  const next = currentTask(tasks);
   if (next === undefined) return [{ ...changed, text: `🏁 <b>Усі етапи завершено</b>\n${project}` }];
+
+  // Hand over only when the stage right before the next open one was finished; out-of-order closes just inform the PM.
+  const doneIndex = tasks.findIndex((row) => row.id === task.id);
+  const isHandoff = tasks.indexOf(next) === doneIndex + 1;
+  if (isHandoff === false) return [changed];
 
   const nextRole = STAGE_ROLE[next.name] ?? 'pm';
   const handoff: Notification = {

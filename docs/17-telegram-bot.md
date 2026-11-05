@@ -24,7 +24,7 @@ A small Node.js bot (grammY) that polls Odoo over JSON-2 and pushes role-based n
 | SLA breach escalation (`src/bot/sla.ts`): `helpdesk.sla.status` failed, or ongoing past its deadline; each status once; first poll stores existing breaches silently | 10 | pm | Беру |
 | New applicant with AI profile | HR | hr | Відкрити в Odoo |
 | Project stage changed (bot or Odoo UI) | 1–9 | pm | Картка проєкту, Відкрити в Odoo |
-| Previous stage done → «👉 Ваша черга» | 1–9 | owner of the next stage | Взяти в роботу, Картка проєкту, Етап в Odoo |
+| Previous stage done → «👉 Ваша черга» (only when the stage right before the next open one is finished; out-of-order closes notify the PM only) | 1–9 | owner of the next stage | Взяти в роботу, Картка проєкту, Етап в Odoo |
 
 ### Project pipeline and handoffs (`src/bot/pipeline.ts`)
 The 9 tasks of the project template are the stages of one object. Each stage has an owner role:
