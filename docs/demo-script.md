@@ -13,7 +13,7 @@
 | 1 | Залишаєш заявку (бюджет, площа, місто в тексті) на [сайті](https://test6017.odoo.com/zayavka) | [/zayavka](https://test6017.odoo.com/zayavka) | Звичайна форма Odoo, без коду |
 | 2 | Чекаєш ~30 с | [Telegram](https://t.me/gravity_test_promo_bot): «🆕 Новий лід» з AI-підсумком; або `/leads` | Менеджер дізнається з телефону, а не коли відкриє CRM |
 | 3 | Відкриваєш лід (верхній) | [CRM → Pipeline](https://test6017.odoo.com/odoo/crm) · [усі ліди списком](https://test6017.odoo.com/odoo/action-crm.crm_lead_all_leads) | Тип, послуги, бюджет, пріоритет, чого бракує, дублікати; текст клієнта = недовірені дані |
-| 4 | [Telegram](https://t.me/gravity_test_promo_bot): «Чернетка відповіді», «Створити пропозицію» | [Sales → Quotations](https://test6017.odoo.com/odoo/sales) | Пропозиція з шаблону за 1 натиск; ціни «демо-ціна» |
+| 4 | [Telegram](https://t.me/gravity_test_promo_bot): «Чернетка відповіді», «📅 Консультація» (посилання на [запис](https://test6017.odoo.com/appointment) → клієнт обирає час → «Клієнт записався»), «Створити пропозицію» | [Sales → Quotations](https://test6017.odoo.com/odoo/sales) | Пропозиція з шаблону за 1 натиск; ціни «демо-ціна» |
 | 5 | [Telegram](https://t.me/gravity_test_promo_bot): «Підтвердити замовлення» | [Sales](https://test6017.odoo.com/odoo/sales) → замовлення · [Project](https://test6017.odoo.com/odoo/project) → новий проєкт | Проєкт із шаблону: 9 етапів, дедлайни, залежності |
 | 6 | Оплатити рахунок 30%: рахунок → Confirm → Register Payment | [Invoicing → Invoices](https://test6017.odoo.com/odoo/action-account.action_move_out_invoice_type) · [Telegram](https://t.me/gravity_test_promo_bot): «Передоплату отримано» | Оплата → PM отримує задачу запускати закупівлі |
 | 7 | Проєкт → ⋮ → «AI: чернетка специфікації» | [Project](https://test6017.odoo.com/odoo/project) → проєкт → задача «Проєктування» · [Telegram](https://t.me/gravity_test_promo_bot): «📐 специфікація готова» | AI бере лише позиції з каталогу, невідоме відкидає |
@@ -38,7 +38,7 @@
 
 | Відділ | Де | Що показати |
 |---|---|---|
-| Сервіс | [Helpdesk](https://test6017.odoo.com/odoo/helpdesk) → тікет «Запах гару від щитка» · [Telegram](https://t.me/gravity_test_promo_bot): «Беру» | AI: electrical/critical → Urgent, SLA 2 год |
+| Сервіс | [Helpdesk](https://test6017.odoo.com/odoo/helpdesk) → тікет «Запах гару від щитка» · [Telegram](https://t.me/gravity_test_promo_bot): «Беру» | AI: electrical/critical → Urgent, SLA 2 год; якщо за 2 год не взяли в роботу — PM отримує «🚨 SLA прострочено» |
 | HR | [Recruitment](https://test6017.odoo.com/odoo/recruitment) → «Монтажник-електрик (демо)» → кандидат → вкладка «Gravity / AI» | Профіль без автовідмови; кандидат із prompt injection не пройшов |
 | Наради | [Project](https://test6017.odoo.com/odoo/project) → «Наради: планування об’єктів (демо)» → вкладка «Наради / AI» | Summary + чернетки задач з датами; «створи 50 задач» проігноровано |
 | AI Hub | [Головне меню](https://test6017.odoo.com/odoo) → застосунок AI → Agents → «Gravity: внутрішній асистент (демо)» | «Запах гару — що робити?» → відповідь з посиланням на регламент |

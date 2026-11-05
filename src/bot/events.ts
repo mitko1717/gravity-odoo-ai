@@ -4,6 +4,7 @@ import type { BotState } from './state.js';
 import type { Role } from './roles.js';
 import { PRIORITY_LABEL, escapeHtml, missingLabels, recordUrl, serviceLabels, stripHtml } from './format.js';
 import { stageChanges } from './pipeline.js';
+import { slaBreaches } from './sla.js';
 
 export interface Notification {
   text: string;
@@ -106,6 +107,7 @@ function leadNotification(lead: LeadRow, odooUrl: string, title: string, taken =
   if (taken === false) keyboard.text('✅ Взяти в роботу', `lead:take:${lead.id}`);
   keyboard
     .text('✉️ Чернетка відповіді', `lead:reply:${lead.id}`)
+    .text('📅 Консультація', `lead:consult:${lead.id}`)
     .row()
     .text('📄 Створити пропозицію', `lead:quote:${lead.id}`)
     .row()
@@ -271,6 +273,29 @@ async function newApplicants(odoo: OdooClient, state: BotState, odooUrl: string)
   }));
 }
 
+interface BookingRow {
+  id: number;
+  name: string;
+  start: string;
+  appointment_booker_id: [number, string] | false;
+}
+
+// Bookings made on the public appointment page (native Odoo Appointments).
+async function newBookings(odoo: OdooClient, state: BotState, odooUrl: string): Promise<Notification[]> {
+  const rows = await odoo.call<BookingRow[]>('calendar.event', 'search_read', {
+    domain: [['id', '>', state.lastEventId], ['appointment_type_id', '!=', false]],
+    fields: ['name', 'start', 'appointment_booker_id'],
+    order: 'id',
+  });
+  state.lastEventId = maxId(rows, state.lastEventId);
+
+  return rows.map((event) => ({
+    text: `📅 <b>Клієнт записався на консультацію</b>\n${escapeHtml(event.name)}\nКлієнт: ${escapeHtml(event.appointment_booker_id ? event.appointment_booker_id[1] : '—')}\nПочаток: ${event.start.slice(0, 16)} (UTC)`,
+    keyboard: new InlineKeyboard().url('Відкрити в Odoo', recordUrl(odooUrl, 'calendar.event', event.id)),
+    role: 'sales' as const,
+  }));
+}
+
 export async function collectEvents(odoo: OdooClient, state: BotState, odooUrl: string): Promise<Notification[]> {
   const result: Notification[] = [];
 
@@ -281,12 +306,14 @@ export async function collectEvents(odoo: OdooClient, state: BotState, odooUrl: 
   result.push(...(await criticalTickets(odoo, state, odooUrl)));
   result.push(...(await draftRfqs(odoo, state, odooUrl)));
   result.push(...(await newApplicants(odoo, state, odooUrl)));
+  result.push(...(await newBookings(odoo, state, odooUrl)));
   result.push(...(await stageChanges(odoo, state, odooUrl)));
+  result.push(...(await slaBreaches(odoo, state, odooUrl)));
 
   return result;
 }
 
-export async function currentCursors(odoo: OdooClient): Promise<Omit<BotState, 'lastDigestDate' | 'users' | 'lastTaskWrite' | 'taskStages'>> {
+export async function currentCursors(odoo: OdooClient): Promise<Omit<BotState, 'lastDigestDate' | 'users' | 'lastTaskWrite' | 'taskStages' | 'slaNotified' | 'slaReady'>> {
   const last = async (model: string) => {
     const [row] = await odoo.call<Array<{ id: number }>>(model, 'search_read', { domain: [], fields: ['id'], order: 'id desc', limit: 1 });
 
@@ -300,5 +327,6 @@ export async function currentCursors(odoo: OdooClient): Promise<Omit<BotState, '
     lastTicketId: await last('helpdesk.ticket'),
     lastRfqId: await last('purchase.order'),
     lastApplicantId: await last('hr.applicant'),
+    lastEventId: await last('calendar.event'),
   };
 }

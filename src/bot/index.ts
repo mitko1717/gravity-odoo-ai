@@ -59,12 +59,15 @@ const cursors = await currentCursors(odoo);
 
 // Cursors missing in an older state file start from the current records (no flood after upgrades).
 if (loaded !== undefined && loaded.lastApplicantId === 0) loaded.lastApplicantId = cursors.lastApplicantId;
+if (loaded !== undefined && loaded.lastEventId === 0) loaded.lastEventId = cursors.lastEventId;
 
 const state: BotState = loaded ?? {
   ...cursors,
   lastDigestDate: new Date().toISOString().slice(0, 10),
   lastTaskWrite: '',
   taskStages: {},
+  slaNotified: [],
+  slaReady: false,
   users: {},
 };
 

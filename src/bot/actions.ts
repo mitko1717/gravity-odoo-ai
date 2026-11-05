@@ -1,6 +1,7 @@
 import type { OdooClient } from '../odoo-client.js';
 import { InlineKeyboard } from 'grammy';
 import { QUOTATION_TEMPLATE_NAME } from '../config/sales-catalog.js';
+import { CONSULTATION_NAME } from '../config/appointment.js';
 import { escapeHtml, recordUrl } from './format.js';
 
 // Button handlers. Each one does one explicit change a person asked for and leaves a note in Odoo.
@@ -49,6 +50,29 @@ async function replyDraft(ctx: ActionContext, id: number): Promise<string> {
   if (lead === undefined || lead.x_ai_reply_draft === false) return 'Чернетки відповіді немає.';
 
   return `✉️ <b>AI-чернетка відповіді</b> (перевірте перед надсиланням, натисніть на блок, щоб скопіювати):\n\n<pre>${escapeHtml(lead.x_ai_reply_draft)}</pre>`;
+}
+
+// Draft only: the manager sends the booking link himself; an activity reminds to check the booking.
+async function consultationDraft(ctx: ActionContext, id: number): Promise<string> {
+  const [lead] = await ctx.odoo.searchRead<{ name: string; contact_name: string | false }>('crm.lead', [['id', '=', id]], ['name', 'contact_name']);
+  if (lead === undefined) return 'Лід не знайдено.';
+
+  const [appointment] = await ctx.odoo.searchRead<{ website_url: string | false }>('appointment.type', [['name', '=', CONSULTATION_NAME]], ['website_url']);
+  if (appointment === undefined || appointment.website_url === false) return 'Тип запису не налаштовано: запустіть npm run seed:appointment.';
+
+  const link = `${ctx.odooUrl}${appointment.website_url}`;
+  const greeting = lead.contact_name ? `Добрий день, ${lead.contact_name}!` : 'Добрий день!';
+  const message = `${greeting} Дякуємо за заявку. Оберіть зручний час безкоштовної консультації з інженером (1 година): ${link}`;
+
+  await ctx.odoo.call('crm.lead', 'activity_schedule', {
+    ids: [id],
+    act_type_xmlid: 'mail.mail_activity_data_todo',
+    summary: 'Перевірити запис на консультацію',
+    note: `Посилання на запис надіслано клієнту (${ctx.actor}).`,
+    user_id: ctx.odooUserId,
+  });
+
+  return `📅 <b>Запрошення на консультацію</b> (надішліть клієнту самі, натисніть на блок, щоб скопіювати):\n\n<pre>${escapeHtml(message)}</pre>\nУ ліді створено активність «Перевірити запис на консультацію».`;
 }
 
 async function shiftTask(ctx: ActionContext, id: number): Promise<string> {
@@ -192,6 +216,7 @@ const HANDLERS: Record<string, (ctx: ActionContext, id: number) => Promise<Actio
     keyboard: new InlineKeyboard().text('📄 Створити пропозицію', `lead:quote:${id}`).row().url('Відкрити в Odoo', recordUrl(ctx.odooUrl, 'crm.lead', id)),
   }),
   'lead:reply': asResult(replyDraft, 'crm.lead'),
+  'lead:consult': asResult(consultationDraft, 'crm.lead'),
   'task:shift': asResult(shiftTask, 'project.task'),
   'task:done': asResult(completeTask, 'project.task'),
   'ticket:take': asResult(takeTicket, 'helpdesk.ticket'),

@@ -8,7 +8,8 @@ The bot is the channel between departments: Odoo holds the data, the bot tells e
 
 | # | Stage | What arrives in Telegram | Role | Buttons |
 |---|---|---|---|---|
-| 1 | Marketing → Sales | New website lead with AI summary (type, services, budget, priority, missing data) | Sales | Взяти в роботу, Чернетка відповіді, Створити пропозицію |
+| 1 | Marketing → Sales | New website lead with AI summary (type, services, budget, priority, missing data) | Sales | Взяти в роботу, Чернетка відповіді, 📅 Консультація (booking-link draft + activity), Створити пропозицію |
+| 2 | Sales | «📅 Клієнт записався на консультацію» (booking on the public Appointments page) | Sales | Відкрити в Odoo |
 | 2–3 | Sales → Finance → PM | Quotation draft; order confirmed → project with 9 stages + 30% prepayment invoice; payment → «Передоплату отримано» | Sales, PM | Підтвердити замовлення |
 | 4 | Design | AI draft specification from the catalog | Engineer | Погодити специфікацію (→ draft RFQs) |
 | 5–6 | Procurement | Draft RFQs per vendor | Procurement | Підтвердити закупівлю |
@@ -16,6 +17,7 @@ The bot is the channel between departments: Odoo holds the data, the bot tells e
 | 8 | Commissioning | AI checklist; «Здача заблокована» while checks are open | Engineer, PM | 🧪 Чекліст (close checks from the phone) |
 | 9 | Handover | «Тести пройдено» → handover email draft + Sign act (sent by a person) | PM | Відкрити в Odoo |
 | 10 | Service | Critical ticket after AI triage + SLA | Service | Беру |
+| 10 | Service | «🚨 SLA прострочено»: the ticket missed its SLA deadline (escalation) | PM | Беру |
 | — | HR | New applicant with AI profile (no automatic rejection) | HR | Відкрити в Odoo |
 
 ## Handoff between departments

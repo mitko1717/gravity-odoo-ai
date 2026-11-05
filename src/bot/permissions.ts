@@ -6,6 +6,7 @@ import { stageOwnerRole } from './pipeline.js';
 const BUTTON_ROLE: Record<string, Role> = {
   'lead:take': 'sales',
   'lead:reply': 'sales',
+  'lead:consult': 'sales',
   'lead:quote': 'sales',
   'order:confirm': 'sales',
   'spec:approve': 'engineer',

@@ -76,7 +76,7 @@ Measured on synthetic data only; time savings for the real business are an estim
     npm run seed:sales && npm run seed:project && npm run seed:helpdesk && npm run seed:homepage
     npm run seed:hr && npm run seed:meetings && npm run seed:knowledge && npm run seed:purchase
     npm run seed:partners && npm run seed:site-report && npm run seed:finance && npm run import:expenses && npm run seed:marketing
-    npm run seed:contract && npm run seed:spec && npm run seed:planning && npm run seed:handover
+    npm run seed:contract && npm run seed:spec && npm run seed:planning && npm run seed:handover && npm run seed:appointment
 
 End-to-end checks (they create synthetic records in the live Odoo, so they are manual, not in CI):
 `eval`, `e2e:project`, `e2e:tickets`, `e2e:applicants`, `e2e:meetings`, `e2e:purchase`,

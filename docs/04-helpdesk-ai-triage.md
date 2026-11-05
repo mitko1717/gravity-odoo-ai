@@ -38,6 +38,11 @@ low = change request or information.
 | Не працює застосунок (light works from switches) | network / normal | Medium, 24 h |
 | Додати сценарій «Кіно» | lighting / low | Low, no SLA |
 
+## SLA breach escalation (Telegram bot)
+Rules, no AI: the bot polls `helpdesk.sla.status` (status `failed`, or `ongoing` with `deadline` < now) and sends
+«🚨 SLA прострочено» to the PM (and the admin) once per SLA status, with «Беру» and an Odoo link.
+`/stats` → Сервіс shows the on-time share for 30 days: reached / (reached + failed). See [17](17-telegram-bot.md).
+
 ## Notes
 
 - Unlike leads, AI here sets the native priority because SLA timers depend on it; the engineer can

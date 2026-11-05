@@ -12,7 +12,8 @@ A small Node.js bot (grammY) that polls Odoo over JSON-2 and pushes role-based n
 
 | Event | Process map stage | Role | Buttons |
 |---|---|---|---|
-| New website lead with AI summary | 1 → 2 | sales | Взяти в роботу, Чернетка відповіді, Створити пропозицію |
+| New website lead with AI summary | 1 → 2 | sales | Взяти в роботу, Чернетка відповіді, 📅 Консультація, Створити пропозицію |
+| Consultation booked (`calendar.event` with `appointment_type_id`, cursor `lastEventId`) | 2 | sales | Відкрити в Odoo |
 | Quotation draft (after «Створити пропозицію») | 2 | sales | Підтвердити замовлення (→ project + 30% prepayment invoice) |
 | Prepayment received | 3 | pm | Відкрити в Odoo |
 | AI specification draft ready | 4 | engineer | Погодити специфікацію (→ draft RFQs) |
@@ -20,6 +21,7 @@ A small Node.js bot (grammY) that polls Odoo over JSON-2 and pushes role-based n
 | Overdue project task | 5–7 | pm | +3 дні, Готово |
 | Handover blocked (open checks) / tests passed | 8–9 | pm | Відкрити в Odoo |
 | Critical helpdesk ticket after AI triage | 10 | service | Беру |
+| SLA breach escalation (`src/bot/sla.ts`): `helpdesk.sla.status` failed, or ongoing past its deadline; each status once; first poll stores existing breaches silently | 10 | pm | Беру |
 | New applicant with AI profile | HR | hr | Відкрити в Odoo |
 | Project stage changed (bot or Odoo UI) | 1–9 | pm | Картка проєкту, Відкрити в Odoo |
 | Previous stage done → «👉 Ваша черга» | 1–9 | owner of the next stage | Взяти в роботу, Картка проєкту, Етап в Odoo |
@@ -49,11 +51,17 @@ The 9 tasks of the project template are the stages of one object. Each stage has
 | `/flow` | How the bot works: stages, departments, who hands work to whom (Ukrainian) |
 | `/leads`, `/lead_ID` | Leads without a quotation (🆕 new / 🟢 in work, AI priority); lead card with buttons |
 | `/projects`, `/project_ID` | Pipeline overview; project card with stage buttons |
-| `/stats` | Reports: leads, campaigns, overdue, service, pipeline (rules, not AI) |
+| `/stats` | Reports: leads, campaigns, overdue, service (incl. SLA on-time % for 30 days = reached / (reached + failed)), pipeline (rules, not AI) |
 | `/digest` | Daily summary now (also sent automatically at `BOT_DIGEST_HOUR`) |
 | `/overdue` | Overdue project tasks |
 | `/whoami`, `/request` | Chat ID; ask the admin for access |
 | `/users` | Admin: roles, close/reopen access, delete |
+
+## Consultation booking (native Appointments)
+- `npm run seed:appointment` creates «Консультація з інженером (демо)»: 1 h, Europe/Kyiv, Mon–Fri 10:00–18:00, staff = admin, published. Rerun keeps manual slot edits.
+- `lead_create` is off: the link is sent for an existing lead, so Odoo must not create a second opportunity.
+- «📅 Консультація» on a lead card returns a message draft with the booking link (the manager sends it himself) and schedules a To-Do activity «Перевірити запис на консультацію» on the lead.
+- A booking on the page → «📅 Клієнт записався на консультацію» to sales. Limitation: the booking is not linked to the lead automatically; a production version would pass the lead in an invitation link (`appointment.invite`).
 
 ## Guardrails
 - Whitelist: only chat IDs in `TELEGRAM_ALLOWED_CHAT_IDS` or approved via `/request` → admin approve. Others get only `/start`, `/whoami` and `/request`.

@@ -8,6 +8,8 @@
   Automation Rules (`base_automation`), Studio (`web_studio`).
 - Studio and API access are part of the trial; on a paid plan Studio requires the Custom plan.
 
+- Appointments: public booking page «Консультація з інженером (демо)» (`npm run seed:appointment`), see [17](17-telegram-bot.md).
+
 ## Approach: configuration as code
 
 All configuration is created through the Odoo JSON-2 API (`POST /json/2/<model>/<method>`,

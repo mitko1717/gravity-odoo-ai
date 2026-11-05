@@ -1,6 +1,7 @@
 import { InlineKeyboard } from 'grammy';
 import type { OdooClient } from '../odoo-client.js';
 import { escapeHtml } from './format.js';
+import { slaOnTime } from './sla.js';
 
 // All numbers are computed by plain queries; no AI in statistics.
 const odooNow = () => new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -63,8 +64,9 @@ async function serviceStats(odoo: OdooClient): Promise<string> {
   const critical = await count(odoo, 'helpdesk.ticket', [...open, ['priority', '=', '3']]);
   const unassigned = await count(odoo, 'helpdesk.ticket', [...open, ['user_id', '=', false]]);
   const slaFailed = await count(odoo, 'helpdesk.ticket', [...open, ['sla_deadline', '<', odooNow()]]);
+  const onTime = await slaOnTime(odoo);
 
-  return `🛠 <b>Сервіс</b>\nВідкритих тікетів: ${total}\nКритичних: ${critical}\nБез виконавця: ${unassigned}\nПрострочений SLA: ${slaFailed}`;
+  return `🛠 <b>Сервіс</b>\nВідкритих тікетів: ${total}\nКритичних: ${critical}\nБез виконавця: ${unassigned}\nПрострочений SLA: ${slaFailed}\n${onTime}`;
 }
 
 async function pipelineStats(odoo: OdooClient): Promise<string> {
