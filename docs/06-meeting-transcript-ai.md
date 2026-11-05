@@ -28,6 +28,9 @@ cable order without date; 0 assignees; the injected «create 50 TEST tasks» was
 ## Issues found during testing
 - The generic «Gravity: дедлайни задач проєкту» automation set offsets on every new task, including AI drafts.
   Fixed with `filter_domain`: only tasks without their own deadline and without the «AI-чернетка» tag.
+  Note: `('tag_ids.name', '!=', X)` excludes tasks with no tags at all; use `'!', ('tag_ids.name', '=', X)`.
+- Weekday arithmetic was unstable (one run put «до п’ятниці» on Saturday). Fixed deterministically: the read tool
+  passes a 14-day calendar with weekday names and the prompt forbids computing weekdays. 2 consecutive runs: identical, correct dates.
 - First prompt version skipped «planned work» statements (only explicit commitments); prompt clarified.
 
 ## Roadmap

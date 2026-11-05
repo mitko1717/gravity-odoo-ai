@@ -33,7 +33,7 @@ async function ensureAutomation(name: string, values: Record<string, unknown>, c
 
 const deadlinesId = await ensureAutomation('Gravity: дедлайни задач проєкту', {
   trigger: 'on_create',
-  filter_domain: "[('date_deadline', '=', False), ('tag_ids.name', '!=', 'AI-чернетка')]",
+  filter_domain: "[('date_deadline', '=', False), '!', ('tag_ids.name', '=', 'AI-чернетка')]",
 }, deadlinesCode);
 console.log(`deadlines automation -> ${deadlinesId}`);
 
