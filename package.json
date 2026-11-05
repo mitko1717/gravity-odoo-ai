@@ -25,7 +25,9 @@
     "e2e:applicants": "tsx --env-file=.env scripts/e2e-applicants.ts",
     "seed:meetings": "tsx --env-file=.env scripts/seed-meetings.ts",
     "e2e:meetings": "tsx --env-file=.env scripts/e2e-meetings.ts",
-    "seed:knowledge": "tsx --env-file=.env scripts/seed-knowledge.ts"
+    "seed:knowledge": "tsx --env-file=.env scripts/seed-knowledge.ts",
+    "seed:purchase": "tsx --env-file=.env scripts/seed-purchase.ts",
+    "e2e:purchase": "tsx --env-file=.env scripts/e2e-purchase.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
