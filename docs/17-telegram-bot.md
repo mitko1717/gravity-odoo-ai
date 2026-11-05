@@ -21,7 +21,9 @@ A small Node.js bot (grammY, `src/bot/`) that polls Odoo over JSON-2 and pushes 
 
 Project pipeline (`src/bot/pipeline.ts`): the 9 template tasks are the stages of an object, each with an owner role (sales, engineer, procurement, pm). `/projects` lists objects with progress and the current stage; `/project_ID` shows every stage (status, deadline, owner, overdue, waiting) with buttons for the current one: В роботу / На перевірку / Готово, and 🧪 Чекліст to close commissioning checks from the phone. Stage moves are ordinary Odoo writes, so Odoo automations (spec → RFQs, tests gate) still fire. Transitions are detected by polling `write_date` and comparing with the last known stage, so changes made in the Odoo UI notify too.
 
-Commands: `/help`, `/leads`, `/lead_ID`, `/projects`, `/project_ID`, `/stats`, `/digest` (also daily at `BOT_DIGEST_HOUR`), `/overdue`, `/whoami`, `/request`, `/users` (admin).
+Every reply after a change carries an «Відкрити в Odoo» / «Етап в Odoo» link to the changed record. `/flow` explains in Ukrainian which stages the bot covers and who hands work to whom.
+
+Commands: `/help`, `/flow`, `/leads`, `/lead_ID`, `/projects`, `/project_ID`, `/stats`, `/digest` (also daily at `BOT_DIGEST_HOUR`), `/overdue`, `/whoami`, `/request`, `/users` (admin).
 
 `/stats` and the digest are computed by rules (counts and sums from Odoo), not by AI.
 

@@ -172,7 +172,10 @@ async function moveStage(ctx: PipelineContext, move: string, taskId: number): Pr
   await ctx.odoo.write('project.task', [taskId], { stage_id: stageId });
   await note(ctx.odoo, taskId, `Стадія «${target}» встановлена через Telegram (${ctx.actor}).`);
 
-  return withCard(ctx, task.project_id[0], `${STAGE_ICON[target] ?? ''} «${escapeHtml(task.name)}» → ${target}.`);
+  const result = await withCard(ctx, task.project_id[0], `${STAGE_ICON[target] ?? ''} «${escapeHtml(task.name)}» → ${target}.`);
+  result.keyboard?.row().url('Етап в Odoo', recordUrl(ctx.odooUrl, 'project.task', taskId));
+
+  return result;
 }
 
 // Engineer on site: open checks as buttons; closing the last one is still a separate «Готово» decision.
@@ -185,7 +188,7 @@ async function checklist(ctx: PipelineContext, taskId: number): Promise<Pipeline
 
   const keyboard = new InlineKeyboard();
   for (const check of open.slice(0, 20)) keyboard.text(`✅ ${check.name.replace(/^Перевірка\s*/, '').slice(0, 40)}`, `pchk:done:${check.id}`).row();
-  keyboard.text('📁 До проєкту', `pcard:open:${task.project_id[0]}`);
+  keyboard.text('📁 До проєкту', `pcard:open:${task.project_id[0]}`).url('Етап в Odoo', recordUrl(ctx.odooUrl, 'project.task', taskId));
 
   const header = `🧪 <b>Чекліст: ${escapeHtml(task.name)}</b>\nВідкрито ${open.length} з ${checks.length}. Натисніть перевірку, щоб закрити її.`;
   const tail = open.length === 0 ? '\n\nУсі перевірки закрито: переведіть етап у «Готово» в картці проєкту.' : '';
@@ -257,7 +260,11 @@ async function transitionNotices(odoo: OdooClient, odooUrl: string, task: TaskRo
   const nextRole = STAGE_ROLE[next.name] ?? 'pm';
   const handoff: Notification = {
     text: `👉 <b>Ваша черга: ${escapeHtml(next.name)}</b>\n${project}\nПопередній етап «${escapeHtml(task.name)}» завершено.`,
-    keyboard: new InlineKeyboard().text('▶ Взяти в роботу', `pstage:work:${next.id}`).row().text('📁 Картка проєкту', `pcard:open:${projectId}`),
+    keyboard: new InlineKeyboard()
+      .text('▶ Взяти в роботу', `pstage:work:${next.id}`)
+      .row()
+      .text('📁 Картка проєкту', `pcard:open:${projectId}`)
+      .url('Етап в Odoo', recordUrl(odooUrl, 'project.task', next.id)),
     role: nextRole,
   };
 

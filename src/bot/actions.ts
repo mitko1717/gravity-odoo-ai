@@ -178,21 +178,25 @@ async function confirmOrder(ctx: ActionContext, orderId: number): Promise<Action
   };
 }
 
-const asResult = (handler: (ctx: ActionContext, id: number) => Promise<string>) => async (ctx: ActionContext, id: number): Promise<ActionResult> => ({
-  text: await handler(ctx, id),
-});
+// Every reply after a change carries a link to the changed record in Odoo.
+const asResult =
+  (handler: (ctx: ActionContext, id: number) => Promise<string>, model: string) =>
+  async (ctx: ActionContext, id: number): Promise<ActionResult> => ({
+    text: await handler(ctx, id),
+    keyboard: new InlineKeyboard().url('Відкрити в Odoo', recordUrl(ctx.odooUrl, model, id)),
+  });
 
 const HANDLERS: Record<string, (ctx: ActionContext, id: number) => Promise<ActionResult>> = {
   'lead:take': async (ctx, id) => ({
     text: await takeLead(ctx, id),
-    keyboard: new InlineKeyboard().text('📄 Створити пропозицію', `lead:quote:${id}`),
+    keyboard: new InlineKeyboard().text('📄 Створити пропозицію', `lead:quote:${id}`).row().url('Відкрити в Odoo', recordUrl(ctx.odooUrl, 'crm.lead', id)),
   }),
-  'lead:reply': asResult(replyDraft),
-  'task:shift': asResult(shiftTask),
-  'task:done': asResult(completeTask),
-  'ticket:take': asResult(takeTicket),
-  'spec:approve': asResult(approveSpec),
-  'rfq:confirm': asResult(confirmRfq),
+  'lead:reply': asResult(replyDraft, 'crm.lead'),
+  'task:shift': asResult(shiftTask, 'project.task'),
+  'task:done': asResult(completeTask, 'project.task'),
+  'ticket:take': asResult(takeTicket, 'helpdesk.ticket'),
+  'spec:approve': asResult(approveSpec, 'project.task'),
+  'rfq:confirm': asResult(confirmRfq, 'purchase.order'),
   'lead:quote': createQuotation,
   'order:confirm': confirmOrder,
 };

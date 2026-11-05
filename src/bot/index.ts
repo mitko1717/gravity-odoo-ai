@@ -7,10 +7,12 @@ import { STATS_KEYBOARD, buildDigest, buildStats, isStatsKey } from './stats.js'
 import { loadState, saveState, type BotState } from './state.js';
 import { createAccess } from './access.js';
 import { projectCard, projectsList, runPipelineAction } from './pipeline.js';
+import { FLOW_COMMAND, FLOW_TEXT } from './guide.js';
 import type { Role } from './roles.js';
 
 const COMMANDS = [
   { command: 'help', description: 'Список команд з поясненнями' },
+  FLOW_COMMAND,
   { command: 'leads', description: 'Список лідів без пропозиції (далі /lead_ID — картка з кнопками)' },
   { command: 'projects', description: 'Проєкти по етапах: хто зараз відповідає (далі /project_ID — картка)' },
   { command: 'stats', description: 'Статистика: ліди, кампанії, прострочення, сервіс, воронка' },
@@ -105,6 +107,8 @@ bot.hears(/^\/lead(?:_|\s+)(\d+)/, async (ctx) => {
 
   return ctx.reply(card.text, { ...html, reply_markup: card.keyboard });
 });
+
+bot.command('flow', (ctx) => ctx.reply(FLOW_TEXT, html));
 
 bot.command('projects', async (ctx) => ctx.reply(await projectsList(odoo), html));
 
