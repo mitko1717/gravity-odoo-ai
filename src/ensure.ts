@@ -27,9 +27,7 @@ export interface FieldSpec {
 export async function ensureField(odoo: OdooClient, model: string, spec: FieldSpec): Promise<number> {
   const [modelId] = await odoo.search('ir.model', [['model', '=', model]]);
 
-  if (modelId === undefined) {
-    throw new Error(`Model not found: ${model}`);
-  }
+  if (modelId === undefined) throw new Error(`Model not found: ${model}`);
 
   const [existingId] = await odoo.search('ir.model.fields', [
     ['model', '=', model],
