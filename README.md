@@ -44,6 +44,7 @@ Measured on synthetic data only; time savings for the real business are an estim
 
 | # | Area | File |
 |---|---|---|
+| — | **Огляд флоу українською: 10 етапів + допоміжні процеси** | [docs/flow-overview-uk.md](docs/flow-overview-uk.md) |
 | 00 | Coverage of the 10-stage process map | [docs/00-process-map-coverage.md](docs/00-process-map-coverage.md) |
 | 01 | Odoo setup, configuration as code | [docs/01-odoo-setup.md](docs/01-odoo-setup.md) |
 | 02 | Sales: AI analysis of website leads | [docs/02-lead-ai-analysis.md](docs/02-lead-ai-analysis.md) |
