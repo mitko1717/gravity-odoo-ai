@@ -34,6 +34,8 @@ full table in [docs/eval-results.md](docs/eval-results.md), rerun with `npm run 
 
 Measured on synthetic data only; time savings for the real business are an estimate, not a measurement.
 
+Presentation for Gravity (10 slides, Ukrainian): https://claude.ai/artifact/Jk3Wfpe1ruCBocPP4TTYxf
+
 Metrics dashboard (measured Odoo counts + eval, estimates labelled separately): https://claude.ai/artifact/5xgb9wdaRM36gqQLHX2gT9 — data from `npm run metrics:export` (`tmp/metrics.json`). Estimate «before/after» assumes 15 min of manual work per lead today.
 
 ## Stack

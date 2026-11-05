@@ -1,7 +1,7 @@
 # Gravity × Odoo × AI — огляд флоу (українською)
 
 Неофіційний демо-стенд для тестового завдання, усі дані синтетичні.
-Стенд: https://test6017.odoo.com · бот: https://t.me/gravity_test_promo_bot · репозиторій: https://github.com/mitko1717/gravity-odoo-ai · дашборд метрик: https://claude.ai/artifact/5xgb9wdaRM36gqQLHX2gT9
+Стенд: https://test6017.odoo.com · бот: https://t.me/gravity_test_promo_bot · репозиторій: https://github.com/mitko1717/gravity-odoo-ai · дашборд метрик: https://claude.ai/artifact/5xgb9wdaRM36gqQLHX2gT9 · презентація: https://claude.ai/artifact/Jk3Wfpe1ruCBocPP4TTYxf
 
 Усі сценарії бота: [bot-scenarios-uk.md](bot-scenarios-uk.md).
 
