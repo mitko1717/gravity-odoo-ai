@@ -28,6 +28,19 @@ const maxId = (rows: Array<{ id: number }>, current: number) => rows.reduce((max
 
 const LEAD_FIELDS = ['name', 'contact_name', 'x_city', 'x_area_m2', 'x_ai_priority', 'x_ai_services', 'x_ai_budget_usd', 'x_ai_summary', 'x_ai_missing', 'x_ai_next_action'];
 
+// A lead is «in work» once it left the first pipeline stage (the AI assigns a salesperson to every lead on creation).
+async function firstStageId(odoo: OdooClient): Promise<number | undefined> {
+  const [stage] = await odoo.call<Array<{ id: number }>>('crm.stage', 'search_read', { domain: [], fields: ['id'], order: 'sequence, id', limit: 1 });
+
+  return stage?.id;
+}
+
+const isTaken = (lead: LeadRow, newStageId: number | undefined): boolean => {
+  if (lead.stage_id === undefined || lead.stage_id === false) return false;
+
+  return lead.stage_id[0] !== newStageId;
+};
+
 // /leads: compact list; /lead_<id>: one card with buttons.
 export async function leadsList(odoo: OdooClient, limit = 15): Promise<string> {
   const rows = await odoo.call<LeadRow[]>('crm.lead', 'search_read', {
@@ -38,23 +51,28 @@ export async function leadsList(odoo: OdooClient, limit = 15): Promise<string> {
   });
   if (rows.length === 0) return 'Немає лідів без пропозиції.';
 
+  const newStageId = await firstStageId(odoo);
   const lines = rows.map((lead) => {
     const priority = (PRIORITY_LABEL[String(lead.x_ai_priority)] ?? '—').split(' ')[0];
+    const status = isTaken(lead, newStageId) ? '🟢' : '🆕';
     const stage = lead.stage_id ? lead.stage_id[1] : '—';
-    const owner = lead.user_id ? lead.user_id[1] : 'без менеджера';
     const name = lead.name.length > 40 ? `${lead.name.slice(0, 40)}…` : lead.name;
 
-    return `${priority} /lead_${lead.id} · ${escapeHtml(stage)} · ${escapeHtml(owner)}\n    ${escapeHtml(name)}`;
+    return `${status}${priority} /lead_${lead.id} · ${escapeHtml(stage)}\n      ${escapeHtml(name)}`;
   });
 
-  return [`📋 <b>Ліди без пропозиції</b> (останні ${rows.length}). Натисніть /lead_ID, щоб відкрити картку.`, '', ...lines].join('\n');
+  const legend = '🆕 нова · 🟢 в роботі · 🔴🟡⚪ пріоритет AI';
+
+  return [`📋 <b>Ліди без пропозиції</b> (останні ${rows.length}). Натисніть /lead_ID, щоб відкрити картку.`, legend, '', ...lines].join('\n');
 }
 
 export async function leadCard(odoo: OdooClient, odooUrl: string, id: number): Promise<Notification | undefined> {
   const [lead] = await odoo.call<LeadRow[]>('crm.lead', 'search_read', { domain: [['id', '=', id]], fields: [...LEAD_FIELDS, 'stage_id', 'user_id'] });
   if (lead === undefined) return undefined;
 
-  return leadNotification(lead, odooUrl, `📇 <b>Лід #${lead.id}</b>`);
+  const taken = isTaken(lead, await firstStageId(odoo));
+
+  return leadNotification(lead, odooUrl, `📇 <b>Лід #${lead.id}</b>`, taken);
 }
 
 async function newLeads(odoo: OdooClient, state: BotState, odooUrl: string): Promise<Notification[]> {
@@ -68,11 +86,11 @@ async function newLeads(odoo: OdooClient, state: BotState, odooUrl: string): Pro
   return rows.map((lead) => leadNotification(lead, odooUrl, '🆕 <b>Новий лід</b>'));
 }
 
-function leadNotification(lead: LeadRow, odooUrl: string, title: string): Notification {
+function leadNotification(lead: LeadRow, odooUrl: string, title: string, taken = false): Notification {
   const budget = lead.x_ai_budget_usd ? `$${lead.x_ai_budget_usd}` : 'не вказано';
   const lines = [
     `${title}: ${escapeHtml(lead.name)}`,
-    ...(lead.stage_id ? [`Етап: ${escapeHtml(lead.stage_id[1])} · Менеджер: ${escapeHtml(lead.user_id ? lead.user_id[1] : 'не призначено')}`] : []),
+    ...(lead.stage_id ? [`${taken ? '🟢 В роботі' : '🆕 Нова'} · етап: ${escapeHtml(lead.stage_id[1])} · менеджер: ${escapeHtml(lead.user_id ? lead.user_id[1] : 'не призначено')}`] : []),
     `Пріоритет (AI): ${PRIORITY_LABEL[String(lead.x_ai_priority)] ?? '—'}`,
     `Контакт: ${escapeHtml(lead.contact_name || '—')}, ${escapeHtml(lead.x_city || '—')}, ${lead.x_area_m2 || '—'} м²`,
     `Послуги: ${escapeHtml(serviceLabels(lead.x_ai_services || '') || '—')} · Бюджет: ${budget}`,
@@ -80,8 +98,9 @@ function leadNotification(lead: LeadRow, odooUrl: string, title: string): Notifi
     `Бракує: ${escapeHtml(missingLabels(lead.x_ai_missing || '') || 'нічого')}`,
     `Далі: ${escapeHtml(lead.x_ai_next_action || '—')}`,
   ];
-  const keyboard = new InlineKeyboard()
-    .text('✅ Взяти в роботу', `lead:take:${lead.id}`)
+  const keyboard = new InlineKeyboard();
+  if (taken === false) keyboard.text('✅ Взяти в роботу', `lead:take:${lead.id}`);
+  keyboard
     .text('✉️ Чернетка відповіді', `lead:reply:${lead.id}`)
     .row()
     .text('📄 Створити пропозицію', `lead:quote:${lead.id}`)

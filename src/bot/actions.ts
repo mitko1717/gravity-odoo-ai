@@ -32,6 +32,8 @@ async function takeLead(ctx: ActionContext, id: number): Promise<string> {
 
   const stages = await ctx.odoo.call<Array<{ id: number; name: string }>>('crm.stage', 'search_read', { domain: [], fields: ['name'], order: 'sequence, id' });
   const currentIndex = stages.findIndex((stage) => lead.stage_id && stage.id === lead.stage_id[0]);
+  if (currentIndex > 0) return `Лід «${escapeHtml(lead.name)}» уже в роботі (етап: ${escapeHtml(stages[currentIndex]?.name)}).`;
+
   const next = stages[currentIndex + 1];
   const values: Record<string, unknown> = { user_id: ctx.odooUserId };
   if (next) values.stage_id = next.id;
