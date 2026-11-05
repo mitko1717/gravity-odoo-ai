@@ -11,10 +11,18 @@ for task in records:
         task.message_post(body='Закупівля: чернетки RFQ для %s вже існують (%s), нові не створено.' % (order.name, ', '.join(existing.mapped('name'))))
         continue
 
+    # Approved specification (x_spec_lines, from the AI draft checked by the engineer) wins over order lines.
+    spec_lines = []
+    for raw in (task.project_id.x_spec_lines or '').split('\n'):
+        parts = raw.split(';')
+        if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
+            spec_lines.append((env['product.product'].browse(int(parts[0])), int(parts[1])))
+    if not spec_lines:
+        spec_lines = [(line.product_id, line.product_uom_qty) for line in order.order_line]
+
     by_vendor = {}
     without_vendor = []
-    for line in order.order_line:
-        product = line.product_id
+    for product, qty in spec_lines:
         seller = product.seller_ids[:1]
         if not seller:
             if product.type == 'consu':
@@ -22,7 +30,7 @@ for task in records:
             continue
         by_vendor.setdefault(seller.partner_id.id, []).append((0, 0, {
             'product_id': product.id,
-            'product_qty': line.product_uom_qty,
+            'product_qty': qty,
             'price_unit': seller.price,
         }))
 

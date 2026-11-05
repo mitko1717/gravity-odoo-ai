@@ -36,7 +36,11 @@
     "import:expenses": "tsx --env-file=.env scripts/import-expenses.ts",
     "e2e:finance": "tsx --env-file=.env scripts/e2e-finance.ts",
     "seed:marketing": "tsx --env-file=.env scripts/seed-marketing.ts",
-    "e2e:marketing": "tsx --env-file=.env scripts/e2e-marketing.ts"
+    "e2e:marketing": "tsx --env-file=.env scripts/e2e-marketing.ts",
+    "seed:contract": "tsx --env-file=.env scripts/seed-contract.ts",
+    "e2e:contract": "tsx --env-file=.env scripts/e2e-contract.ts",
+    "seed:spec": "tsx --env-file=.env scripts/seed-spec.ts",
+    "e2e:spec": "tsx --env-file=.env scripts/e2e-spec.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",

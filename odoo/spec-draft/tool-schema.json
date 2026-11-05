@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "lines": {
+      "type": "array",
+      "description": "Equipment lines, only products from the catalog",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": { "type": "integer", "description": "product_id from the catalog" },
+          "qty": { "type": "integer", "description": "Quantity, 1-200" },
+          "reason_uk": { "type": "string", "description": "Why this quantity, in Ukrainian, one sentence" }
+        },
+        "required": ["product_id", "qty", "reason_uk"]
+      }
+    },
+    "assumptions_uk": { "type": "string", "description": "Assumptions made because data was missing, one per line, in Ukrainian" },
+    "questions_uk": { "type": "string", "description": "What the engineer must clarify on site, one per line, in Ukrainian" }
+  },
+  "required": ["lines", "assumptions_uk", "questions_uk"]
+}
