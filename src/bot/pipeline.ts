@@ -270,3 +270,10 @@ async function transitionNotices(odoo: OdooClient, odooUrl: string, task: TaskRo
 
   return nextRole === 'pm' ? [handoff] : [changed, handoff];
 }
+
+/** Owner role of a pipeline stage (used for button permissions); unknown tasks belong to the PM. */
+export async function stageOwnerRole(odoo: OdooClient, taskId: number): Promise<Role> {
+  const task = await readTask(odoo, taskId);
+
+  return STAGE_ROLE[task?.name ?? ''] ?? 'pm';
+}

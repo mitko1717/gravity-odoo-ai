@@ -176,5 +176,8 @@ export function createAccess(deps: AccessDeps) {
 
   };
 
-  return { allowedChats, recipients, register, isAdmin };
+  // Admin and legacy .env users without an entry hold every role, the same rule as for notifications.
+  const hasRole = (chatId: number, role: Role): boolean => recipients(role).includes(chatId);
+
+  return { allowedChats, recipients, register, isAdmin, hasRole };
 }

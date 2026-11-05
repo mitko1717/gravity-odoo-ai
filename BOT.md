@@ -39,6 +39,8 @@ The bot is the channel between departments: Odoo holds the data, the bot tells e
 
 New user: Start → `/request` → the admin approves and picks roles (Sales, PM, Engineer, Procurement, Service, HR) in `/users`. Users get only their roles' notifications; the admin gets everything. Access can be closed, reopened or deleted.
 
+Buttons are checked by role too: lead and order buttons — Sales; spec approval and checks — Engineer; RFQ — Procurement; overdue tasks — PM; tickets — Service; a stage button — the owner role of that stage. PM and admin may press everything; viewing cards needs no role. A refused press gets «Ця дія для ролі …» and changes nothing.
+
 ## Run
 
     npm run bot     # needs TELEGRAM_BOT_TOKEN, TELEGRAM_ADMIN_CHAT_ID, ODOO_URL, ODOO_API_KEY in .env
@@ -47,4 +49,4 @@ Runs locally (polling every 30 s, no public URL). For the review period it will 
 
 ## Limits
 
-Any allowed user can press any button (role checks on buttons are backlog); state is a local JSON file; up to 30 s delay.
+State is a local JSON file; up to 30 s delay.

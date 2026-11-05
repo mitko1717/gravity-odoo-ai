@@ -8,6 +8,7 @@ import { loadState, saveState, type BotState } from './state.js';
 import { createAccess } from './access.js';
 import { projectCard, projectsList, runPipelineAction } from './pipeline.js';
 import { FLOW_COMMAND, FLOW_TEXT } from './guide.js';
+import { checkButton } from './permissions.js';
 import type { Role } from './roles.js';
 
 const COMMANDS = [
@@ -122,6 +123,8 @@ bot.hears(/^\/project(?:_|\s+)(\d+)/, async (ctx) => {
 // Registered before the generic handler: pipeline buttons edit nothing but Odoo task stages and checks.
 bot.callbackQuery(/^(pcard|pstage|pchk):(\w+):(\d+)$/, async (ctx) => {
   await ctx.answerCallbackQuery();
+  const refusal = await checkButton(odoo, access, ctx.chat?.id ?? 0, ctx.callbackQuery.data);
+  if (refusal !== undefined) return ctx.reply(refusal);
   const actor = ctx.from.username ? `@${ctx.from.username}` : ctx.from.first_name;
 
   try {
@@ -142,6 +145,15 @@ bot.on('callback_query:data', async (ctx) => {
 
   try {
     const actor = ctx.from.username ? `@${ctx.from.username}` : ctx.from.first_name;
+    if (isStatsKey(data) === false) {
+      const refusal = await checkButton(odoo, access, ctx.chat?.id ?? 0, data);
+      if (refusal !== undefined) {
+        await ctx.reply(refusal);
+
+        return;
+      }
+    }
+
     if (isStatsKey(data)) {
       await ctx.reply(await buildStats(odoo, data), html);
 

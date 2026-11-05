@@ -57,6 +57,7 @@ The 9 tasks of the project template are the stages of one object. Each stage has
 
 ## Guardrails
 - Whitelist: only chat IDs in `TELEGRAM_ALLOWED_CHAT_IDS` or approved via `/request` → admin approve. Others get only `/start`, `/whoami` and `/request`.
+- Button permissions (`src/bot/permissions.ts`): every action button needs its role (lead/order → sales, spec/checks → engineer, RFQ → procurement, overdue → pm, ticket → service, stage → the stage owner); PM and admin may press all; read-only buttons (card, checklist view) need none. Refusal: «Ця дія для ролі …», nothing changes in Odoo.
 - Roles route notifications; the admin (`TELEGRAM_ADMIN_CHAT_ID`) receives everything and manages users in `/users`.
 - Nothing is sent to clients or vendors: buttons change Odoo records only (lead stage, quotation, confirmations, task stages and dates, checks).
 - Odoo automations stay in charge: the bot writes the same fields a user would, so spec → RFQs and the tests gate run server-side.
@@ -72,7 +73,7 @@ The 9 tasks of the project template are the stages of one object. Each stage has
 | `events.ts` | Polled events (leads, activities, messages, tickets, RFQs, applicants) with cursors |
 | `pipeline.ts` | Project stages: list, card, stage moves, checklist, transition detection |
 | `actions.ts` | Lead / order / spec / RFQ / task / ticket buttons |
-| `access.ts`, `roles.ts` | Whitelist, `/request`, `/users`, roles |
+| `access.ts`, `roles.ts`, `permissions.ts` | Whitelist, `/request`, `/users`, roles, button permissions |
 | `stats.ts` | `/stats` and the digest |
 | `guide.ts` | `/flow` text |
 | `state.ts` | `tmp/bot-state.json`: cursors, last known stages, users |
@@ -96,7 +97,6 @@ UI walkthrough on S00014 (2026-11-05): lead push → quotation from the bot → 
 Pipeline commands (`/projects`, handoffs, checklist, `/flow`): pending a live test.
 
 ## Limits
-- Any allowed user can press any action button; per-role permission checks are backlog.
 - The state file is ephemeral on Railway without a volume (cursors and known stages reset → first run memorises again).
 - Polling adds up to `BOT_POLL_SECONDS` of delay.
 - Stage owners are fixed per task name; real Gravity roles and people need configuration.
