@@ -29,6 +29,7 @@ service tickets with AI triage and SLA. Plus HR, meetings, internal AI assistant
 
 | # | Area | File |
 |---|---|---|
+| 00 | Coverage of the 10-stage process map | [docs/00-process-map-coverage.md](docs/00-process-map-coverage.md) |
 | 01 | Odoo setup, configuration as code | [docs/01-odoo-setup.md](docs/01-odoo-setup.md) |
 | 02 | Sales: AI analysis of website leads | [docs/02-lead-ai-analysis.md](docs/02-lead-ai-analysis.md) |
 | 03 | Quotation → project → tasks → escalation | [docs/03-sales-to-project.md](docs/03-sales-to-project.md) |
