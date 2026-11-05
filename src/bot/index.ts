@@ -1,11 +1,12 @@
-import { Bot, InlineKeyboard } from 'grammy';
+import { Bot } from 'grammy';
 import { OdooClient } from '../odoo-client.js';
 import { loadConfig } from './config.js';
 import { collectEvents, currentCursors, leadCard, leadsList } from './events.js';
 import { runAction } from './actions.js';
 import { STATS_KEYBOARD, buildDigest, buildStats, isStatsKey } from './stats.js';
 import { loadState, saveState, type BotState } from './state.js';
-import { updateAllowedChatIds } from './env-file.js';
+import { createAccess } from './access.js';
+import type { Role } from './roles.js';
 
 const COMMANDS = [
   { command: 'help', description: 'Список команд з поясненнями' },
@@ -15,6 +16,7 @@ const COMMANDS = [
   { command: 'overdue', description: 'Прострочені задачі проєктів' },
   { command: 'whoami', description: 'Ваш chat ID' },
   { command: 'request', description: 'Запросити доступ до бота в адміністратора' },
+  { command: 'users', description: 'Адмін: користувачі та їхні ролі' },
 ];
 
 const HELP = [
@@ -27,10 +29,13 @@ const HELP = [
   '🆕 новий лід з AI-розбором → «Взяти в роботу», «Чернетка відповіді», «Створити пропозицію»',
   '📄 чернетка пропозиції → «Підтвердити замовлення» (проєкт + рахунок на передоплату)',
   '📐 AI-чернетка специфікації → «Погодити» (створює RFQ)',
-  '🛒 чернетка закупівлі → «Підтвердити замовлення»',
+  '🛒 чернетка закупівлі → «Підтвердити закупівлю»',
+  '👤 новий кандидат з AI-профілем (HR)',
   '⏰ прострочена задача → «+3 дні», «Готово»',
   '⛔ здача заблокована, 💬 передоплату отримано, тести пройдено',
   '🚨 критичний сервісний тікет → «Беру»',
+  '',
+  'Сповіщення приходять за ролями (продажі, PM, інженер, закупівлі, сервіс, HR); ролі призначає адміністратор у /users.',
   '',
   'Кожна дія з бота залишає запис в Odoo. Бот нічого не надсилає клієнтам і постачальникам.',
 ].join('\n');
@@ -45,10 +50,12 @@ const html = { parse_mode: 'HTML' as const };
 const state: BotState = (await loadState()) ?? {
   ...(await currentCursors(odoo)),
   lastDigestDate: new Date().toISOString().slice(0, 10),
-  approvedChatIds: [],
+  lastApplicantId: 0,
+  users: {},
 };
 
-const allowedChats = () => [...new Set([config.adminChatId, ...config.allowedChatIds, ...state.approvedChatIds])];
+const access = createAccess({ bot, state, adminChatId: config.adminChatId, envChatIds: config.allowedChatIds });
+const allowedChats = access.allowedChats;
 
 const DESCRIPTION = [
   'Демо-бот для тестового завдання Gravity × Odoo (неофіційний стенд, усі дані синтетичні).',
@@ -75,41 +82,7 @@ bot.command('start', (ctx) => ctx.reply(allowedChats().includes(ctx.chat.id) ? H
 
 bot.command('whoami', (ctx) => ctx.reply(`Ваш chat ID: <code>${ctx.chat.id}</code>`, html));
 
-bot.command('request', async (ctx) => {
-  const chatId = ctx.chat.id;
-  if (allowedChats().includes(chatId)) return ctx.reply('У вас уже є доступ. /help — список команд.');
-
-  const who = ctx.from?.username ? `@${ctx.from.username}` : (ctx.from?.first_name ?? 'невідомий');
-  const keyboard = new InlineKeyboard().text('✅ Дозволити', `access:approve:${chatId}`).text('❌ Відхилити', `access:deny:${chatId}`);
-  await bot.api.sendMessage(config.adminChatId, `🔑 Запит на доступ: ${who}, chat ID <code>${chatId}</code>`, { ...html, reply_markup: keyboard });
-
-  return ctx.reply('Запит надіслано адміністратору. Ви отримаєте повідомлення після рішення.');
-});
-
-bot.use(async (ctx, next) => {
-  const chatId = ctx.chat?.id;
-  if (chatId === undefined || allowedChats().includes(chatId)) return next();
-
-  // Service updates (e.g. the user blocked the bot) get no reply: Telegram would reject it.
-  const isUserInput = ctx.message !== undefined || ctx.callbackQuery !== undefined;
-  if (isUserInput) await ctx.reply('Доступ закрито. Надішліть /request, щоб попросити доступ.');
-});
-
-bot.callbackQuery(/^access:(approve|deny):(-?\d+)$/, async (ctx) => {
-  await ctx.answerCallbackQuery();
-  if (ctx.chat?.id !== config.adminChatId) return ctx.reply('Лише адміністратор може надавати доступ.');
-
-  const approve = ctx.match[1] === 'approve';
-  const chatId = Number(ctx.match[2]);
-  if (approve && !state.approvedChatIds.includes(chatId)) state.approvedChatIds.push(chatId);
-  if (approve === false) state.approvedChatIds = state.approvedChatIds.filter((id) => id !== chatId);
-  await saveState(state);
-  const envUpdated = await updateAllowedChatIds(chatId, approve);
-
-  await bot.api.sendMessage(chatId, approve ? '✅ Доступ надано. /help — список команд.' : '❌ У доступі відмовлено.').catch(() => undefined);
-
-  return ctx.reply(`${approve ? 'Доступ надано' : 'Відмовлено'}: ${chatId}${envUpdated ? ' (.env оновлено)' : ''}`);
-});
+access.register();
 
 bot.command('help', (ctx) => ctx.reply(HELP, html));
 bot.command('leads', async (ctx) => ctx.reply(await leadsList(odoo), html));
@@ -148,8 +121,8 @@ bot.on('callback_query:data', async (ctx) => {
 const errorText = (error: unknown) => (error instanceof Error ? error.message : String(error));
 
 // One chat that blocked the bot must not stop notifications for the others.
-const broadcast = async (text: string, options: Record<string, unknown> = {}) => {
-  for (const chatId of allowedChats()) {
+const broadcast = async (text: string, options: Record<string, unknown> = {}, role?: Role) => {
+  for (const chatId of access.recipients(role)) {
     try {
       await bot.api.sendMessage(chatId, text, { ...html, ...options });
     } catch (error) {
@@ -164,7 +137,7 @@ bot.catch((error) => {
 
 const tick = async () => {
   const events = await collectEvents(odoo, state, config.odooUrl);
-  for (const event of events) await broadcast(event.text, { reply_markup: event.keyboard });
+  for (const event of events) await broadcast(event.text, { reply_markup: event.keyboard }, event.role);
 
   const now = new Date();
   const today = now.toISOString().slice(0, 10);

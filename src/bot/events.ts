@@ -1,11 +1,14 @@
 import { InlineKeyboard } from 'grammy';
 import type { OdooClient } from '../odoo-client.js';
 import type { BotState } from './state.js';
+import type { Role } from './roles.js';
 import { PRIORITY_LABEL, escapeHtml, missingLabels, recordUrl, serviceLabels, stripHtml } from './format.js';
 
 export interface Notification {
   text: string;
   keyboard: InlineKeyboard;
+  /** Who receives the push; the admin always does. */
+  role?: Role;
 }
 
 interface LeadRow {
@@ -107,7 +110,7 @@ function leadNotification(lead: LeadRow, odooUrl: string, title: string, taken =
     .row()
     .url('Відкрити в Odoo', recordUrl(odooUrl, 'crm.lead', lead.id));
 
-  return { text: lines.join('\n'), keyboard };
+  return { text: lines.join('\n'), keyboard, role: 'sales' };
 }
 
 interface ActivityRow {
@@ -137,12 +140,12 @@ async function newActivities(odoo: OdooClient, state: BotState, odooUrl: string)
         .text('✅ Готово', `task:done:${activity.res_id}`)
         .row()
         .url('Відкрити в Odoo', recordUrl(odooUrl, 'project.task', activity.res_id));
-      result.push({ text: `⏰ <b>${escapeHtml(summary)}</b>\n${escapeHtml(activity.res_name)}`, keyboard });
+      result.push({ text: `⏰ <b>${escapeHtml(summary)}</b>\n${escapeHtml(activity.res_name)}`, keyboard, role: 'pm' });
       continue;
     }
 
     if (summary.startsWith('Передоплату отримано') || summary.startsWith('Тести пройдено')) {
-      result.push({ text: `💬 <b>${escapeHtml(summary)}</b>\n${escapeHtml(activity.res_name)}`, keyboard: link });
+      result.push({ text: `💬 <b>${escapeHtml(summary)}</b>\n${escapeHtml(activity.res_name)}`, keyboard: link, role: 'pm' });
     }
   }
 
@@ -165,18 +168,25 @@ async function newMessages(odoo: OdooClient, state: BotState, odooUrl: string): 
   });
   state.lastMessageId = maxId(rows, state.lastMessageId);
 
-  return rows.map((message) => {
+  const result: Notification[] = [];
+  for (const message of rows) {
     const body = stripHtml(message.body);
     const link = recordUrl(odooUrl, message.model, message.res_id);
 
     if (body.includes('Здача заблокована')) {
-      return { text: `⛔ <b>Здача заблокована</b>\n${escapeHtml(message.record_name)}\n${escapeHtml(body)}`, keyboard: new InlineKeyboard().url('Відкрити в Odoo', link) };
+      result.push({ text: `⛔ <b>Здача заблокована</b>\n${escapeHtml(message.record_name)}\n${escapeHtml(body)}`, keyboard: new InlineKeyboard().url('Відкрити в Odoo', link), role: 'pm' });
+      continue;
     }
 
     const keyboard = new InlineKeyboard().text('✅ Погодити специфікацію', `spec:approve:${message.res_id}`).row().url('Перевірити в Odoo', link);
 
-    return { text: `📐 <b>AI-чернетка специфікації готова</b>\n${escapeHtml(message.record_name)}\nПеревірте позиції перед погодженням: після нього створяться RFQ.`, keyboard };
-  });
+    const project = await odoo.searchRead<{ project_id: [number, string] | false }>('project.task', [['id', '=', message.res_id]], ['project_id']);
+    const projectName = project[0]?.project_id ? project[0].project_id[1] : String(message.record_name || '');
+
+    result.push({ text: `📐 <b>AI-чернетка специфікації готова</b>\n${escapeHtml(projectName)}\nПеревірте позиції в задачі «Проєктування» перед погодженням: після нього створяться RFQ.`, keyboard, role: 'engineer' });
+  }
+
+  return result;
 }
 
 interface TicketRow {
@@ -199,6 +209,7 @@ async function criticalTickets(odoo: OdooClient, state: BotState, odooUrl: strin
     .map((ticket) => ({
       text: `🚨 <b>Критичний сервісний тікет #${ticket.id}</b>\n${escapeHtml(ticket.name)}\nКлієнт: ${escapeHtml(ticket.partner_name || '—')}`,
       keyboard: new InlineKeyboard().text('🙋 Беру', `ticket:take:${ticket.id}`).row().url('Відкрити в Odoo', recordUrl(odooUrl, 'helpdesk.ticket', ticket.id)),
+      role: 'service' as const,
     }));
 }
 
@@ -220,7 +231,42 @@ async function draftRfqs(odoo: OdooClient, state: BotState, odooUrl: string): Pr
 
   return rows.map((rfq) => ({
     text: `🛒 <b>Чернетка закупівлі ${escapeHtml(rfq.name)}</b>\nПостачальник: ${escapeHtml(rfq.partner_id[1])}\nДжерело: ${escapeHtml(rfq.origin || '—')} · Сума: ${rfq.amount_total} грн`,
-    keyboard: new InlineKeyboard().text('✅ Підтвердити замовлення', `rfq:confirm:${rfq.id}`).row().url('Перевірити в Odoo', recordUrl(odooUrl, 'purchase.order', rfq.id)),
+    keyboard: new InlineKeyboard().text('✅ Підтвердити закупівлю', `rfq:confirm:${rfq.id}`).row().url('Перевірити в Odoo', recordUrl(odooUrl, 'purchase.order', rfq.id)),
+    role: 'procurement' as const,
+  }));
+}
+
+
+interface ApplicantRow {
+  id: number;
+  partner_name: string | false;
+  job_id: [number, string] | false;
+  x_ai_fit: string | false;
+  x_ai_skills: string | false;
+  x_ai_next_action: string | false;
+}
+
+const FIT_LABEL: Record<string, string> = { strong: '🟢 сильна', possible: '🟡 можлива', weak: '🔴 слабка', unclear: '⚪ недостатньо даних' };
+
+async function newApplicants(odoo: OdooClient, state: BotState, odooUrl: string): Promise<Notification[]> {
+  const rows = await odoo.call<ApplicantRow[]>('hr.applicant', 'search_read', {
+    domain: [['id', '>', state.lastApplicantId], ['x_ai_fit', '!=', false]],
+    fields: ['partner_name', 'job_id', 'x_ai_fit', 'x_ai_skills', 'x_ai_next_action'],
+    order: 'id',
+  });
+  state.lastApplicantId = maxId(rows, state.lastApplicantId);
+
+  return rows.map((applicant) => ({
+    text: [
+      `👤 <b>Новий кандидат</b>: ${escapeHtml(applicant.partner_name || '—')}`,
+      `Вакансія: ${escapeHtml(applicant.job_id ? applicant.job_id[1] : '—')}`,
+      `Відповідність (AI, рекомендація): ${FIT_LABEL[String(applicant.x_ai_fit)] ?? '—'}`,
+      `Навички: ${escapeHtml(applicant.x_ai_skills || '—')}`,
+      `Далі: ${escapeHtml(applicant.x_ai_next_action || '—')}`,
+      '<i>AI не відхиляє кандидатів: рішення за рекрутером.</i>',
+    ].join('\n'),
+    keyboard: new InlineKeyboard().url('Відкрити в Odoo', recordUrl(odooUrl, 'hr.applicant', applicant.id)),
+    role: 'hr' as const,
   }));
 }
 
@@ -233,11 +279,12 @@ export async function collectEvents(odoo: OdooClient, state: BotState, odooUrl: 
   result.push(...(await newMessages(odoo, state, odooUrl)));
   result.push(...(await criticalTickets(odoo, state, odooUrl)));
   result.push(...(await draftRfqs(odoo, state, odooUrl)));
+  result.push(...(await newApplicants(odoo, state, odooUrl)));
 
   return result;
 }
 
-export async function currentCursors(odoo: OdooClient): Promise<Omit<BotState, 'lastDigestDate' | 'approvedChatIds'>> {
+export async function currentCursors(odoo: OdooClient): Promise<Omit<BotState, 'lastDigestDate' | 'users'>> {
   const last = async (model: string) => {
     const [row] = await odoo.call<Array<{ id: number }>>(model, 'search_read', { domain: [], fields: ['id'], order: 'id desc', limit: 1 });
 
@@ -250,5 +297,6 @@ export async function currentCursors(odoo: OdooClient): Promise<Omit<BotState, '
     lastMessageId: await last('mail.message'),
     lastTicketId: await last('helpdesk.ticket'),
     lastRfqId: await last('purchase.order'),
+    lastApplicantId: await last('hr.applicant'),
   };
 }

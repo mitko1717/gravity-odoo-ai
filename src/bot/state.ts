@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
+import type { Role } from './roles.js';
 
 // Cursors of already-notified records. Local JSON is enough for one bot instance.
 export interface BotState {
@@ -9,18 +10,29 @@ export interface BotState {
   lastTicketId: number;
   lastRfqId: number;
   lastDigestDate: string;
-  approvedChatIds: number[];
+  lastApplicantId: number;
+  /** Approved users by chat ID (admin is implicit). */
+  users: Record<string, BotUser>;
+}
+
+export interface BotUser {
+  name: string;
+  roles: Role[];
 }
 
 const STATE_FILE = process.env.BOT_STATE_FILE ?? 'tmp/bot-state.json';
 
-const EMPTY: BotState = { lastLeadId: 0, lastActivityId: 0, lastMessageId: 0, lastTicketId: 0, lastRfqId: 0, lastDigestDate: '', approvedChatIds: [] };
+const EMPTY: BotState = { lastLeadId: 0, lastActivityId: 0, lastMessageId: 0, lastTicketId: 0, lastRfqId: 0, lastDigestDate: '', lastApplicantId: 0, users: {} };
 
 export async function loadState(): Promise<BotState | undefined> {
   try {
     const text = await readFile(STATE_FILE, 'utf8');
 
-    return { ...EMPTY, ...(JSON.parse(text) as Partial<BotState>) };
+    const raw = JSON.parse(text) as Partial<BotState> & { approvedChatIds?: number[] };
+    const users = { ...(raw.users ?? {}) };
+    for (const chatId of raw.approvedChatIds ?? []) users[String(chatId)] ??= { name: String(chatId), roles: [] };
+
+    return { ...EMPTY, ...raw, users };
   } catch {
     return undefined;
   }
