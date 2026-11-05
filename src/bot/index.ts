@@ -22,7 +22,8 @@ const HELP = [
   ...COMMANDS.map((item) => `/${item.command} — ${item.description}`),
   '',
   '<b>Сповіщення приходять самі:</b>',
-  '🆕 новий лід з AI-розбором → «Взяти в роботу», «Чернетка відповіді»',
+  '🆕 новий лід з AI-розбором → «Взяти в роботу», «Чернетка відповіді», «Створити пропозицію»',
+  '📄 чернетка пропозиції → «Підтвердити замовлення» (проєкт + рахунок на передоплату)',
   '📐 AI-чернетка специфікації → «Погодити» (створює RFQ)',
   '🛒 чернетка закупівлі → «Підтвердити замовлення»',
   '⏰ прострочена задача → «+3 дні», «Готово»',
@@ -119,8 +120,14 @@ bot.on('callback_query:data', async (ctx) => {
 
   try {
     const actor = ctx.from.username ? `@${ctx.from.username}` : ctx.from.first_name;
-    const text = isStatsKey(data) ? await buildStats(odoo, data) : await runAction({ odoo, odooUserId: config.odooUserId, actor }, data);
-    await ctx.reply(text, html);
+    if (isStatsKey(data)) {
+      await ctx.reply(await buildStats(odoo, data), html);
+
+      return;
+    }
+
+    const result = await runAction({ odoo, odooUserId: config.odooUserId, odooUrl: config.odooUrl, actor }, data);
+    await ctx.reply(result.text, { ...html, reply_markup: result.keyboard });
   } catch (error) {
     await ctx.reply(`Помилка: ${error instanceof Error ? error.message : String(error)}`);
   }

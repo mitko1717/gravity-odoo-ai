@@ -47,6 +47,8 @@ async function newLeads(odoo: OdooClient, state: BotState, odooUrl: string): Pro
       .text('✅ Взяти в роботу', `lead:take:${lead.id}`)
       .text('✉️ Чернетка відповіді', `lead:reply:${lead.id}`)
       .row()
+      .text('📄 Створити пропозицію', `lead:quote:${lead.id}`)
+      .row()
       .url('Відкрити в Odoo', recordUrl(odooUrl, 'crm.lead', lead.id));
 
     return { text: lines.join('\n'), keyboard };
