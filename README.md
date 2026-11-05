@@ -22,5 +22,7 @@ quotation → sales order → project with standard tasks → overdue reminders.
 | Odoo setup, configuration as code | [docs/01-odoo-setup.md](docs/01-odoo-setup.md) |
 | AI analysis of leads | [docs/02-lead-ai-analysis.md](docs/02-lead-ai-analysis.md) |
 | Quotation → project → tasks → escalation | [docs/03-sales-to-project.md](docs/03-sales-to-project.md) |
+| Service tickets: AI triage + SLA | [docs/04-helpdesk-ai-triage.md](docs/04-helpdesk-ai-triage.md) |
+| Evaluation on 18 synthetic leads | [docs/eval-results.md](docs/eval-results.md) |
 
 More sections are added as each stage is implemented and verified.

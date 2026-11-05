@@ -6,14 +6,17 @@ A sales manager reads every request, re-types object type, area, budget and timi
 priority and remembers to follow up. Requests are often incomplete or duplicated.
 
 ## Flow
-Lead created (website form / API / manual)
-→ Automation Rule “Gravity: AI-аналіз нової заявки” (On create)
-→ AI action “Gravity: AI-аналіз ліда” (prompt: odoo/lead-analysis/prompt.html)
-→ tool gravity_get_lead_data returns lead fields marked as untrusted input
-→ tool gravity_apply_lead_analysis receives structured JSON (tool-schema.json)
-→ validation in Python (tool-code.py)
-→ writes AI fields, tags, activity for the salesperson, chatter note
 
+```text
+Lead created (website form /zayavka, API or manual)
+  → Automation Rule "Gravity: AI-аналіз нової заявки" (On create)
+    → AI action "Gravity: AI-аналіз ліда" (odoo/lead-analysis/prompt.html)
+      → tool gravity_get_lead_data        lead fields as untrusted input
+      → tool gravity_apply_lead_analysis  structured JSON (tool-schema.json) → validation (tool-code.py)
+          → AI fields, title, salesperson if empty, tags, activity, duplicate check, chatter note
+```
+
+Evaluation on 18 synthetic leads: [eval-results.md](eval-results.md).
 
 ## Design decisions
 
