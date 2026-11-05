@@ -1,4 +1,4 @@
-import { Bot } from 'grammy';
+import { Bot, InlineKeyboard } from 'grammy';
 import { OdooClient } from '../odoo-client.js';
 import { loadConfig } from './config.js';
 import { collectEvents, currentCursors } from './events.js';
@@ -11,7 +11,8 @@ const COMMANDS = [
   { command: 'stats', description: 'Статистика: ліди, кампанії, прострочення, сервіс, воронка' },
   { command: 'digest', description: 'Дайджест зараз (щодня приходить зранку сам)' },
   { command: 'overdue', description: 'Прострочені задачі проєктів' },
-  { command: 'whoami', description: 'Ваш chat ID для доступу до бота' },
+  { command: 'whoami', description: 'Ваш chat ID' },
+  { command: 'request', description: 'Запросити доступ до бота в адміністратора' },
 ];
 
 const HELP = [
@@ -35,13 +36,49 @@ const odoo = OdooClient.fromEnv();
 const bot = new Bot(config.token);
 const html = { parse_mode: 'HTML' as const };
 
-bot.command('whoami', (ctx) => ctx.reply(`Ваш chat ID: <code>${ctx.chat.id}</code>\nДодайте його в TELEGRAM_ALLOWED_CHAT_IDS.`, html));
+// State is loaded before handlers: approved chat IDs live there.
+// First start: begin from the current records instead of flooding the chat with history.
+const state: BotState = (await loadState()) ?? {
+  ...(await currentCursors(odoo)),
+  lastDigestDate: new Date().toISOString().slice(0, 10),
+  approvedChatIds: [],
+};
+
+const allowedChats = () => [...new Set([config.adminChatId, ...config.allowedChatIds, ...state.approvedChatIds])];
+
+bot.command('whoami', (ctx) => ctx.reply(`Ваш chat ID: <code>${ctx.chat.id}</code>`, html));
+
+bot.command('request', async (ctx) => {
+  const chatId = ctx.chat.id;
+  if (allowedChats().includes(chatId)) return ctx.reply('У вас уже є доступ. /help — список команд.');
+
+  const who = ctx.from?.username ? `@${ctx.from.username}` : (ctx.from?.first_name ?? 'невідомий');
+  const keyboard = new InlineKeyboard().text('✅ Дозволити', `access:approve:${chatId}`).text('❌ Відхилити', `access:deny:${chatId}`);
+  await bot.api.sendMessage(config.adminChatId, `🔑 Запит на доступ: ${who}, chat ID <code>${chatId}</code>`, { ...html, reply_markup: keyboard });
+
+  return ctx.reply('Запит надіслано адміністратору. Ви отримаєте повідомлення після рішення.');
+});
 
 bot.use(async (ctx, next) => {
   const chatId = ctx.chat?.id;
-  if (chatId === undefined || config.allowedChatIds.includes(chatId)) return next();
+  if (chatId === undefined || allowedChats().includes(chatId)) return next();
 
-  await ctx.reply('Доступ закрито. Надішліть /whoami і попросіть адміністратора додати ваш chat ID.');
+  await ctx.reply('Доступ закрито. Надішліть /request, щоб попросити доступ.');
+});
+
+bot.callbackQuery(/^access:(approve|deny):(-?\d+)$/, async (ctx) => {
+  await ctx.answerCallbackQuery();
+  if (ctx.chat?.id !== config.adminChatId) return ctx.reply('Лише адміністратор може надавати доступ.');
+
+  const approve = ctx.match[1] === 'approve';
+  const chatId = Number(ctx.match[2]);
+  if (approve && !state.approvedChatIds.includes(chatId)) state.approvedChatIds.push(chatId);
+  if (approve === false) state.approvedChatIds = state.approvedChatIds.filter((id) => id !== chatId);
+  await saveState(state);
+
+  await bot.api.sendMessage(chatId, approve ? '✅ Доступ надано. /help — список команд.' : '❌ У доступі відмовлено.');
+
+  return ctx.reply(`${approve ? 'Доступ надано' : 'Відмовлено'}: ${chatId}`);
 });
 
 bot.command(['start', 'help'], (ctx) => ctx.reply(HELP, html));
@@ -63,10 +100,10 @@ bot.on('callback_query:data', async (ctx) => {
 });
 
 const broadcast = async (text: string, options: Record<string, unknown> = {}) => {
-  for (const chatId of config.allowedChatIds) await bot.api.sendMessage(chatId, text, { ...html, ...options });
+  for (const chatId of allowedChats()) await bot.api.sendMessage(chatId, text, { ...html, ...options });
 };
 
-const tick = async (state: BotState) => {
+const tick = async () => {
   const events = await collectEvents(odoo, state, config.odooUrl);
   for (const event of events) await broadcast(event.text, { reply_markup: event.keyboard });
 
@@ -81,8 +118,6 @@ const tick = async (state: BotState) => {
 };
 
 const main = async () => {
-  // First start: begin from the current records instead of flooding the chat with history.
-  const state = (await loadState()) ?? { ...(await currentCursors(odoo)), lastDigestDate: new Date().toISOString().slice(0, 10) };
   await saveState(state);
   await bot.api.setMyCommands(COMMANDS);
 
@@ -91,14 +126,14 @@ const main = async () => {
     if (running) return;
 
     running = true;
-    tick(state)
+    tick()
       .catch((error: unknown) => console.error('poll failed:', error instanceof Error ? error.message : error))
       .finally(() => {
         running = false;
       });
   }, config.pollSeconds * 1000);
 
-  console.log(`bot started, allowed chats: ${config.allowedChatIds.join(', ') || 'none (use /whoami)'}, poll ${config.pollSeconds}s`);
+  console.log(`bot started, admin ${config.adminChatId}, allowed chats: ${allowedChats().join(', ')}, poll ${config.pollSeconds}s`);
   await bot.start();
 };
 

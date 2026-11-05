@@ -180,7 +180,7 @@ export async function collectEvents(odoo: OdooClient, state: BotState, odooUrl: 
   return result;
 }
 
-export async function currentCursors(odoo: OdooClient): Promise<Omit<BotState, 'lastDigestDate'>> {
+export async function currentCursors(odoo: OdooClient): Promise<Omit<BotState, 'lastDigestDate' | 'approvedChatIds'>> {
   const last = async (model: string) => {
     const [row] = await odoo.call<Array<{ id: number }>>(model, 'search_read', { domain: [], fields: ['id'], order: 'id desc', limit: 1 });
 

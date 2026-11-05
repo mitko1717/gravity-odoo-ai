@@ -9,11 +9,12 @@ export interface BotState {
   lastTicketId: number;
   lastRfqId: number;
   lastDigestDate: string;
+  approvedChatIds: number[];
 }
 
 const STATE_FILE = process.env.BOT_STATE_FILE ?? 'tmp/bot-state.json';
 
-const EMPTY: BotState = { lastLeadId: 0, lastActivityId: 0, lastMessageId: 0, lastTicketId: 0, lastRfqId: 0, lastDigestDate: '' };
+const EMPTY: BotState = { lastLeadId: 0, lastActivityId: 0, lastMessageId: 0, lastTicketId: 0, lastRfqId: 0, lastDigestDate: '', approvedChatIds: [] };
 
 export async function loadState(): Promise<BotState | undefined> {
   try {

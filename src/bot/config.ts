@@ -1,6 +1,7 @@
 export interface BotConfig {
   token: string;
   allowedChatIds: number[];
+  adminChatId: number;
   odooUrl: string;
   odooUserId: number;
   pollSeconds: number;
@@ -23,6 +24,7 @@ export function loadConfig(): BotConfig {
   return {
     token: required('TELEGRAM_BOT_TOKEN'),
     allowedChatIds,
+    adminChatId: Number(required('TELEGRAM_ADMIN_CHAT_ID')),
     odooUrl: required('ODOO_URL'),
     odooUserId: Number(process.env.ODOO_BOT_USER_ID ?? 2),
     pollSeconds: Number(process.env.BOT_POLL_SECONDS ?? 30),
