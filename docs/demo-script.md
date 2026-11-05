@@ -52,7 +52,7 @@
 ## Частина 4. Цифри та чесні межі
 - Якість AI на 18 синтетичних заявках: [eval-results.md](eval-results.md) — 18/18 тип і пріоритет, 12/12 бюджети, дублікат і prompt injection оброблено, ~7 с на заявку. Виміряне ≠ прогноз економії для бізнесу.
 - Межі: trial до ~19.11; бот локальний (Railway лише на період перевірки); AI-тексти фінансів іноді змішують мову — позначено як чернетку.
-- Покриття 10 етапів + 4 допоміжних процесів: [00-process-map-coverage.md](00-process-map-coverage.md). Питання й відповіді: [qa.md](qa.md). Шпаргалка для друку: [gravity-cheatsheet.pdf](gravity-cheatsheet.pdf).
+- Покриття 10 етапів + 4 допоміжних процесів: [00-process-map-coverage.md](00-process-map-coverage.md). Питання й відповіді: [qa.md](qa.md). Шпаргалка для друку: [gravity-cheatsheet.pdf](gravity-cheatsheet.pdf); питання й відповіді на A4: [gravity-qa-cheatsheet.pdf](gravity-qa-cheatsheet.pdf).
 
 ## Якщо щось не спрацювало
 - Бот мовчить → `npm run bot` працює? Затримка до 30 с.
