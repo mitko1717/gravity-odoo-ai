@@ -18,6 +18,8 @@ export interface BotState {
 export interface BotUser {
   name: string;
   roles: Role[];
+  /** false = access closed by the admin; the user and roles stay in the list. */
+  active: boolean;
 }
 
 const STATE_FILE = process.env.BOT_STATE_FILE ?? 'tmp/bot-state.json';
@@ -30,7 +32,9 @@ export async function loadState(): Promise<BotState | undefined> {
 
     const raw = JSON.parse(text) as Partial<BotState> & { approvedChatIds?: number[] };
     const users = { ...(raw.users ?? {}) };
-    for (const chatId of raw.approvedChatIds ?? []) users[String(chatId)] ??= { name: String(chatId), roles: [] };
+    for (const chatId of raw.approvedChatIds ?? []) users[String(chatId)] ??= { name: String(chatId), roles: [], active: true };
+
+    for (const user of Object.values(users)) user.active ??= true;
 
     return { ...EMPTY, ...raw, users };
   } catch {

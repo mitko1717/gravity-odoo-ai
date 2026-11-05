@@ -47,10 +47,15 @@ const html = { parse_mode: 'HTML' as const };
 
 // State is loaded before handlers: approved chat IDs live there.
 // First start: begin from the current records instead of flooding the chat with history.
-const state: BotState = (await loadState()) ?? {
-  ...(await currentCursors(odoo)),
+const loaded = await loadState();
+const cursors = await currentCursors(odoo);
+
+// Cursors missing in an older state file start from the current records (no flood after upgrades).
+if (loaded !== undefined && loaded.lastApplicantId === 0) loaded.lastApplicantId = cursors.lastApplicantId;
+
+const state: BotState = loaded ?? {
+  ...cursors,
   lastDigestDate: new Date().toISOString().slice(0, 10),
-  lastApplicantId: 0,
   users: {},
 };
 

@@ -18,7 +18,11 @@ const html = { parse_mode: 'HTML' as const };
 export function createAccess(deps: AccessDeps) {
   const { bot, state, adminChatId, envChatIds } = deps;
 
-  const allowedChats = (): number[] => [...new Set([adminChatId, ...envChatIds, ...Object.keys(state.users).map(Number)])];
+  const activeUserIds = () => Object.entries(state.users).filter(([, user]) => user.active).map(([chatId]) => Number(chatId));
+  const closedUserIds = () => Object.entries(state.users).filter(([, user]) => user.active === false).map(([chatId]) => Number(chatId));
+
+  // Closed users are excluded even if their ID is still in the .env list.
+  const allowedChats = (): number[] => [...new Set([adminChatId, ...envChatIds, ...activeUserIds()])].filter((id) => id === adminChatId || closedUserIds().includes(id) === false);
 
   const recipients = (role: Role | undefined): number[] =>
     allowedChats().filter((chatId) => {
@@ -33,7 +37,9 @@ export function createAccess(deps: AccessDeps) {
   const userText = (chatId: string) => {
     const user = state.users[chatId];
 
-    return `👤 <b>${escapeHtml(user?.name ?? chatId)}</b> · <code>${chatId}</code>\nРолі: ${roleLabels(user?.roles ?? [])}`;
+    const status = user?.active === false ? '🚫 доступ закрито' : '✅ доступ відкрито';
+
+    return `👤 <b>${escapeHtml(user?.name ?? chatId)}</b> · <code>${chatId}</code>\n${status}\nРолі: ${roleLabels(user?.roles ?? [])}`;
   };
 
   const userKeyboard = (chatId: string) => {
@@ -44,7 +50,10 @@ export function createAccess(deps: AccessDeps) {
       if (index % 2 === 1) keyboard.row();
     });
 
-    return keyboard.row().text('🚫 Забрати доступ', `user:remove:${chatId}`);
+    const active = state.users[chatId]?.active !== false;
+    keyboard.row().text(active ? '🚫 Закрити доступ' : '✅ Відкрити доступ', `user:active:${chatId}:${active ? 'off' : 'on'}`);
+
+    return keyboard.text('🗑 Видалити', `user:delete:${chatId}`);
   };
 
   const isAdmin = (chatId: number | undefined) => chatId === adminChatId;
@@ -76,7 +85,7 @@ export function createAccess(deps: AccessDeps) {
 
       const approve = ctx.match[1] === 'approve';
       const chatId = String(ctx.match[2]);
-      if (approve) state.users[chatId] ??= { name: decodeURIComponent(ctx.match[3] ?? chatId), roles: [] };
+      if (approve) state.users[chatId] = { name: decodeURIComponent(ctx.match[3] ?? chatId), roles: state.users[chatId]?.roles ?? [], active: true };
       if (approve === false) delete state.users[chatId];
       await saveState(state);
       await updateAllowedChatIds(Number(chatId), approve);
@@ -110,7 +119,39 @@ export function createAccess(deps: AccessDeps) {
       await bot.api.sendMessage(Number(chatId), `Ваші ролі в боті: ${roleLabels(user.roles)}`).catch(() => undefined);
     });
 
-    bot.callbackQuery(/^user:remove:(-?\d+)$/, async (ctx) => {
+    bot.callbackQuery(/^user:active:(-?\d+):(on|off)$/, async (ctx) => {
+      await ctx.answerCallbackQuery();
+      const chatId = String(ctx.match[1]);
+      const user = state.users[chatId];
+      if (isAdmin(ctx.chat?.id) === false || user === undefined) return;
+
+      user.active = ctx.match[2] === 'on';
+      await saveState(state);
+      await updateAllowedChatIds(Number(chatId), user.active);
+      await ctx.editMessageText(userText(chatId), { ...html, reply_markup: userKeyboard(chatId) });
+
+      const notice = user.active ? '✅ Доступ до бота відкрито знову. /help — список команд.' : '🚫 Доступ до бота закрито адміністратором.';
+      await bot.api.sendMessage(Number(chatId), notice).catch(() => undefined);
+    });
+
+    bot.callbackQuery(/^user:delete:(-?\d+)$/, async (ctx) => {
+      await ctx.answerCallbackQuery();
+      if (isAdmin(ctx.chat?.id) === false) return;
+
+      const chatId = String(ctx.match[1]);
+      const keyboard = new InlineKeyboard().text('🗑 Так, видалити', `user:delete-confirm:${chatId}`).text('↩️ Скасувати', `user:show:${chatId}`);
+      await ctx.editMessageText(`${userText(chatId)}\n\n<b>Видалити користувача повністю?</b> Ролі буде втрачено, повернутися він зможе лише через /request.`, { ...html, reply_markup: keyboard });
+    });
+
+    bot.callbackQuery(/^user:show:(-?\d+)$/, async (ctx) => {
+      await ctx.answerCallbackQuery();
+      const chatId = String(ctx.match[1]);
+      if (isAdmin(ctx.chat?.id) === false || state.users[chatId] === undefined) return;
+
+      await ctx.editMessageText(userText(chatId), { ...html, reply_markup: userKeyboard(chatId) });
+    });
+
+    bot.callbackQuery(/^user:delete-confirm:(-?\d+)$/, async (ctx) => {
       await ctx.answerCallbackQuery();
       if (isAdmin(ctx.chat?.id) === false) return;
 
@@ -119,7 +160,19 @@ export function createAccess(deps: AccessDeps) {
       await saveState(state);
       await updateAllowedChatIds(Number(chatId), false);
       await bot.api.sendMessage(Number(chatId), '🚫 Доступ до бота закрито адміністратором.').catch(() => undefined);
-      await ctx.editMessageText(`🚫 Доступ закрито: <code>${chatId}</code>`, html);
+      await ctx.editMessageText(`🗑 Користувача <code>${chatId}</code> видалено.`, html);
+    });
+
+    // Keep display names fresh: users approved by ID get their Telegram name on the next message.
+    bot.use(async (ctx, next) => {
+      const user = ctx.chat ? state.users[String(ctx.chat.id)] : undefined;
+      const name = ctx.from?.username ? `@${ctx.from.username}` : ctx.from?.first_name;
+      if (user !== undefined && name !== undefined && user.name !== name) {
+        user.name = name;
+        await saveState(state);
+      }
+
+      return next();
     });
   };
 
