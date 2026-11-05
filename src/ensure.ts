@@ -20,7 +20,7 @@ export async function ensureRecord(
 export interface FieldSpec {
   name: `x_${string}`;
   label: string;
-  type: 'char' | 'text' | 'float' | 'integer' | 'selection' | 'boolean';
+  type: 'char' | 'text' | 'float' | 'integer' | 'selection' | 'boolean' | 'date';
   options?: Array<[value: string, label: string]>;
 }
 
