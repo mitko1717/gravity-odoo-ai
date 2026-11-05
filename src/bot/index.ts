@@ -1,7 +1,7 @@
 import { Bot, InlineKeyboard } from 'grammy';
 import { OdooClient } from '../odoo-client.js';
 import { loadConfig } from './config.js';
-import { collectEvents, currentCursors } from './events.js';
+import { collectEvents, currentCursors, openLeads } from './events.js';
 import { runAction } from './actions.js';
 import { STATS_KEYBOARD, buildDigest, buildStats, isStatsKey } from './stats.js';
 import { loadState, saveState, type BotState } from './state.js';
@@ -9,6 +9,7 @@ import { updateAllowedChatIds } from './env-file.js';
 
 const COMMANDS = [
   { command: 'help', description: 'Список команд з поясненнями' },
+  { command: 'leads', description: 'Останні ліди без пропозиції, з кнопками' },
   { command: 'stats', description: 'Статистика: ліди, кампанії, прострочення, сервіс, воронка' },
   { command: 'digest', description: 'Дайджест зараз (щодня приходить зранку сам)' },
   { command: 'overdue', description: 'Прострочені задачі проєктів' },
@@ -110,6 +111,12 @@ bot.callbackQuery(/^access:(approve|deny):(-?\d+)$/, async (ctx) => {
 });
 
 bot.command('help', (ctx) => ctx.reply(HELP, html));
+bot.command('leads', async (ctx) => {
+  const leads = await openLeads(odoo, config.odooUrl);
+  if (leads.length === 0) return ctx.reply('Немає лідів без пропозиції.');
+
+  for (const lead of leads) await ctx.reply(lead.text, { ...html, reply_markup: lead.keyboard });
+});
 bot.command('stats', (ctx) => ctx.reply('Оберіть звіт:', { reply_markup: STATS_KEYBOARD }));
 bot.command('digest', async (ctx) => ctx.reply(await buildDigest(odoo), html));
 bot.command('overdue', async (ctx) => ctx.reply(await buildStats(odoo, 'stats:overdue'), html));

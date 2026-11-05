@@ -24,35 +24,51 @@ interface LeadRow {
 
 const maxId = (rows: Array<{ id: number }>, current: number) => rows.reduce((max, row) => Math.max(max, row.id), current);
 
+const LEAD_FIELDS = ['name', 'contact_name', 'x_city', 'x_area_m2', 'x_ai_priority', 'x_ai_services', 'x_ai_budget_usd', 'x_ai_summary', 'x_ai_missing', 'x_ai_next_action'];
+
+// /leads: recent analysed leads that have no quotation yet, with the same buttons as the push.
+export async function openLeads(odoo: OdooClient, odooUrl: string, limit = 5): Promise<Notification[]> {
+  const rows = await odoo.call<LeadRow[]>('crm.lead', 'search_read', {
+    domain: [['x_ai_status', '!=', 'pending'], ['order_ids', '=', false], ['type', '=', 'opportunity']],
+    fields: LEAD_FIELDS,
+    order: 'id desc',
+    limit,
+  });
+
+  return rows.map((lead) => leadNotification(lead, odooUrl));
+}
+
 async function newLeads(odoo: OdooClient, state: BotState, odooUrl: string): Promise<Notification[]> {
   const rows = await odoo.call<LeadRow[]>('crm.lead', 'search_read', {
     domain: [['id', '>', state.lastLeadId], ['x_ai_status', '!=', 'pending']],
-    fields: ['name', 'contact_name', 'x_city', 'x_area_m2', 'x_ai_priority', 'x_ai_services', 'x_ai_budget_usd', 'x_ai_summary', 'x_ai_missing', 'x_ai_next_action'],
+    fields: LEAD_FIELDS,
     order: 'id',
   });
   state.lastLeadId = maxId(rows, state.lastLeadId);
 
-  return rows.map((lead) => {
-    const budget = lead.x_ai_budget_usd ? `$${lead.x_ai_budget_usd}` : 'не вказано';
-    const lines = [
-      `🆕 <b>Новий лід</b>: ${escapeHtml(lead.name)}`,
-      `Пріоритет (AI): ${PRIORITY_LABEL[String(lead.x_ai_priority)] ?? '—'}`,
-      `Контакт: ${escapeHtml(lead.contact_name || '—')}, ${escapeHtml(lead.x_city || '—')}, ${lead.x_area_m2 || '—'} м²`,
-      `Послуги: ${escapeHtml(serviceLabels(lead.x_ai_services || '') || '—')} · Бюджет: ${budget}`,
-      `\n${escapeHtml(lead.x_ai_summary || '')}`,
-      `Бракує: ${escapeHtml(lead.x_ai_missing || 'нічого')}`,
-      `Далі: ${escapeHtml(lead.x_ai_next_action || '—')}`,
-    ];
-    const keyboard = new InlineKeyboard()
-      .text('✅ Взяти в роботу', `lead:take:${lead.id}`)
-      .text('✉️ Чернетка відповіді', `lead:reply:${lead.id}`)
-      .row()
-      .text('📄 Створити пропозицію', `lead:quote:${lead.id}`)
-      .row()
-      .url('Відкрити в Odoo', recordUrl(odooUrl, 'crm.lead', lead.id));
+  return rows.map((lead) => leadNotification(lead, odooUrl));
+}
 
-    return { text: lines.join('\n'), keyboard };
-  });
+function leadNotification(lead: LeadRow, odooUrl: string): Notification {
+  const budget = lead.x_ai_budget_usd ? `$${lead.x_ai_budget_usd}` : 'не вказано';
+  const lines = [
+    `🆕 <b>Новий лід</b>: ${escapeHtml(lead.name)}`,
+    `Пріоритет (AI): ${PRIORITY_LABEL[String(lead.x_ai_priority)] ?? '—'}`,
+    `Контакт: ${escapeHtml(lead.contact_name || '—')}, ${escapeHtml(lead.x_city || '—')}, ${lead.x_area_m2 || '—'} м²`,
+    `Послуги: ${escapeHtml(serviceLabels(lead.x_ai_services || '') || '—')} · Бюджет: ${budget}`,
+    `\n${escapeHtml(lead.x_ai_summary || '')}`,
+    `Бракує: ${escapeHtml(lead.x_ai_missing || 'нічого')}`,
+    `Далі: ${escapeHtml(lead.x_ai_next_action || '—')}`,
+  ];
+  const keyboard = new InlineKeyboard()
+    .text('✅ Взяти в роботу', `lead:take:${lead.id}`)
+    .text('✉️ Чернетка відповіді', `lead:reply:${lead.id}`)
+    .row()
+    .text('📄 Створити пропозицію', `lead:quote:${lead.id}`)
+    .row()
+    .url('Відкрити в Odoo', recordUrl(odooUrl, 'crm.lead', lead.id));
+
+  return { text: lines.join('\n'), keyboard };
 }
 
 interface ActivityRow {
