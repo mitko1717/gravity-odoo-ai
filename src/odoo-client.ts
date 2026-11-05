@@ -19,7 +19,6 @@ export class OdooClient {
   static fromEnv(): OdooClient {
     const url = process.env.ODOO_URL;
     const key = process.env.ODOO_API_KEY;
-
     if (!url || !key) throw new Error('ODOO_URL and ODOO_API_KEY must be set in .env');
 
     return new OdooClient(url, key);
@@ -27,7 +26,7 @@ export class OdooClient {
 
   async call<T>(model: string, method: string, params: Record<string, unknown> = {}): Promise<T> {
     const endpoint = `${this.baseUrl}/json/2/${model}/${method}`;
-    const response = await fetch(endpoint, {
+    const res = await fetch(endpoint, {
       method: 'POST',
       headers: {
         Authorization: `bearer ${this.apiKey}`,
@@ -35,9 +34,9 @@ export class OdooClient {
       },
       body: JSON.stringify(params),
     });
-    const text = await response.text();
+    const text = await res.text();
 
-    if (!response.ok) throw new OdooError(`${model}.${method} failed (${response.status})`, response.status, text);
+    if (!res.ok) throw new OdooError(`${model}.${method} failed (${res.status})`, res.status, text);
 
     return JSON.parse(text) as T;
   }
@@ -53,7 +52,6 @@ export class OdooClient {
   async create(model: string, values: Record<string, unknown>): Promise<number> {
     const ids = await this.call<number[]>(model, 'create', { vals_list: [values] });
     const [id] = ids;
-
     if (id === undefined) throw new Error(`${model}.create returned no id`);
 
     return id;

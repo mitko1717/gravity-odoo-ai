@@ -12,7 +12,6 @@ const odoo = OdooClient.fromEnv();
 for (const field of PROJECT_FIELDS) await ensureField(odoo, 'project.project', field);
 
 const [baseView] = await odoo.searchRead<{ res_id: number }>('ir.model.data', [['module', '=', 'project'], ['name', '=', 'edit_project']], ['res_id']);
-
 if (!baseView) throw new Error('project form view not found');
 
 const fieldsXml = PROJECT_FIELDS.map((field) => `<field name="${field.name}"/>`).join('');

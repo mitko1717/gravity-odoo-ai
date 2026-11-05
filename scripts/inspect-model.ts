@@ -3,7 +3,6 @@ import { OdooClient } from '../src/odoo-client.js';
 type Fields = Record<string, { string: string; type: string; required?: boolean; selection?: Array<[string, string]> }>;
 
 const [model, needle = ''] = process.argv.slice(2);
-
 if (!model) throw new Error('usage: npm run inspect -- <model> [needle]');
 
 const odoo = OdooClient.fromEnv();

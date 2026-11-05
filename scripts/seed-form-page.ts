@@ -24,7 +24,6 @@ const pageId = await ensureRecord(odoo, 'website.page', [['url', '=', URL]], {
 });
 
 const [rootMenu] = await odoo.searchRead<{ id: number }>('website.menu', [['website_id', '=', 1], ['parent_id', '=', false]], ['id'], 1);
-
 if (!rootMenu) throw new Error('website root menu not found');
 
 const menuId = await ensureRecord(odoo, 'website.menu', [['url', '=', URL], ['website_id', '=', 1]], {

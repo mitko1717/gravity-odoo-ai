@@ -18,7 +18,6 @@ const TICKETS = [
 
 const odoo = OdooClient.fromEnv();
 const [team] = await odoo.searchRead<{ id: number }>('helpdesk.team', [], ['id'], 1);
-
 if (!team) throw new Error('no helpdesk team');
 
 for (const ticket of TICKETS) {

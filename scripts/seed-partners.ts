@@ -16,7 +16,6 @@ const tagIds = new Map<string, number>();
 for (const name of PARTNER_TAGS) tagIds.set(name, await ensureRecord(odoo, 'res.partner.category', [['name', '=', name]], { name }));
 
 const [adminRef] = await odoo.searchRead<{ res_id: number }>('ir.model.data', [['module', '=', 'base'], ['name', '=', 'user_admin']], ['res_id']);
-
 if (!adminRef) throw new Error('base.user_admin not found');
 
 const adminId = adminRef.res_id;

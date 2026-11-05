@@ -40,9 +40,7 @@ const [baseView] = await odoo.searchRead<{ res_id: number }>(
   ['res_id'],
 );
 
-if (!baseView) {
-  throw new Error('crm.crm_lead_view_form not found');
-}
+if (!baseView) throw new Error('crm.crm_lead_view_form not found');
 
 const viewId = await ensureRecord(odoo, 'ir.ui.view', [['name', '=', VIEW_NAME]], {
   name: VIEW_NAME,

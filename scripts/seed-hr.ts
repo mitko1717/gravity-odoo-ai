@@ -16,7 +16,6 @@ for (const field of APPLICANT_AI_FIELDS) await ensureField(odoo, 'hr.applicant',
 console.log(`applicant fields: ${APPLICANT_AI_FIELDS.length}`);
 
 const [baseView] = await odoo.searchRead<{ res_id: number }>('ir.model.data', [['module', '=', 'hr_recruitment'], ['name', '=', 'hr_applicant_view_form']], ['res_id']);
-
 if (!baseView) throw new Error('hr.applicant form view not found');
 
 const fieldsXml = APPLICANT_AI_FIELDS.map((field) => `<field name="${field.name}"/>`).join('');

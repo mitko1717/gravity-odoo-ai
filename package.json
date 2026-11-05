@@ -31,7 +31,10 @@
     "seed:partners": "tsx --env-file=.env scripts/seed-partners.ts",
     "e2e:partners": "tsx --env-file=.env scripts/e2e-partners.ts",
     "seed:site-report": "tsx --env-file=.env scripts/seed-site-report.ts",
-    "e2e:site-report": "tsx --env-file=.env scripts/e2e-site-report.ts"
+    "e2e:site-report": "tsx --env-file=.env scripts/e2e-site-report.ts",
+    "seed:finance": "tsx --env-file=.env scripts/seed-finance.ts",
+    "import:expenses": "tsx --env-file=.env scripts/import-expenses.ts",
+    "e2e:finance": "tsx --env-file=.env scripts/e2e-finance.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",

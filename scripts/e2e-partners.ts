@@ -12,7 +12,6 @@ const odoo = OdooClient.fromEnv();
 const names = DEMO_PARTNERS.map((partner) => partner.name);
 const automationIds = await odoo.search('base.automation', [['name', '=', 'Gravity: нагадування про контакт з партнером']]);
 const [cron] = await odoo.searchRead<{ res_id: number }>('ir.model.data', [['module', '=', 'base_automation'], ['model', '=', 'ir.cron']], ['res_id']);
-
 if (!cron) throw new Error('base_automation cron not found');
 
 const runScheduler = async () => {
@@ -37,7 +36,6 @@ const rows = await report('after scheduler run 2 (expect no duplicates):');
 
 const builder = rows.find((row) => row.name.startsWith('Забудовник'));
 const [markActionId] = await odoo.search('ir.actions.server', [['name', '=', 'Партнер: контакт відбувся']]);
-
 if (!builder || markActionId === undefined) throw new Error('builder partner or mark action not found');
 
 await odoo.call('ir.actions.server', 'run', {

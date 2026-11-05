@@ -39,7 +39,6 @@ console.log(`order ${order?.name} -> project ${projectId}, tasks: ${tasks.length
 for (const task of tasks) console.log(`  ${String(task.date_deadline).slice(0, 10)}  blocked by ${task.depend_on_ids.length}  ${task.name}`);
 
 const firstTask = tasks[0];
-
 if (!firstTask) throw new Error('no tasks');
 
 await odoo.write('project.task', [firstTask.id], { date_deadline: '2026-11-01 16:00:00' });

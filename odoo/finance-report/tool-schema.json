@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "summary_uk": { "type": "string", "description": "3-5 sentences for the owner in Ukrainian: overall picture across projects" },
+    "risks_uk": { "type": "string", "description": "Projects with low or negative margin and the expense categories driving it, one per line" },
+    "recommendations_uk": { "type": "string", "description": "2-4 concrete management actions in Ukrainian" }
+  },
+  "required": ["summary_uk", "risks_uk", "recommendations_uk"]
+}

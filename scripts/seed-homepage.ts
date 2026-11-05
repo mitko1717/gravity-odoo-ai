@@ -8,7 +8,6 @@ const views = await odoo.searchRead<{ id: number; website_id: [number, string] |
   ['id', 'website_id'],
 );
 const target = views.find((view) => view.website_id && view.website_id[0] === 1) ?? views[0];
-
 if (!target) throw new Error('website.homepage view not found');
 
 await odoo.write('ir.ui.view', [target.id], { arch_db: homepageArch('website.homepage') });

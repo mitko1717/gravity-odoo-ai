@@ -15,7 +15,6 @@ for (const field of TICKET_AI_FIELDS) await ensureField(odoo, 'helpdesk.ticket',
 console.log(`ticket fields: ${TICKET_AI_FIELDS.length}`);
 
 const [baseView] = await odoo.searchRead<{ res_id: number }>('ir.model.data', [['module', '=', 'helpdesk'], ['name', '=', 'helpdesk_ticket_view_form']], ['res_id']);
-
 if (!baseView) throw new Error('helpdesk ticket form view not found');
 
 const fieldsXml = TICKET_AI_FIELDS.map((field) => `<field name="${field.name}"/>`).join('');
@@ -28,7 +27,6 @@ await ensureRecord(odoo, 'ir.ui.view', [['name', '=', 'helpdesk.ticket.form.grav
 });
 
 const [team] = await odoo.searchRead<{ id: number; name: string }>('helpdesk.team', [], ['id', 'name'], 1);
-
 if (!team) throw new Error('no helpdesk team');
 
 await odoo.write('helpdesk.team', [team.id], { name: 'Сервіс Gravity (демо)', use_sla: true });
@@ -38,14 +36,13 @@ const stages = await odoo.call<Array<{ id: number; name: string }>>('helpdesk.st
   fields: ['id', 'name'],
   order: 'sequence',
 });
-const responseStage = stages[1] ?? stages[0];
-
-if (!responseStage) throw new Error('no helpdesk stages');
+const resStage = stages[1] ?? stages[0];
+if (!resStage) throw new Error('no helpdesk stages');
 
 for (const [priority, name, hours] of SLA_HOURS) {
-  await ensureRecord(odoo, 'helpdesk.sla', [['name', '=', name]], { name, team_id: team.id, criteria_domain: `[("priority", "=", "${priority}")]`, time: hours, stage_id: responseStage.id });
+  await ensureRecord(odoo, 'helpdesk.sla', [['name', '=', name]], { name, team_id: team.id, criteria_domain: `[("priority", "=", "${priority}")]`, time: hours, stage_id: resStage.id });
 }
-console.log(`team ${team.id}, SLA reach stage "${responseStage.name}": ${SLA_HOURS.length} policies`);
+console.log(`team ${team.id}, SLA reach stage "${resStage.name}": ${SLA_HOURS.length} policies`);
 
 const actionId = await ensureAiAutomation(odoo, {
   model: 'helpdesk.ticket',

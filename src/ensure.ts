@@ -34,9 +34,7 @@ export async function ensureField(odoo: OdooClient, model: string, spec: FieldSp
     ['name', '=', spec.name],
   ]);
 
-  if (existingId !== undefined) {
-    return existingId;
-  }
+  if (existingId !== undefined) return existingId;
 
   const selectionCommands = (spec.options ?? []).map(([value, label], index) => [
     0,
