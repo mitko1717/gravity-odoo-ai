@@ -10,7 +10,8 @@
     "seed:views": "tsx --env-file=.env scripts/seed-views.ts",
     "seed:ai": "tsx --env-file=.env scripts/seed-ai.ts",
     "seed:website": "tsx --env-file=.env scripts/seed-website.ts",
-    "seed:form": "tsx --env-file=.env scripts/seed-form-page.ts"
+    "seed:form": "tsx --env-file=.env scripts/seed-form-page.ts",
+    "seed:sales": "tsx --env-file=.env scripts/seed-sales.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",

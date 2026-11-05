@@ -54,6 +54,15 @@ if needs_review:
     tag_names.add('AI: потрібна перевірка')
 
 tags = env['crm.tag'].search([('name', 'in', list(tag_names))])
+
+DEFAULT_TITLES = ['Заявка з сайту', '']
+owner = record.user_id
+if not owner:
+    team = record.team_id or env['crm.team'].search([], limit=1)
+    owner = team.user_id or env.ref('base.user_admin')
+    record.write({'user_id': owner.id, 'team_id': team.id})
+if (record.name or '') in DEFAULT_TITLES and title_uk:
+    record.write({'name': title_uk[:60]})
 missing_text = ', '.join(missing_fields or [])
 
 record.write({
@@ -82,7 +91,7 @@ record.activity_schedule(
     date_deadline=deadline,
     summary=('AI: ' + (next_action_uk or 'Зв’язатися з клієнтом'))[:100],
     note=summary_uk or '',
-    user_id=record.user_id.id or env.user.id,
+    user_id=owner.id,
 )
 
 note_lines = ['AI-аналіз заявки (рекомендація, потребує підтвердження менеджером).']
