@@ -19,5 +19,7 @@ quotation → sales order → project with standard tasks → overdue reminders.
 | Topic | File |
 |---|---|
 | Architecture decisions | [docs/decisions](docs/decisions) |
+| Odoo setup, configuration as code | [docs/01-odoo-setup.md](docs/01-odoo-setup.md) |
+| AI analysis of leads | [docs/02-lead-ai-analysis.md](docs/02-lead-ai-analysis.md) |
 
 More sections are added as each stage is implemented and verified.

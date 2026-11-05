@@ -8,7 +8,8 @@
     "typecheck": "tsc --noEmit",
     "seed:crm": "tsx --env-file=.env scripts/seed-crm.ts",
     "seed:views": "tsx --env-file=.env scripts/seed-views.ts",
-    "seed:ai": "tsx --env-file=.env scripts/seed-ai.ts"
+    "seed:ai": "tsx --env-file=.env scripts/seed-ai.ts",
+    "seed:website": "tsx --env-file=.env scripts/seed-website.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
