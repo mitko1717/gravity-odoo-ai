@@ -6,7 +6,8 @@
   "scripts": {
     "check": "tsx --env-file=.env scripts/check.ts",
     "typecheck": "tsc --noEmit",
-    "seed:crm": "tsx --env-file=.env scripts/seed-crm.ts"
+    "seed:crm": "tsx --env-file=.env scripts/seed-crm.ts",
+    "seed:views": "tsx --env-file=.env scripts/seed-views.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
