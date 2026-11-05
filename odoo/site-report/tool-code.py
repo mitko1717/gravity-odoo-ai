@@ -3,7 +3,8 @@ today = datetime.date.today()
 total = 0
 done_count = 0
 overdue = []
-for task in record.task_ids:
+# Top-level tasks only: commissioning checks (sub-tasks) must not inflate progress.
+for task in record.task_ids.filtered(lambda t: not t.parent_id):
     total += 1
     if task.state == '1_done' or task.stage_id.name == 'Готово':
         done_count += 1

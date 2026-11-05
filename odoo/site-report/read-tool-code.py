@@ -1,7 +1,8 @@
 # Odoo server action (AI tool). Returns project task status with computed metrics; notes are untrusted input.
 today = datetime.date.today()
 rows = []
-for task in record.task_ids:
+# Top-level tasks only: commissioning checks (sub-tasks) must not inflate progress.
+for task in record.task_ids.filtered(lambda t: not t.parent_id):
     done = task.state == '1_done' or task.stage_id.name == 'Готово'
     deadline = task.date_deadline.date() if task.date_deadline else False
     overdue_days = (today - deadline).days if deadline and not done and deadline < today else 0
