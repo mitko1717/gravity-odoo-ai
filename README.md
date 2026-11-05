@@ -52,10 +52,10 @@ service tickets with AI triage and SLA. Plus HR, meetings, internal AI assistant
     npm run seed:crm && npm run seed:views && npm run seed:ai && npm run seed:website && npm run seed:form
     npm run seed:sales && npm run seed:project && npm run seed:helpdesk && npm run seed:homepage
     npm run seed:hr && npm run seed:meetings && npm run seed:knowledge && npm run seed:purchase
-    npm run seed:partners && npm run seed:site-report && npm run seed:finance && npm run import:expenses
+    npm run seed:partners && npm run seed:site-report && npm run seed:finance && npm run import:expenses && npm run seed:marketing
 
 End-to-end checks (they create synthetic records in the live Odoo, so they are manual, not in CI):
 `eval`, `e2e:project`, `e2e:tickets`, `e2e:applicants`, `e2e:meetings`, `e2e:purchase`,
-`e2e:partners`, `e2e:site-report`, `e2e:finance`.
+`e2e:partners`, `e2e:site-report`, `e2e:finance`, `e2e:marketing`.
 
 Some modules must be installed first: `npm run install:modules -- <names>` (see each doc).

@@ -32,3 +32,10 @@ Verified 2026-11-05: 4 projects in the table; S00006 margin 38.8% flagged as the
 ## Roadmap
 - Import from the real accounting / Google Sheets source on a schedule; monthly report run.
 - Analytic accounts per project instead of the custom model; cash-flow and receivables sections.
+
+## Known limitation: AI commentary wording
+
+Rerun on 2026-11-05 after stand cleanup (objects mapped to projects 2, 7, 8). Numbers are correct (rule-based),
+but the AI commentary sometimes mixes English field names and raw numbers ("margin 301001.0 UAH", "purchases")
+and may omit a cost line (purchases for S00007 were not listed among risks). Fix in roadmap: pass Ukrainian labels
+and pre-formatted amounts from the read tool and require every cost line in the prompt.
