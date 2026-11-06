@@ -2,7 +2,10 @@
 for task in records:
     open_checks = task.child_ids.filtered(lambda child: child.state not in ('1_done', '1_canceled'))
     if open_checks:
-        task.message_post(body='Здача заблокована: відкрито перевірок пусконалагодження: %d. Закрийте їх перед передачею клієнту.' % len(open_checks))
+        review_stage = task.project_id.type_ids.filtered(lambda stage: stage.name == 'На перевірці')[:1]
+        if review_stage:
+            task.write({'stage_id': review_stage.id})
+        task.message_post(body='Здача заблокована: відкрито перевірок пусконалагодження: %d. Задачу повернуто «На перевірці». Закрийте перевірки перед передачею клієнту.' % len(open_checks))
         continue
 
     handover = task.project_id.task_ids.filtered(lambda t: t.name == 'Здача клієнту та навчання')[:1] or task

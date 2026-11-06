@@ -112,7 +112,8 @@ export async function projectCard(odoo: OdooClient, odooUrl: string, projectId: 
   for (const task of tasks) {
     const deadline = task.date_deadline ? ` · до ${task.date_deadline.slice(5, 10).split('-').reverse().join('.')}` : '';
     const overdue = isOverdue(task) ? ' ⏰' : '';
-    const waiting = task.state === '04_waiting_normal' ? ' · чекає попередній етап' : '';
+    const isWaiting = task.state === '04_waiting_normal' && stageName(task) !== DONE;
+    const waiting = isWaiting ? ' · чекає попередній етап' : '';
     const pointer = task.id === current?.id ? '👉 ' : '';
     const checks = task.id === current?.id ? await checksLine(odoo, task) : '';
     lines.push(`${pointer}${STAGE_ICON[stageName(task)] ?? '⏳'} ${escapeHtml(task.name)} — ${roleLabel(task.name)}${deadline}${overdue}${waiting}${checks}`);

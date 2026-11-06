@@ -17,7 +17,8 @@ const testLeads = await odoo.search('crm.lead', [['name', 'like', '(тест)']]
 if (testLeads.length > 0) await odoo.call('crm.lead', 'unlink', { ids: testLeads });
 console.log(`leads removed: ${testLeads.length}`);
 
-const e2ePartners = await odoo.search('res.partner', [['name', '=', 'E2E Демо Клієнт']]);
+// Archived partners included: previous runs archive them, but new e2e orders may still point to them.
+const e2ePartners = await odoo.search('res.partner', [['name', '=', 'E2E Демо Клієнт'], ['active', 'in', [true, false]]]);
 const orders = await odoo.searchRead<OrderRow>('sale.order', [['partner_id', 'in', e2ePartners]], ['name', 'project_ids', 'invoice_ids']);
 const orderNames = orders.map((order) => order.name);
 const projectIds = [...new Set(orders.flatMap((order) => order.project_ids))];
