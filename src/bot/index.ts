@@ -98,13 +98,15 @@ const WELCOME = [
 ].join('\n');
 
 // Public links: available before access is granted, so reviewers can watch the demo first.
-const DEMO_TEXT = '🎬 <b>Демо Gravity × Odoo × AI</b>\nВідео (3 хв, титри): заявка з сайту → AI → CRM → пропозиція → проєкт → закупівлі → перевірки → здача, плюс сервіс, HR, наради й AI-асистент.\nПрезентація: 10 слайдів про проблему, рішення та метрики.';
+const DEMO_TEXT = '🎬 <b>Демо Gravity × Odoo × AI</b>\nВідео (3 хв, титри): заявка з сайту → AI → CRM → пропозиція → проєкт → закупівлі → перевірки → здача, плюс сервіс, HR, наради й AI-асистент.\nПрезентація: 10 слайдів про проблему, рішення та метрики.\nAI-асистент відповідає лише з внутрішніх регламентів (відкривається для користувачів Odoo-стенду).';
 const DEMO_KEYBOARD = new InlineKeyboard()
   .url('▶ Відео', 'https://claude.ai/artifact/9mntsBuQdJ38R4xooKN81z')
   .row()
   .url('📊 Презентація', 'https://claude.ai/artifact/Jk3Wfpe1ruCBocPP4TTYxf')
   .row()
-  .url('💻 Репозиторій', 'https://github.com/mitko1717/gravity-odoo-ai');
+  .url('💻 Репозиторій', 'https://github.com/mitko1717/gravity-odoo-ai')
+  .row()
+  .url('🤖 AI-асистент (Odoo, потрібен вхід)', 'https://test6017.odoo.com/odoo/action-919/discuss?scoped_ai_agent_id=7');
 
 bot.command('start', (ctx) => ctx.reply(allowedChats().includes(ctx.chat.id) ? HELP : WELCOME, html));
 
