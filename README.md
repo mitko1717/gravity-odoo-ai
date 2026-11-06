@@ -91,3 +91,6 @@ All of them in one go: `npm run regression` (sequential, ~10–15 min) → `tmp/
 Last run 2026-11-05: **14/14 passed** (eval 18 leads + 13 e2e scenarios, ~5 min).
 
 Some modules must be installed first: `npm run install:modules -- <names>` (see each doc). Stages 5/7 need `planning_field_service`.
+
+## Demo video
+[docs/gravity-demo.mp4](docs/gravity-demo.mp4) — 2:54, Ukrainian captions, full flow from website lead to project handover, AI assistant and manager stats (screenshots from the manual run on 2026-11-06, synthetic data).

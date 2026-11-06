@@ -3,6 +3,7 @@
 Стенд: https://test6017.odoo.com · бот: https://t.me/gravity_test_promo_bot · репо: https://github.com/mitko1717/gravity-odoo-ai · дашборд метрик: https://claude.ai/artifact/5xgb9wdaRM36gqQLHX2gT9 · презентація: https://claude.ai/artifact/Jk3Wfpe1ruCBocPP4TTYxf
 Перед записом: `npm run regression` (усі наскрізні тести по кроках, ~10–15 хв) → `tmp/regression-summary.md`; наприкінці показу — дашборд (виміряне vs припущення).
 Перед показом: `npm run bot` запущений; Telegram відкритий поруч; дані синтетичні (`*.demo@example.com`).
+Демо-відео (2:54, титри, кадри з ручного прогону 06.11): [gravity-demo.mp4](gravity-demo.mp4).
 Головна думка: **правила рахують, AI пише чернетки, людина вирішує. Клієнтам нічого не йде автоматично.**
 
 Посилання ведуть на список; потрібний запис — зверху (найновіший) або через пошук. Telegram: `/leads`, `/projects` — швидше за будь-яке меню.
