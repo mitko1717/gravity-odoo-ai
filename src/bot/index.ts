@@ -1,4 +1,4 @@
-import { Bot } from 'grammy';
+import { Bot, InlineKeyboard } from 'grammy';
 import { OdooClient } from '../odoo-client.js';
 import { loadConfig } from './config.js';
 import { collectEvents, currentCursors, leadCard, leadsList } from './events.js';
@@ -14,6 +14,7 @@ import type { Role } from './roles.js';
 const COMMANDS = [
   { command: 'help', description: 'Список команд з поясненнями' },
   FLOW_COMMAND,
+  { command: 'demo', description: 'Демо-відео (3 хв) і презентація проєкту' },
   { command: 'leads', description: 'Список лідів без пропозиції (далі /lead_ID — картка з кнопками)' },
   { command: 'projects', description: 'Проєкти по етапах: хто зараз відповідає (далі /project_ID — картка)' },
   { command: 'stats', description: 'Статистика: ліди, кампанії, прострочення, сервіс, воронка' },
@@ -92,12 +93,24 @@ const WELCOME = [
   '• статистика й ранковий дайджест.',
   '',
   'Це неофіційний демонстраційний стенд, дані синтетичні.',
+  'Подивитися демо-відео і презентацію: /demo',
   'Щоб отримати доступ, надішліть /request — адміністратор підтвердить запит.',
 ].join('\n');
+
+// Public links: available before access is granted, so reviewers can watch the demo first.
+const DEMO_TEXT = '🎬 <b>Демо Gravity × Odoo × AI</b>\nВідео (3 хв, титри): заявка з сайту → AI → CRM → пропозиція → проєкт → закупівлі → перевірки → здача, плюс сервіс, HR, наради й AI-асистент.\nПрезентація: 10 слайдів про проблему, рішення та метрики.';
+const DEMO_KEYBOARD = new InlineKeyboard()
+  .url('▶ Відео', 'https://claude.ai/artifact/9mntsBuQdJ38R4xooKN81z')
+  .row()
+  .url('📊 Презентація', 'https://claude.ai/artifact/Jk3Wfpe1ruCBocPP4TTYxf')
+  .row()
+  .url('💻 Репозиторій', 'https://github.com/mitko1717/gravity-odoo-ai');
 
 bot.command('start', (ctx) => ctx.reply(allowedChats().includes(ctx.chat.id) ? HELP : WELCOME, html));
 
 bot.command('whoami', (ctx) => ctx.reply(`Ваш chat ID: <code>${ctx.chat.id}</code>`, html));
+
+bot.command('demo', (ctx) => ctx.reply(DEMO_TEXT, { ...html, reply_markup: DEMO_KEYBOARD }));
 
 access.register();
 

@@ -37,7 +37,7 @@ All scenarios in Ukrainian (what comes, to whom, how to reproduce): [docs/bot-sc
 
 ## Commands
 
-`/help` · `/flow` (this guide in Ukrainian, inside the bot) · `/leads`, `/lead_ID` · `/projects`, `/project_ID` · `/stats` · `/digest` (also every morning) · `/overdue` · `/whoami` · `/request` · `/users` (admin)
+`/help` · `/flow` (this guide in Ukrainian, inside the bot) · `/demo` (video, slides, repo; works without access) · `/leads`, `/lead_ID` · `/projects`, `/project_ID` · `/stats` · `/digest` (also every morning) · `/overdue` · `/whoami` · `/request` · `/users` (admin)
 
 ## Access and roles
 
