@@ -2,6 +2,8 @@ import { OdooClient } from '../src/odoo-client.js';
 import { ensureField, ensureRecord } from '../src/ensure.js';
 import { AI_FIELDS, FORM_FIELDS } from '../src/config/lead-fields.js';
 
+// CRM pipeline stages in Ukrainian (Нова заявка → … → Договір підписано) and custom lead fields (form + AI).
+
 const STAGES = [
   { id: 1, name: 'Нова заявка', sequence: 1 },
   { id: 2, name: 'Кваліфікована', sequence: 2 },

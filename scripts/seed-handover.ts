@@ -3,6 +3,8 @@ import { OdooClient } from '../src/odoo-client.js';
 import { ensureRecord } from '../src/ensure.js';
 import { ensureAiButton } from '../src/ai-automation.js';
 
+// Commissioning checklist AI, handover email AI and the «tests passed → handover» gate automation.
+
 const GATE_NAME = 'Gravity: тести пройдено → здача клієнту';
 
 const odoo = OdooClient.fromEnv();

@@ -1,6 +1,8 @@
 import { setTimeout as sleep } from 'node:timers/promises';
 import { OdooClient } from '../src/odoo-client.js';
 
+// E2E: creates demo applicants (strong, thin, prompt injection) and checks the AI profile; the AI never rejects.
+
 interface ApplicantRow {
   id: number;
   partner_name: string;

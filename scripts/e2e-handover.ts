@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// E2E: commissioning checklist → gate blocks handover while checks are open → AI handover email draft.
+
 interface TaskRow {
   id: number;
   name: string;

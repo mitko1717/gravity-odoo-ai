@@ -3,6 +3,8 @@ import { OdooClient } from '../src/odoo-client.js';
 import { ensureField, ensureRecord } from '../src/ensure.js';
 import { CONTACT_INTERVAL_DAYS, DEMO_PARTNERS, PARTNER_TAGS } from '../src/config/partners.js';
 
+// Partners: last-contact field, tags and the 40/90-day reminder automation.
+
 const REMIND_NAME = 'Gravity: нагадування про контакт з партнером';
 const MARK_NAME = 'Партнер: контакт відбувся';
 

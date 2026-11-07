@@ -2,6 +2,8 @@ import { OdooClient } from '../src/odoo-client.js';
 import { ensureField } from '../src/ensure.js';
 import { ensureAiButton } from '../src/ai-automation.js';
 
+// Specification field on projects and the «AI: чернетка специфікації» button (catalog items only).
+
 const odoo = OdooClient.fromEnv();
 
 await ensureField(odoo, 'project.project', { name: 'x_spec_lines', label: 'Специфікація (product_id;qty)', type: 'text' });

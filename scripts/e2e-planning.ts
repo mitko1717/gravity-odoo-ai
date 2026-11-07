@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// E2E: «Запланувати бригади» creates draft crew shifts in Planning; a rerun creates no duplicates.
+
 interface SlotRow {
   name: string;
   role_id: [number, string] | false;

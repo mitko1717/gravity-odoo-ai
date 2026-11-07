@@ -1,6 +1,8 @@
 import { OdooClient } from '../src/odoo-client.js';
 import { QUOTATION_TEMPLATE_NAME } from '../src/config/sales-catalog.js';
 
+// E2E: confirmed order → 30% prepayment invoice → payment → PM gets the «start purchasing» task.
+
 interface InvoiceRow {
   id: number;
   name: string;

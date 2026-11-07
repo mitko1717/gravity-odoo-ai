@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// E2E: runs «AI: управлінський звіт» on its Knowledge article and prints the result.
+
 const odoo = OdooClient.fromEnv();
 
 const [articleId] = await odoo.search('knowledge.article', [['name', '=', 'Управлінський звіт по об’єктах (демо)']]);

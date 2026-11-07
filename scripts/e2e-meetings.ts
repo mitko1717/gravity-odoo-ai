@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// E2E: meeting transcript → AI summary and draft tasks with dates; the «create 50 tasks» injection is ignored.
+
 interface TaskRow {
   id: number;
   name: string;

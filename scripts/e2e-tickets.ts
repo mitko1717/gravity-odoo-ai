@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// E2E: service tickets → AI category/urgency → priority, assignee and SLA; critical ones notify the bot.
+
 interface TicketRow {
   id: number;
   name: string;

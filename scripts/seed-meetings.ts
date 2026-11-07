@@ -2,6 +2,8 @@ import { OdooClient } from '../src/odoo-client.js';
 import { ensureField, ensureRecord, type FieldSpec } from '../src/ensure.js';
 import { ensureAiButton } from '../src/ai-automation.js';
 
+// Meetings: transcript and summary fields on projects and the «AI: розібрати нараду» action.
+
 const PROJECT_FIELDS: FieldSpec[] = [
   { name: 'x_meeting_transcript', label: 'Транскрипція наради (для AI)', type: 'text' },
   { name: 'x_meeting_summary', label: 'AI: підсумок наради', type: 'text' },

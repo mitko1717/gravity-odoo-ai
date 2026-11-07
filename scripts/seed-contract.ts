@@ -2,6 +2,8 @@ import { readFile } from 'node:fs/promises';
 import { OdooClient } from '../src/odoo-client.js';
 import { ensureRecord } from '../src/ensure.js';
 
+// Contract and prepayment automations: confirmed order → prepayment invoice; payment → PM task to start purchasing.
+
 interface RuleSpec {
   name: string;
   model: string;

@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// Dev helper: prints the latest leads with AI status and priority.
+
 interface LeadRow {
   id: number;
   name: string;

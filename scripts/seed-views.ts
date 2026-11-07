@@ -1,6 +1,8 @@
 import { OdooClient } from '../src/odoo-client.js';
 import { ensureRecord } from '../src/ensure.js';
 
+// Lead form tab «Gravity / AI» with the website and AI fields.
+
 const VIEW_NAME = 'crm.lead.form.gravity.ai';
 
 const ARCH = `

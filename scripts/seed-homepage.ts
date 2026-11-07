@@ -1,6 +1,8 @@
 import { OdooClient } from '../src/odoo-client.js';
 import { homepageArch } from '../src/website/homepage.js';
 
+// Demo homepage and website name; marked as an unofficial demo stand.
+
 const odoo = OdooClient.fromEnv();
 const views = await odoo.searchRead<{ id: number; website_id: [number, string] | false }>(
   'ir.ui.view',

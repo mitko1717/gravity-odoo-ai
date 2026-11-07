@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// Dev helper: prints AI tool server actions (names, schemas, code) for debugging.
+
 interface ToolAction {
   id: number;
   name: string;

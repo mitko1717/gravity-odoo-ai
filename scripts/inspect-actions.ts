@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// Dev helper: lists server action types, automation triggers and AI-related fields of this Odoo version.
+
 type FieldsGet = Record<string, { string: string; type: string; selection?: Array<[string, string]> }>;
 
 const odoo = OdooClient.fromEnv();

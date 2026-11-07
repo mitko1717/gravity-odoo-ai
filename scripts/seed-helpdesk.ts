@@ -3,6 +3,8 @@ import { ensureField, ensureRecord } from '../src/ensure.js';
 import { TICKET_AI_FIELDS } from '../src/config/ticket-fields.js';
 import { ensureAiAutomation } from '../src/ai-automation.js';
 
+// Helpdesk: AI fields on tickets, form view tab and ticket triage AI with SLA.
+
 const SLA_HOURS: Array<[priority: string, label: string, hours: number]> = [
   ['3', 'Критична: реакція за 2 год', 2],
   ['2', 'Висока: реакція за 8 год', 8],

@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// E2E: «AI: звіт по об’єкту» → project update; status and progress come from rules, AI writes only the text.
+
 interface UpdateRow {
   name: string;
   status: string;

@@ -2,6 +2,8 @@ import { OdooClient } from '../src/odoo-client.js';
 import { ensureRecord } from '../src/ensure.js';
 import { PRODUCTS, PROJECT_TEMPLATE_NAME, QUOTATION_TEMPLATE_NAME, TASK_STAGES, TEMPLATE_TASKS } from '../src/config/sales-catalog.js';
 
+// Sales → Project: task stages, the 9-step project template and the quotation template.
+
 const odoo = OdooClient.fromEnv();
 
 const stageIds: number[] = [];

@@ -3,6 +3,8 @@ import { ensureField, ensureRecord } from '../src/ensure.js';
 import { ensureAiButton } from '../src/ai-automation.js';
 import { CAMPAIGNS, MARKETING_ARTICLE } from '../src/config/marketing.js';
 
+// Marketing: UTM campaigns with demo ad spend and synthetic leads per campaign.
+
 const odoo = OdooClient.fromEnv();
 
 await ensureField(odoo, 'utm.campaign', { name: 'x_ad_spend', label: 'Рекламний бюджет, грн (демо)', type: 'float' });

@@ -2,6 +2,8 @@ import { readFile } from 'node:fs/promises';
 import { OdooClient } from '../src/odoo-client.js';
 import { ensureRecord } from '../src/ensure.js';
 
+// Lead AI analysis: read/apply tools, the on-create automation and the AI action with its prompt.
+
 const DIR = 'odoo/lead-analysis';
 const TOOL_NAME = 'Gravity AI Tool: Apply lead analysis';
 const READ_TOOL_NAME = 'Gravity AI Tool: Get lead data';

@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// Creates one synthetic «(тест)» lead to trigger the AI analysis by hand.
+
 const odoo = OdooClient.fromEnv();
 const leadId = await odoo.create('crm.lead', {
   name: 'Розумний дім, будинок 180 м² (тест)',

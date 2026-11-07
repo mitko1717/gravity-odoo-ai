@@ -3,6 +3,8 @@ import { OdooClient } from '../src/odoo-client.js';
 import { ensureRecord } from '../src/ensure.js';
 import { DONE_STAGE_NAME, EQUIPMENT, SPEC_TASK_NAME, VENDORS } from '../src/config/purchase-catalog.js';
 
+// Purchase: demo vendors and the «specification approved → draft RFQs» automation.
+
 const AUTOMATION_NAME = 'Gravity: специфікація погоджена → чернетки RFQ';
 
 const odoo = OdooClient.fromEnv();

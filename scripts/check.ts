@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// Quick health check: which key modules are installed and which CRM stages exist.
+
 const odoo = OdooClient.fromEnv();
 const modules = await odoo.searchRead<{ name: string }>(
   'ir.module.module',

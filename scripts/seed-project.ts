@@ -2,6 +2,8 @@ import { readFile } from 'node:fs/promises';
 import { OdooClient } from '../src/odoo-client.js';
 import { ensureRecord } from '../src/ensure.js';
 
+// Project automations: task deadlines from the template and escalation of overdue tasks to the manager.
+
 const odoo = OdooClient.fromEnv();
 const [taskModelId] = await odoo.search('ir.model', [['model', '=', 'project.task']]);
 const [deadlineFieldId] = await odoo.search('ir.model.fields', [['model', '=', 'project.task'], ['name', '=', 'date_deadline']]);

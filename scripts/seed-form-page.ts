@@ -2,6 +2,8 @@ import { OdooClient } from '../src/odoo-client.js';
 import { ensureRecord } from '../src/ensure.js';
 import { leadFormSection } from '../src/website/lead-form.js';
 
+// Website page /zayavka with the lead form (fields go straight into crm.lead).
+
 const KEY = 'website.gravity_zayavka';
 const URL = '/zayavka';
 

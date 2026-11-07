@@ -1,6 +1,8 @@
 import { OdooClient } from '../src/odoo-client.js';
 import { ensureAiButton } from '../src/ai-automation.js';
 
+// «AI: звіт по об’єкту» button on projects (rules compute status, AI writes the text).
+
 const odoo = OdooClient.fromEnv();
 
 const actionId = await ensureAiButton(odoo, {

@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// Dev helper: finds where the quotation template field sits on the sale order form.
+
 const odoo = OdooClient.fromEnv();
 const fields = await odoo.call<Record<string, { string: string; type: string }>>('sale.order', 'fields_get', { attributes: ['string', 'type'] });
 

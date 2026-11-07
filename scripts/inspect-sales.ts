@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// Dev helper: lists Sales/Project settings fields (templates, dependencies, milestones).
+
 type Fields = Record<string, { string: string; type: string; selection?: Array<[string, string]> }>;
 
 const odoo = OdooClient.fromEnv();

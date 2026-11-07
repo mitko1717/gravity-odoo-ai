@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// Installs Odoo modules by technical name: `npm run install:modules -- <module> [...]`.
+
 const names = process.argv.slice(2);
 
 if (names.length === 0) throw new Error('usage: npm run install:modules -- <module> [...]');

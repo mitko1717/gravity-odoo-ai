@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// Dev helper: checks website form → lead delivery (recent form mails, models allowed for website forms).
+
 const odoo = OdooClient.fromEnv();
 const mails = await odoo.call<Array<{ id: number; subject: string; model: string | false; state: string }>>(
   'mail.mail',

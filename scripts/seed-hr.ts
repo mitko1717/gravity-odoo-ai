@@ -3,6 +3,8 @@ import { ensureField, ensureRecord } from '../src/ensure.js';
 import { APPLICANT_AI_FIELDS } from '../src/config/applicant-fields.js';
 import { ensureAiAutomation } from '../src/ai-automation.js';
 
+// Recruitment: demo job, AI fields on applicants, form tab and the applicant analysis AI.
+
 const JOB_DESCRIPTION = [
   '<p>Монтажник-електрик систем розумного дому (демо-вакансія).</p>',
   '<ul><li>Досвід електромонтажу від 2 років</li><li>Читання схем, збирання щитів</li>',

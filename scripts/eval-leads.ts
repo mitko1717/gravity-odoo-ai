@@ -2,6 +2,8 @@ import { writeFile } from 'node:fs/promises';
 import { OdooClient } from '../src/odoo-client.js';
 import { CASES, type EvalCase } from '../src/eval/dataset.js';
 
+// AI quality eval: 18 synthetic leads → compares AI type, priority and budget with expected values (eval-results.md).
+
 interface AiRow {
   x_ai_status: string | false;
   x_ai_client_type: string | false;

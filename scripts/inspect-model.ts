@@ -1,5 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 
+// Dev helper: `npm run inspect -- <model> [needle]` lists the fields of any Odoo model.
+
 type Fields = Record<string, { string: string; type: string; required?: boolean; selection?: Array<[string, string]> }>;
 
 const [model, needle = ''] = process.argv.slice(2);
