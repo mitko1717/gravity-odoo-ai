@@ -278,22 +278,30 @@ interface BookingRow {
   name: string;
   start: string;
   appointment_booker_id: [number, string] | false;
+  opportunity_id: [number, string] | false;
 }
 
 // Bookings made on the public appointment page (native Odoo Appointments).
 async function newBookings(odoo: OdooClient, state: BotState, odooUrl: string): Promise<Notification[]> {
   const rows = await odoo.call<BookingRow[]>('calendar.event', 'search_read', {
     domain: [['id', '>', state.lastEventId], ['appointment_type_id', '!=', false]],
-    fields: ['name', 'start', 'appointment_booker_id'],
+    fields: ['name', 'start', 'appointment_booker_id', 'opportunity_id'],
     order: 'id',
   });
   state.lastEventId = maxId(rows, state.lastEventId);
 
-  return rows.map((event) => ({
-    text: `📅 <b>Клієнт записався на консультацію</b>\n${escapeHtml(event.name)}\nКлієнт: ${escapeHtml(event.appointment_booker_id ? event.appointment_booker_id[1] : '—')}\nПочаток: ${kyivTime(event.start)} (Київ)`,
-    keyboard: new InlineKeyboard().url('Відкрити в Odoo', recordUrl(odooUrl, 'calendar.event', event.id)),
-    role: 'sales' as const,
-  }));
+  return rows.map((event) => {
+    const client = event.appointment_booker_id ? event.appointment_booker_id[1] : '—';
+    const leadLine = event.opportunity_id ? `Лід: ${escapeHtml(event.opportunity_id[1])} → «Консультація / виїзд»` : 'Лід не знайдено: перевірте вручну';
+    const keyboard = new InlineKeyboard().url('Зустріч в Odoo', recordUrl(odooUrl, 'calendar.event', event.id));
+    if (event.opportunity_id) keyboard.row().url('Лід в Odoo', recordUrl(odooUrl, 'crm.lead', event.opportunity_id[0]));
+
+    return {
+      text: `📅 <b>Клієнт записався на консультацію</b>\n${escapeHtml(event.name)}\nКлієнт: ${escapeHtml(client)}\n${leadLine}\nПочаток: ${kyivTime(event.start)} (Київ)`,
+      keyboard,
+      role: 'sales' as const,
+    };
+  });
 }
 
 export async function collectEvents(odoo: OdooClient, state: BotState, odooUrl: string): Promise<Notification[]> {
@@ -313,7 +321,7 @@ export async function collectEvents(odoo: OdooClient, state: BotState, odooUrl: 
   return result;
 }
 
-export async function currentCursors(odoo: OdooClient): Promise<Omit<BotState, 'lastDigestDate' | 'users' | 'lastTaskWrite' | 'taskStages' | 'slaNotified' | 'slaReady'>> {
+export async function currentCursors(odoo: OdooClient): Promise<Omit<BotState, 'lastDigestDate' | 'lastWeeklyDate' | 'users' | 'lastTaskWrite' | 'taskStages' | 'slaNotified' | 'slaReady'>> {
   const last = async (model: string) => {
     const [row] = await odoo.call<Array<{ id: number }>>(model, 'search_read', { domain: [], fields: ['id'], order: 'id desc', limit: 1 });
 

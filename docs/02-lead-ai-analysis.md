@@ -48,3 +48,6 @@ After submitting, the form redirects to an own Ukrainian page `/zayavka-dyakuyem
 - Model choice, token usage and cost per call are managed by Odoo AI and not visible here.
 - The AI runs synchronously on create (≈5 s); retries/queueing are not configurable.
 - Demo currency rates.
+
+## Contact on create
+Automation «Gravity: контакт клієнта з ліда» (`odoo/lead-contact/assign-partner.py`, `npm run seed:lead-contact`) links every new lead with an email to a contact: an existing one with the same email, or a new one created from the lead. Quotation, project and consultation booking then share one client. See [17](17-telegram-bot.md) for the booking link.

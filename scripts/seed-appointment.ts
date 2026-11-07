@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { OdooClient } from '../src/odoo-client.js';
 import { ensureRecord } from '../src/ensure.js';
 import { CONSULTATION_NAME } from '../src/config/appointment.js';
@@ -33,3 +34,27 @@ const typeId = existingId === undefined
 const [row] = await odoo.searchRead<{ website_url: string | false }>('appointment.type', [['id', '=', typeId]], ['website_url']);
 
 console.log(`appointment type ${typeId}: ${process.env.ODOO_URL}${row?.website_url || ''}`);
+
+// Booking → lead link: the client books from the link sent for a lead, the automation finds that lead
+// by the booker's contact or email, moves it to «Консультація / виїзд» and closes the reminder activity.
+const LINK_NAME = 'Gravity: запис на консультацію → лід';
+const [eventModelId] = await odoo.search('ir.model', [['model', '=', 'calendar.event']]);
+if (eventModelId === undefined) throw new Error('calendar.event model not found');
+
+const linkAutomationId = await ensureRecord(odoo, 'base.automation', [['name', '=', LINK_NAME]], {
+  name: LINK_NAME,
+  model_id: eventModelId,
+  trigger: 'on_create',
+  filter_domain: "[('appointment_type_id', '!=', False)]",
+});
+
+await ensureRecord(odoo, 'ir.actions.server', [['name', '=', `${LINK_NAME} (code)`]], {
+  name: `${LINK_NAME} (code)`,
+  model_id: eventModelId,
+  state: 'code',
+  usage: 'base_automation',
+  base_automation_id: linkAutomationId,
+  code: await readFile('odoo/appointment/link-lead.py', 'utf8'),
+});
+
+console.log(`booking → lead automation -> ${linkAutomationId}`);

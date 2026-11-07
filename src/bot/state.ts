@@ -10,6 +10,8 @@ export interface BotState {
   lastTicketId: number;
   lastRfqId: number;
   lastDigestDate: string;
+  /** Date (YYYY-MM-DD) of the last Monday the weekly report was sent. */
+  lastWeeklyDate: string;
   lastApplicantId: number;
   lastEventId: number;
   /** Max write_date of pipeline tasks already seen ('' = not initialised). */
@@ -33,7 +35,7 @@ export interface BotUser {
 
 const STATE_FILE = process.env.BOT_STATE_FILE ?? 'tmp/bot-state.json';
 
-const EMPTY: BotState = { lastLeadId: 0, lastActivityId: 0, lastMessageId: 0, lastTicketId: 0, lastRfqId: 0, lastDigestDate: '', lastApplicantId: 0, lastEventId: 0, lastTaskWrite: '', taskStages: {}, slaNotified: [], slaReady: false, users: {} };
+const EMPTY: BotState = { lastLeadId: 0, lastActivityId: 0, lastMessageId: 0, lastTicketId: 0, lastRfqId: 0, lastDigestDate: '', lastWeeklyDate: '', lastApplicantId: 0, lastEventId: 0, lastTaskWrite: '', taskStages: {}, slaNotified: [], slaReady: false, users: {} };
 
 export async function loadState(): Promise<BotState | undefined> {
   try {

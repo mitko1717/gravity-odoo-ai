@@ -25,6 +25,7 @@ Status: **done** = automated and verified by e2e, **partial** = native Odoo reco
 | HR | AI applicant profile, no automatic rejection | done | 05 |
 | Finance | Spreadsheet → management report | done | 11 |
 | Management / meetings | Transcript → summary → draft tasks | done | 06 |
+| Management / weekly | Scheduled weekly owner report: rule figures + AI comment, delivered by the bot | done | 18 |
 | AI Hub | Internal assistant on Knowledge with citations | done | 07 |
 
 ## Measured quality

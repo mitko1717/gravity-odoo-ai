@@ -8,6 +8,7 @@ import { loadState, saveState, type BotState } from './state.js';
 import { createAccess } from './access.js';
 import { projectCard, projectsList, runPipelineAction } from './pipeline.js';
 import { FLOW_COMMAND, FLOW_TEXT } from './guide.js';
+import { buildWeekly, isWeeklyDue } from './weekly.js';
 import { checkButton } from './permissions.js';
 import type { Role } from './roles.js';
 
@@ -19,6 +20,7 @@ const COMMANDS = [
   { command: 'projects', description: 'Проєкти по етапах: хто зараз відповідає (далі /project_ID — картка)' },
   { command: 'stats', description: 'Статистика: ліди, кампанії, прострочення, сервіс, воронка' },
   { command: 'digest', description: 'Дайджест зараз (щодня приходить зранку сам)' },
+  { command: 'weekly', description: 'Тижневий звіт керівнику: цифри + AI-коментар (щопонеділка сам)' },
   { command: 'overdue', description: 'Прострочені задачі проєктів' },
   { command: 'whoami', description: 'Ваш chat ID' },
   { command: 'request', description: 'Запросити доступ до бота в адміністратора' },
@@ -65,6 +67,7 @@ if (loaded !== undefined && loaded.lastEventId === 0) loaded.lastEventId = curso
 const state: BotState = loaded ?? {
   ...cursors,
   lastDigestDate: new Date().toISOString().slice(0, 10),
+  lastWeeklyDate: '',
   lastTaskWrite: '',
   taskStages: {},
   slaNotified: [],
@@ -155,6 +158,12 @@ bot.callbackQuery(/^(pcard|pstage|pchk):(\w+):(\d+)$/, async (ctx) => {
 
 bot.command('stats', (ctx) => ctx.reply('Оберіть звіт:', { reply_markup: STATS_KEYBOARD }));
 bot.command('digest', async (ctx) => ctx.reply(await buildDigest(odoo), html));
+bot.command('weekly', async (ctx) => {
+  const weekly = await buildWeekly(odoo, config.odooUrl);
+  if (weekly === undefined) return ctx.reply('Статтю тижневого звіту не знайдено: запустіть npm run seed:weekly.');
+
+  return ctx.reply(weekly.text, { ...html, reply_markup: weekly.keyboard });
+});
 bot.command('overdue', async (ctx) => ctx.reply(await buildStats(odoo, 'stats:overdue'), html));
 
 bot.on('callback_query:data', async (ctx) => {
@@ -211,6 +220,12 @@ const tick = async () => {
   if (now.getHours() >= config.digestHour && state.lastDigestDate !== today) {
     await broadcast(await buildDigest(odoo));
     state.lastDigestDate = today;
+  }
+
+  if (isWeeklyDue(now, config.digestHour, state.lastWeeklyDate)) {
+    const weekly = await buildWeekly(odoo, config.odooUrl);
+    if (weekly !== undefined) await broadcast(weekly.text, { reply_markup: weekly.keyboard }, 'pm');
+    state.lastWeeklyDate = today;
   }
 
   await saveState(state);

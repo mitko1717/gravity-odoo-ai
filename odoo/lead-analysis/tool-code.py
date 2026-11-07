@@ -68,7 +68,15 @@ if not owner:
     record.write({'user_id': owner.id, 'team_id': team.id})
 if (record.name or '') in DEFAULT_TITLES and title_uk:
     record.write({'name': title_uk[:60]})
-missing_text = ', '.join(missing_fields or [])
+# Rule over AI: fields filled in the form are never reported as missing (the model sometimes lists them anyway).
+filled_by_form = {
+    'phone_or_email': bool(record.email_from or record.phone),
+    'object_type': bool(record.x_object_type),
+    'location': bool(record.x_city),
+    'area': bool(record.x_area_m2),
+}
+missing_fields = [field for field in (missing_fields or []) if not filled_by_form.get(field)]
+missing_text = ', '.join(missing_fields)
 
 record.write({
     'x_ai_status': 'needs_review' if needs_review else 'done',
