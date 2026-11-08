@@ -60,7 +60,7 @@ The 9 tasks of the project template are the stages of one object. Each stage has
 ## Consultation booking (native Appointments)
 - `npm run seed:appointment` creates «Консультація з інженером (демо)»: 1 h, Europe/Kyiv, Mon–Fri 10:00–18:00, staff = admin, published. Rerun keeps manual slot edits.
 - `lead_create` is off: the link is sent for an existing lead, so Odoo must not create a second opportunity.
-- «📅 Консультація» on a lead card returns a message draft with the booking link (the manager sends it himself) and schedules a To-Do activity «Перевірити запис на консультацію» on the lead.
+- «📅 Консультація» on a lead card returns a message draft with the booking link (the manager sends it himself) and a «🔗 Сторінка запису» button and schedules a To-Do activity «Перевірити запис на консультацію» on the lead.
 - A booking on the page → automation «Gravity: запис на консультацію → лід» (`odoo/appointment/link-lead.py`): finds the lead by the booker's contact or email, links the meeting (`opportunity_id`), moves the lead to «Консультація / виїзд», closes the «Перевірити запис на консультацію» activity and logs a note. The bot message «📅 Клієнт записався» shows the lead and a «Лід в Odoo» button; «Лід не знайдено» means a manual check.
 - Matching works because every new lead gets a contact (automation «Gravity: контакт клієнта з ліда», `odoo/lead-contact/assign-partner.py`, `npm run seed:lead-contact`): an existing contact with the same email is reused, otherwise Odoo creates one. Limitation: a client booking with a different email is not matched; `appointment.invite` with the lead in the link would remove that.
 
