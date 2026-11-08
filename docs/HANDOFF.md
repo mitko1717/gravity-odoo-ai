@@ -28,3 +28,6 @@
   notifications by role, action buttons, `/leads`, `/lead_ID`, `/stats`, `/digest`, `/request`, `/users`.
   Env: TELEGRAM_BOT_TOKEN, TELEGRAM_ADMIN_CHAT_ID, TELEGRAM_ALLOWED_CHAT_IDS, BOT_POLL_SECONDS, BOT_DIGEST_HOUR.
 - Next: bot docs (local + Railway on Monday, then delete), doc cleanup, UI walkthrough end, presentation.
+
+## 2026-11-08
+Session 6: lead contact on create, booking→lead link, booking link button, weekly owner report (cron 75, /weekly), form-filled fields never missing, demo video 3:20, /demo command. Full handoff: claude.ai Project claude/HANDOFF-2026-11-08.md
