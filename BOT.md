@@ -54,3 +54,10 @@ Runs locally (polling every 30 s, no public URL). For the review period it will 
 ## Limits
 
 State is a local JSON file; up to 30 s delay.
+
+## Deploy to Railway
+
+- Start command: `npm start` (`tsx src/bot/index.ts`, no `.env` file; variables come from Railway).
+- Variables: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ADMIN_CHAT_ID`, `TELEGRAM_ALLOWED_CHAT_IDS`, `ODOO_URL`, `ODOO_API_KEY`, `ODOO_BOT_USER_ID`, `BOT_POLL_SECONDS`, `BOT_DIGEST_HOUR` (same values as local `.env`), plus `BOT_STATE_STORE=odoo`.
+- With `BOT_STATE_STORE=odoo` the state lives in Odoo system parameter `gravity_bot.state` (Settings → Technical → System Parameters, `?debug=1`), so restarts keep approved users and cursors. On the first run it is migrated from `tmp/bot-state.json` if that file exists.
+- Run only one bot instance at a time (stop the local `npm run bot` before deploying), otherwise Telegram returns 409 Conflict.

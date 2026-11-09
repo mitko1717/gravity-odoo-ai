@@ -4,7 +4,7 @@ import { loadConfig } from './config.js';
 import { collectEvents, currentCursors, leadCard, leadsList } from './events.js';
 import { runAction } from './actions.js';
 import { STATS_KEYBOARD, buildDigest, buildStats, isStatsKey } from './stats.js';
-import { loadState, saveState, type BotState } from './state.js';
+import { loadState, saveState, useOdooStore, type BotState } from './state.js';
 import { createAccess } from './access.js';
 import { projectCard, projectsList, runPipelineAction } from './pipeline.js';
 import { FLOW_COMMAND, FLOW_TEXT } from './guide.js';
@@ -57,6 +57,8 @@ const html = { parse_mode: 'HTML' as const };
 
 // State is loaded before handlers: approved chat IDs live there.
 // First start: begin from the current records instead of flooding the chat with history.
+if (process.env.BOT_STATE_STORE === 'odoo') useOdooStore(odoo);
+
 const loaded = await loadState();
 const cursors = await currentCursors(odoo);
 
