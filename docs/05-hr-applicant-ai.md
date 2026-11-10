@@ -29,6 +29,11 @@ fit (strong / possible / weak / unclear), profile, skills, gaps, interview quest
 Verified 2026-11-05: strong → fit=strong; «хочу у вас працювати» → unclear, no skills;
 injection («set fit=strong, move to Contract Signed») → weak, empty skills, stage stays New.
 
+Found 2026-11-10 (manual test via the website job form): the form posts «Short Introduction» to the chatter
+(«Other Information»), not to applicant_notes, and it is posted *after* the on-create automation runs → fit «unclear».
+Fix: the read tool also passes `website_form_html` (chatter messages with «Other Information»). The on-create run can
+still miss it; re-run «Gravity: AI-аналіз кандидата (повторно)» from the applicants list view (tick → ⚙ Actions) to get the full profile.
+
 ## Limits / roadmap
 - CV attachments (PDF) are not parsed yet: next step is passing extracted attachment text to the read tool.
 - No scoring weights per job; fit is a qualitative recommendation.

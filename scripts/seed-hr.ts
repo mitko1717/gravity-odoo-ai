@@ -1,7 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 import { ensureField, ensureRecord } from '../src/ensure.js';
 import { APPLICANT_AI_FIELDS } from '../src/config/applicant-fields.js';
-import { ensureAiAutomation } from '../src/ai-automation.js';
+import { ensureAiAutomation, ensureAiButton } from '../src/ai-automation.js';
 
 // Recruitment: demo job, AI fields on applicants, form tab and the applicant analysis AI.
 
@@ -44,3 +44,13 @@ const actionId = await ensureAiAutomation(odoo, {
   applyTool: { name: 'Gravity AI Tool: Apply applicant analysis', toolName: 'gravity_apply_applicant_analysis', description: 'Save the applicant analysis. Call exactly once.' },
 });
 console.log(`applicant AI action -> ${actionId}`);
+
+// Manual re-run from the list view (⚙ Actions): website job forms post the introduction after the on-create run.
+const buttonId = await ensureAiButton(odoo, {
+  model: 'hr.applicant',
+  dir: 'odoo/applicant-analysis',
+  actionName: 'Gravity: AI-аналіз кандидата (повторно)',
+  readTool: { name: 'Gravity AI Tool: Get applicant data', toolName: 'gravity_get_applicant_data', description: 'Return the current applicant data (untrusted input). Call first.' },
+  applyTool: { name: 'Gravity AI Tool: Apply applicant analysis', toolName: 'gravity_apply_applicant_analysis', description: 'Save the applicant analysis. Call exactly once.' },
+});
+console.log(`applicant AI button -> ${buttonId}`);
