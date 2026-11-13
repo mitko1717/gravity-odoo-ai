@@ -26,7 +26,7 @@ for (const [index, [key, name, text]] of DEMO_LEADS.entries()) {
   const [sourceId] = await odoo.search('utm.source', [['name', '=', spec?.source ?? '']]);
   const [mediumId] = await odoo.search('utm.medium', [['name', '=', spec?.medium ?? '']]);
   const id = await odoo.create('crm.lead', {
-    name: 'Заявка з сайту',
+    name: 'Website request',
     contact_name: name,
     email_from: `mkt${index + 1}.demo@example.com`,
     description: text,
@@ -49,7 +49,7 @@ for (let attempt = 0; attempt < 36; attempt += 1) {
 for (const row of rows) console.log(`  ${row.campaign_id ? row.campaign_id[1] : '-'} | ${row.x_ai_priority} | ${row.x_ai_status} | ${row.name}`);
 
 const [articleId] = await odoo.search('knowledge.article', [['name', '=', MARKETING_ARTICLE]]);
-const [actionId] = await odoo.search('ir.actions.server', [['name', '=', 'AI: маркетинговий звіт']]);
+const [actionId] = await odoo.search('ir.actions.server', [['name', '=', 'AI: marketing report']]);
 if (articleId === undefined || actionId === undefined) throw new Error('run seed:marketing first');
 
 await odoo.call('ir.actions.server', 'run', { ids: [actionId], context: { active_id: articleId, active_ids: [articleId], active_model: 'knowledge.article' } });

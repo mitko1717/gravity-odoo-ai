@@ -11,7 +11,7 @@ const odoo = OdooClient.fromEnv();
 const arch = `<t t-name="${KEY}"><t t-call="website.layout"><div id="wrap" class="oe_structure">${leadFormSection()}</div></t></t>`;
 
 const viewId = await ensureRecord(odoo, 'ir.ui.view', [['key', '=', KEY]], {
-  name: 'Залишити заявку',
+  name: 'Send a request',
   key: KEY,
   type: 'qweb',
   arch_db: arch,
@@ -29,7 +29,7 @@ const [rootMenu] = await odoo.searchRead<{ id: number }>('website.menu', [['webs
 if (!rootMenu) throw new Error('website root menu not found');
 
 const menuId = await ensureRecord(odoo, 'website.menu', [['url', '=', URL], ['website_id', '=', 1]], {
-  name: 'Залишити заявку',
+  name: 'Send a request',
   url: URL,
   parent_id: rootMenu.id,
   website_id: 1,

@@ -3,7 +3,7 @@ today = datetime.date.today()
 rows = []
 # Top-level tasks only: commissioning checks (sub-tasks) must not inflate progress.
 for task in record.task_ids.filtered(lambda t: not t.parent_id):
-    done = task.state == '1_done' or task.stage_id.name == 'Готово'
+    done = task.state == '1_done' or task.stage_id.name == 'Done'
     deadline = task.date_deadline.date() if task.date_deadline else False
     overdue_days = (today - deadline).days if deadline and not done and deadline < today else 0
     comments = task.message_ids.filtered(lambda message: message.message_type == 'comment')[:2]

@@ -9,14 +9,14 @@ const ARCH = `
 <xpath expr="//notebook" position="inside">
   <page string="Opsline / AI" name="gravity_ai">
     <group>
-      <group string="Дані з форми">
+      <group string="Form data">
         <field name="x_object_type"/>
         <field name="x_city"/>
         <field name="x_area_m2"/>
         <field name="x_service"/>
         <field name="x_budget_text"/>
       </group>
-      <group string="AI-аналіз (рекомендація)">
+      <group string="AI analysis (recommendation)">
         <field name="x_ai_status"/>
         <field name="x_ai_client_type"/>
         <field name="x_ai_priority"/>
@@ -27,7 +27,7 @@ const ARCH = `
         <field name="x_ai_next_action"/>
       </group>
     </group>
-    <group string="AI: опис і чернетка відповіді">
+    <group string="AI: summary and reply draft">
       <field name="x_ai_summary"/>
       <field name="x_ai_reply_draft"/>
       <field name="x_ai_raw" groups="base.group_no_one"/>

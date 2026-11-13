@@ -7,10 +7,10 @@
       "items": {
         "type": "object",
         "properties": {
-          "subsystem_uk": { "type": "string", "description": "Subsystem, e.g. Освітлення, Клімат, Безпека, Шина KNX" },
-          "check_uk": { "type": "string", "description": "Concrete check with expected result, in Ukrainian" }
+          "subsystem": { "type": "string", "description": "Subsystem, e.g. Lighting, Climate, Security, KNX bus" },
+          "check": { "type": "string", "description": "Concrete check with expected result, in English" }
         },
-        "required": ["subsystem_uk", "check_uk"]
+        "required": ["subsystem", "check"]
       }
     }
   },

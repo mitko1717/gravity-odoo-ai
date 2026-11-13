@@ -1,14 +1,14 @@
-# Automation (project.task, stage set to «Готово» on the spec approval task):
+# Automation (project.task, stage set to «Done» on the spec approval task):
 # create draft RFQs per vendor from the customer's order equipment. Nothing is sent to vendors.
 for task in records:
     order = task.project_id.sale_order_id
     if not order:
-        task.message_post(body='Закупівля: до проєкту не прив’язане замовлення клієнта, RFQ не створено.')
+        task.message_post(body='Purchasing: no sales order is linked to the project, no RFQ created.')
         continue
 
     existing = env['purchase.order'].search([('origin', '=', order.name), ('state', 'in', ['draft', 'sent'])])
     if existing:
-        task.message_post(body='Закупівля: чернетки RFQ для %s вже існують (%s), нові не створено.' % (order.name, ', '.join(existing.mapped('name'))))
+        task.message_post(body='Purchasing: draft RFQs for %s already exist (%s), no new ones created.' % (order.name, ', '.join(existing.mapped('name'))))
         continue
 
     # Approved specification (x_spec_lines, from the AI draft checked by the engineer) wins over order lines.
@@ -38,10 +38,10 @@ for task in records:
     names = []
     for vendor_id in by_vendor:
         rfq = env['purchase.order'].create({'partner_id': vendor_id, 'origin': order.name, 'order_line': by_vendor[vendor_id]})
-        rfq.activity_schedule('mail.mail_activity_data_todo', summary='Перевірити й надіслати RFQ постачальнику', user_id=buyer.id)
+        rfq.activity_schedule('mail.mail_activity_data_todo', summary='Review and send the RFQ to the vendor', user_id=buyer.id)
         names.append(rfq.name)
 
-    note = 'Закупівля: створено чернетки RFQ: %s.' % (', '.join(names) or 'немає позицій з постачальником')
+    note = 'Purchasing: draft RFQs created: %s.' % (', '.join(names) or 'no items with a vendor')
     if without_vendor:
-        note += ' Без постачальника (потрібна ручна закупівля): ' + ', '.join(without_vendor)
+        note += ' Without a vendor (manual purchase needed): ' + ', '.join(without_vendor)
     task.message_post(body=note)

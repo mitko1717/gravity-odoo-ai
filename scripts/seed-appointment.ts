@@ -23,7 +23,7 @@ const values: Record<string, unknown> = {
   max_schedule_days: 30,
   lead_create: false,
   is_published: true,
-  message_intro: '<p>Безкоштовна консультація з інженером: обговоримо об’єкт, системи та строки. Неофіційний демонстраційний стенд, дані синтетичні.</p>',
+  message_intro: '<p>Free consultation with an engineer: we discuss your property, systems and timeline. Fictional demo company, synthetic data.</p>',
 };
 
 // Slots are replaced only on first creation, so manual edits in Odoo survive reruns.
@@ -36,8 +36,8 @@ const [row] = await odoo.searchRead<{ website_url: string | false }>('appointmen
 console.log(`appointment type ${typeId}: ${process.env.ODOO_URL}${row?.website_url || ''}`);
 
 // Booking → lead link: the client books from the link sent for a lead, the automation finds that lead
-// by the booker's contact or email, moves it to «Консультація / виїзд» and closes the reminder activity.
-const LINK_NAME = 'Opsline: запис на консультацію → лід';
+// by the booker's contact or email, moves it to «Consultation / site visit» and closes the reminder activity.
+const LINK_NAME = 'Opsline: consultation booking → lead';
 const [eventModelId] = await odoo.search('ir.model', [['model', '=', 'calendar.event']]);
 if (eventModelId === undefined) throw new Error('calendar.event model not found');
 

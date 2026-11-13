@@ -5,7 +5,7 @@ import { DONE_STAGE_NAME, EQUIPMENT, SPEC_TASK_NAME, VENDORS } from '../src/conf
 
 // Purchase: demo vendors and the «specification approved → draft RFQs» automation.
 
-const AUTOMATION_NAME = 'Opsline: специфікація погоджена → чернетки RFQ';
+const AUTOMATION_NAME = 'Opsline: specification approved → draft RFQs';
 
 const odoo = OdooClient.fromEnv();
 

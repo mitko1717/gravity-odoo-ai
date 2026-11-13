@@ -34,7 +34,11 @@ export async function ensureField(odoo: OdooClient, model: string, spec: FieldSp
     ['name', '=', spec.name],
   ]);
 
-  if (existingId !== undefined) return existingId;
+  if (existingId !== undefined) {
+    await syncFieldLabels(odoo, existingId, spec);
+
+    return existingId;
+  }
 
   const selectionCommands = (spec.options ?? []).map(([value, label], index) => [
     0,
@@ -51,4 +55,18 @@ export async function ensureField(odoo: OdooClient, model: string, spec: FieldSp
     store: true,
     ...(spec.type === 'selection' ? { selection_ids: selectionCommands } : {}),
   });
+}
+
+// Keeps labels of an existing field (and its selection options) in line with the spec, e.g. after translation.
+async function syncFieldLabels(odoo: OdooClient, fieldId: number, spec: FieldSpec): Promise<void> {
+  await odoo.write('ir.model.fields', [fieldId], { field_description: spec.label });
+
+  for (const [value, label] of spec.options ?? []) {
+    const optionIds = await odoo.search('ir.model.fields.selection', [
+      ['field_id', '=', fieldId],
+      ['value', '=', value],
+    ]);
+
+    if (optionIds.length > 0) await odoo.write('ir.model.fields.selection', optionIds, { name: label });
+  }
 }

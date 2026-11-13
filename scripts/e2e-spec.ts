@@ -1,14 +1,15 @@
 import { OdooClient } from '../src/odoo-client.js';
 import { QUOTATION_TEMPLATE_NAME } from '../src/config/sales-catalog.js';
 
-// Lead with AI data: «Розумний дім, будинок 180 м² під Києвом» (synthetic eval set).
-const LEAD_NAME = 'Розумний дім, будинок 180 м² під Києвом';
+// Lead with AI data from the synthetic eval set: case S01 (house 180 m² near Kyiv). Found by email: the title is
+// written by AI and the contact name comes from the linked client.
+const LEAD_EMAIL = 's01@example.com';
 
 const odoo = OdooClient.fromEnv();
-const [leadId] = await odoo.search('crm.lead', [['name', '=', LEAD_NAME]]);
-if (leadId === undefined) throw new Error(`lead not found: ${LEAD_NAME}`);
+const [leadId] = await odoo.search('crm.lead', [['email_from', '=', LEAD_EMAIL]]);
+if (leadId === undefined) throw new Error(`lead not found: ${LEAD_EMAIL}, run npm run eval`);
 
-const partnerId = await odoo.create('res.partner', { name: 'E2E Демо Клієнт', email: 'e2e.demo@example.com' });
+const partnerId = await odoo.create('res.partner', { name: 'E2E Demo Client', email: 'e2e.demo@example.com' });
 const [templateId] = await odoo.search('sale.order.template', [['name', '=', QUOTATION_TEMPLATE_NAME]]);
 if (templateId === undefined) throw new Error('quotation template not found, run seed:sales');
 
@@ -25,7 +26,7 @@ const [order] = await odoo.searchRead<{ name: string; project_ids: number[] }>('
 const projectId = order?.project_ids[0];
 if (projectId === undefined) throw new Error('no project created');
 
-const [actionId] = await odoo.search('ir.actions.server', [['name', '=', 'AI: чернетка специфікації']]);
+const [actionId] = await odoo.search('ir.actions.server', [['name', '=', 'AI: draft specification']]);
 if (actionId === undefined) throw new Error('run seed:spec first');
 
 const startedAt = Date.now();
@@ -36,7 +37,7 @@ await odoo.call('ir.actions.server', 'run', {
 const seconds = ((Date.now() - startedAt) / 1000).toFixed(1);
 
 const [project] = await odoo.searchRead<{ x_spec_lines: string | false }>('project.project', [['id', '=', projectId]], ['x_spec_lines']);
-const [designTask] = await odoo.searchRead<{ description: string | false }>('project.task', [['project_id', '=', projectId], ['name', '=', 'Проєктування']], ['description']);
+const [designTask] = await odoo.searchRead<{ description: string | false }>('project.task', [['project_id', '=', projectId], ['name', '=', 'System design']], ['description']);
 const text = String(designTask?.description || '').replace(/<\/(p|tr)>|<br\/?>/g, '\n').replace(/<[^>]+>/g, ' ');
 
 console.log(`order ${order?.name} -> project ${projectId}, AI ${seconds} s`);

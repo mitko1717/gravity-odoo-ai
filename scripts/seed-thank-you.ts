@@ -9,11 +9,11 @@ const URL = '/zayavka-dyakuyemo';
 const content = `
 <section class="pt96 pb96">
   <div class="container text-center">
-    <h1 class="display-4">Дякуємо! Заявку отримано.</h1>
-    <p class="lead mt-3">Менеджер зв’яжеться з вами найближчим часом, щоб уточнити деталі об’єкта та домовитися про консультацію.</p>
-    <p class="mt-3">Якщо щось термінове — опишіть проблему ще раз у формі з позначкою «терміново».</p>
-    <p class="mt-4"><a class="btn btn-primary btn-lg" href="/">На головну</a> <a class="btn btn-outline-primary btn-lg ms-2" href="/zayavka">Ще одна заявка</a></p>
-    <p class="text-muted small mt-5">Неофіційний демонстраційний стенд для тестового завдання. Дані не передаються компанії Opsline.</p>
+    <h1 class="display-4">Thank you! Your request has been received.</h1>
+    <p class="lead mt-3">A manager will contact you shortly to clarify the details and arrange a consultation.</p>
+    <p class="mt-3">If it is urgent, describe the problem again in the form and mark it «urgent».</p>
+    <p class="mt-4"><a class="btn btn-primary btn-lg" href="/">Back to home</a> <a class="btn btn-outline-primary btn-lg ms-2" href="/zayavka">Another request</a></p>
+    <p class="text-muted small mt-5">Northwind Home Systems is a fictional company; demo stand built by Opsline.</p>
   </div>
 </section>`;
 
@@ -21,7 +21,7 @@ const odoo = OdooClient.fromEnv();
 const arch = `<t t-name="${KEY}"><t t-call="website.layout"><div id="wrap" class="oe_structure">${content}</div></t></t>`;
 
 const viewId = await ensureRecord(odoo, 'ir.ui.view', [['key', '=', KEY]], {
-  name: 'Дякуємо за заявку',
+  name: 'Thank you for your request',
   key: KEY,
   type: 'qweb',
   arch_db: arch,

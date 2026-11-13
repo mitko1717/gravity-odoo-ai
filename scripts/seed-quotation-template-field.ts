@@ -6,7 +6,7 @@ import { ensureRecord } from '../src/ensure.js';
 const VIEW_NAME = 'Opsline: quotation template next to customer';
 const ARCH = `<data>
   <field name="partner_id" position="after">
-    <field name="sale_order_template_id" string="Шаблон пропозиції" options="{'no_create': True}" readonly="state in ['cancel', 'sale']"/>
+    <field name="sale_order_template_id" string="Quotation template" options="{'no_create': True}" readonly="state in ['cancel', 'sale']"/>
   </field>
 </data>`;
 

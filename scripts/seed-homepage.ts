@@ -1,7 +1,7 @@
 import { OdooClient } from '../src/odoo-client.js';
 import { homepageArch } from '../src/website/homepage.js';
 
-// Demo homepage and website name; marked as an unofficial demo stand.
+// Demo homepage, website and company name of the fictional demo company.
 
 const odoo = OdooClient.fromEnv();
 const views = await odoo.searchRead<{ id: number; website_id: [number, string] | false }>(
@@ -13,9 +13,9 @@ const target = views.find((view) => view.website_id && view.website_id[0] === 1)
 if (!target) throw new Error('website.homepage view not found');
 
 await odoo.write('ir.ui.view', [target.id], { arch_db: homepageArch('website.homepage') });
-await odoo.write('website', [1], { name: 'Smart Home — демо-стенд' });
+await odoo.write('website', [1], { name: 'Northwind Home Systems (demo)' });
 await odoo.write('res.company', [1], {
-  name: 'Демо-стенд Smart Home (тестове завдання)',
+  name: 'Northwind Home Systems (demo)',
   phone: '+380 00 000 0000',
   email: 'demo@example.com',
 });

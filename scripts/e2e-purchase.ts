@@ -41,7 +41,7 @@ console.log(`project ${project.id}, order ${orderName}: +${lines.length} equipme
 
 const [taskId] = await odoo.search('project.task', [['project_id', '=', project.id], ['name', '=', SPEC_TASK_NAME]]);
 const [doneStageId] = await odoo.search('project.task.type', [['name', '=', DONE_STAGE_NAME], ['project_ids', 'in', [project.id]]]);
-const [workStageId] = await odoo.search('project.task.type', [['name', '=', 'В роботі'], ['project_ids', 'in', [project.id]]]);
+const [workStageId] = await odoo.search('project.task.type', [['name', '=', 'In progress'], ['project_ids', 'in', [project.id]]]);
 
 if (taskId === undefined || doneStageId === undefined || workStageId === undefined) throw new Error('spec task or stages not found');
 
@@ -57,7 +57,7 @@ for (const run of [1, 2]) {
 }
 
 const [lastNote] = await odoo.call<Array<{ body: string }>>('mail.message', 'search_read', {
-  domain: [['model', '=', 'project.task'], ['res_id', '=', taskId], ['body', 'ilike', 'Закупівля']],
+  domain: [['model', '=', 'project.task'], ['res_id', '=', taskId], ['body', 'ilike', 'Purchasing']],
   fields: ['body'],
   order: 'id desc',
   limit: 1,

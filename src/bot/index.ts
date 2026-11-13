@@ -13,41 +13,41 @@ import { checkButton } from './permissions.js';
 import type { Role } from './roles.js';
 
 const COMMANDS = [
-  { command: 'help', description: 'Список команд з поясненнями' },
+  { command: 'help', description: 'Command list with explanations' },
   FLOW_COMMAND,
-  { command: 'demo', description: 'Демо-відео (3 хв) і презентація проєкту' },
-  { command: 'leads', description: 'Список лідів без пропозиції (далі /lead_ID — картка з кнопками)' },
-  { command: 'projects', description: 'Проєкти по етапах: хто зараз відповідає (далі /project_ID — картка)' },
-  { command: 'stats', description: 'Статистика: ліди, кампанії, прострочення, сервіс, воронка' },
-  { command: 'digest', description: 'Дайджест зараз (щодня приходить зранку сам)' },
-  { command: 'weekly', description: 'Тижневий звіт керівнику: цифри + AI-коментар (щопонеділка сам)' },
-  { command: 'overdue', description: 'Прострочені задачі проєктів' },
-  { command: 'whoami', description: 'Ваш chat ID' },
-  { command: 'request', description: 'Запросити доступ до бота в адміністратора' },
-  { command: 'users', description: 'Адмін: користувачі та їхні ролі' },
+  { command: 'demo', description: 'Demo video (3 min) and project deck' },
+  { command: 'leads', description: 'Leads without a quotation (then /lead_ID for a card with buttons)' },
+  { command: 'projects', description: 'Projects by stage: who is responsible now (then /project_ID for a card)' },
+  { command: 'stats', description: 'Stats: leads, campaigns, overdue, service, funnel' },
+  { command: 'digest', description: 'Digest now (it also arrives every morning)' },
+  { command: 'weekly', description: 'Weekly owner report: figures + AI commentary (every Monday)' },
+  { command: 'overdue', description: 'Overdue project tasks' },
+  { command: 'whoami', description: 'Your chat ID' },
+  { command: 'request', description: 'Ask the administrator for bot access' },
+  { command: 'users', description: 'Admin: users and their roles' },
 ];
 
 const HELP = [
-  '<b>Opsline × Odoo — демо-бот</b> (неофіційний стенд, синтетичні дані)',
+  '<b>Opsline ops bot</b> · demo company Northwind Home Systems (synthetic data)',
   '',
   ...COMMANDS.map((item) => `/${item.command} — ${item.description}`),
   '',
-  '<b>Сповіщення приходять самі:</b>',
-  '📋 /leads — список, /lead_ID — картка ліда з кнопками',
-  '📁 /projects — етапи об’єктів; /project_ID — статус кожного етапу, кнопки «В роботу / На перевірку / Готово», 🧪 чекліст',
-  '👉 «Ваша черга» — коли попередній етап завершено, відповідальний за наступний отримує сповіщення',
-  '🆕 новий лід з AI-розбором → «Взяти в роботу», «Чернетка відповіді», «Створити пропозицію»',
-  '📄 чернетка пропозиції → «Підтвердити замовлення» (проєкт + рахунок на передоплату)',
-  '📐 AI-чернетка специфікації → «Погодити» (створює RFQ)',
-  '🛒 чернетка закупівлі → «Підтвердити закупівлю»',
-  '👤 новий кандидат з AI-профілем (HR)',
-  '⏰ прострочена задача → «+3 дні», «Готово»',
-  '⛔ здача заблокована, 💬 передоплату отримано, тести пройдено',
-  '🚨 критичний сервісний тікет → «Беру»',
+  '<b>Notifications arrive on their own:</b>',
+  '📋 /leads for the list, /lead_ID for a lead card with buttons',
+  '📁 /projects for project stages; /project_ID for each stage status, buttons «Start / To review / Done», 🧪 checklist',
+  '👉 «Your turn»: when a stage is finished, the owner of the next stage is notified',
+  '🆕 new lead with AI analysis → «Take it», «Reply draft», «Create quotation»',
+  '📄 draft quotation → «Confirm order» (project + prepayment invoice)',
+  '📐 AI draft specification → «Approve» (creates RFQs)',
+  '🛒 draft purchase → «Confirm purchase»',
+  '👤 new applicant with an AI profile (HR)',
+  '⏰ overdue task → «+3 days», «Done»',
+  '⛔ handover blocked, 💬 prepayment received, tests passed',
+  '🚨 critical service ticket → «I take it»',
   '',
-  'Сповіщення приходять за ролями (продажі, PM, інженер, закупівлі, сервіс, HR); ролі призначає адміністратор у /users.',
+  'Notifications go by role (sales, PM, engineer, purchasing, service, HR); the administrator assigns roles in /users.',
   '',
-  'Кожна дія з бота залишає запис в Odoo. Бот нічого не надсилає клієнтам і постачальникам.',
+  'Every bot action leaves a record in Odoo. The bot never sends anything to clients or vendors.',
 ].join('\n');
 
 const config = loadConfig();
@@ -81,41 +81,41 @@ const access = createAccess({ bot, state, adminChatId: config.adminChatId, envCh
 const allowedChats = access.allowedChats;
 
 const DESCRIPTION = [
-  'Демо-бот для тестового завдання Opsline × Odoo (неофіційний стенд, усі дані синтетичні).',
+  'Opsline demo bot for Odoo (fictional company Northwind Home Systems, all data synthetic).',
   '',
-  'Що вміє: нові заявки з AI-розбором, погодження специфікацій і закупівель, прострочені задачі, критичні сервісні тікети, статистика й ранковий дайджест.',
+  'What it does: new requests with AI analysis, specification and purchase approvals, overdue tasks, critical service tickets, stats and a morning digest.',
   '',
-  'Натисніть Start, а потім /request, щоб попросити доступ.',
+  'Press Start, then /request to ask for access.',
 ].join('\n');
 
 const WELCOME = [
-  '👋 <b>Вітаю! Це демо-бот Opsline × Odoo.</b>',
+  '👋 <b>Hi! This is the Opsline demo bot for Odoo.</b>',
   '',
-  'Він показує, як команда може працювати з ERP прямо з Telegram:',
-  '• нові заявки з сайту одразу з AI-розбором і кнопкою «Взяти в роботу»;',
-  '• погодження специфікацій і закупівель однією кнопкою;',
-  '• сигнали про прострочені задачі, блокування здачі, оплати та критичні тікети;',
-  '• статистика й ранковий дайджест.',
+  'It shows how a team can work with the ERP right from Telegram:',
+  '• new website requests arrive with AI analysis and a «Take it» button;',
+  '• one-tap approval of specifications and purchases;',
+  '• alerts about overdue tasks, blocked handovers, payments and critical tickets;',
+  '• stats and a morning digest.',
   '',
-  'Це неофіційний демонстраційний стенд, дані синтетичні.',
-  'Подивитися демо-відео і презентацію: /demo',
-  'Щоб отримати доступ, надішліть /request — адміністратор підтвердить запит.',
+  'Northwind Home Systems is a fictional company; all data is synthetic.',
+  'Demo video and deck: /demo',
+  'To get access, send /request and the administrator will approve it.',
 ].join('\n');
 
 // Public links: available before access is granted, so reviewers can watch the demo first.
-const DEMO_TEXT = '🎬 <b>Демо Opsline × Odoo × AI</b>\nВідео (3 хв, титри): заявка з сайту → AI → CRM → пропозиція → проєкт → закупівлі → перевірки → здача, плюс сервіс, HR, наради й AI-асистент.\nПрезентація: 10 слайдів про проблему, рішення та метрики.\nAI-асистент відповідає лише з внутрішніх регламентів (відкривається для користувачів Odoo-стенду).';
+const DEMO_TEXT = '🎬 <b>Opsline demo: Odoo × AI</b>\nVideo (3 min, captions): website request → AI → CRM → quotation → project → purchasing → checks → handover, plus service, HR, meetings and the AI assistant.\nDeck: 10 slides on the problem, the solution and the metrics.\nThe AI assistant answers only from internal regulations (opens for users of the Odoo stand).';
 const DEMO_KEYBOARD = new InlineKeyboard()
-  .url('▶ Відео', 'https://claude.ai/artifact/9mntsBuQdJ38R4xooKN81z')
+  .url('▶ Video', 'https://claude.ai/artifact/9mntsBuQdJ38R4xooKN81z')
   .row()
-  .url('📊 Презентація', 'https://claude.ai/artifact/Jk3Wfpe1ruCBocPP4TTYxf')
+  .url('📊 Deck', 'https://claude.ai/artifact/Jk3Wfpe1ruCBocPP4TTYxf')
   .row()
-  .url('💻 Репозиторій', 'https://github.com/mitko1717/gravity-odoo-ai')
+  .url('💻 Repository', 'https://github.com/mitko1717/gravity-odoo-ai')
   .row()
-  .url('🤖 AI-асистент (Odoo, потрібен вхід)', 'https://test6017.odoo.com/odoo/action-919/discuss?scoped_ai_agent_id=7');
+  .url('🤖 AI assistant (Odoo, login required)', 'https://test6017.odoo.com/odoo/action-919/discuss?scoped_ai_agent_id=7');
 
 bot.command('start', (ctx) => ctx.reply(allowedChats().includes(ctx.chat.id) ? HELP : WELCOME, html));
 
-bot.command('whoami', (ctx) => ctx.reply(`Ваш chat ID: <code>${ctx.chat.id}</code>`, html));
+bot.command('whoami', (ctx) => ctx.reply(`Your chat ID: <code>${ctx.chat.id}</code>`, html));
 
 bot.command('demo', (ctx) => ctx.reply(DEMO_TEXT, { ...html, reply_markup: DEMO_KEYBOARD }));
 
@@ -127,7 +127,7 @@ bot.command('leads', async (ctx) => ctx.reply(await leadsList(odoo), html));
 // /lead_61 (clickable in the list) or /lead 61
 bot.hears(/^\/lead(?:_|\s+)(\d+)/, async (ctx) => {
   const card = await leadCard(odoo, config.odooUrl, Number(ctx.match[1]));
-  if (card === undefined) return ctx.reply('Лід не знайдено.');
+  if (card === undefined) return ctx.reply('Lead not found.');
 
   return ctx.reply(card.text, { ...html, reply_markup: card.keyboard });
 });
@@ -138,7 +138,7 @@ bot.command('projects', async (ctx) => ctx.reply(await projectsList(odoo), html)
 
 bot.hears(/^\/project(?:_|\s+)(\d+)/, async (ctx) => {
   const card = await projectCard(odoo, config.odooUrl, Number(ctx.match[1]));
-  if (card === undefined) return ctx.reply('Проєкт не знайдено.');
+  if (card === undefined) return ctx.reply('Project not found.');
 
   return ctx.reply(card.text, { ...html, reply_markup: card.keyboard });
 });
@@ -154,15 +154,15 @@ bot.callbackQuery(/^(pcard|pstage|pchk):(\w+):(\d+)$/, async (ctx) => {
     const result = await runPipelineAction({ odoo, odooUrl: config.odooUrl, actor }, String(ctx.match[1]), String(ctx.match[2]), Number(ctx.match[3]));
     await ctx.reply(result.text, { ...html, reply_markup: result.keyboard });
   } catch (error) {
-    await ctx.reply(`Помилка: ${error instanceof Error ? error.message : String(error)}`);
+    await ctx.reply(`Error: ${error instanceof Error ? error.message : String(error)}`);
   }
 });
 
-bot.command('stats', (ctx) => ctx.reply('Оберіть звіт:', { reply_markup: STATS_KEYBOARD }));
+bot.command('stats', (ctx) => ctx.reply('Choose a report:', { reply_markup: STATS_KEYBOARD }));
 bot.command('digest', async (ctx) => ctx.reply(await buildDigest(odoo), html));
 bot.command('weekly', async (ctx) => {
   const weekly = await buildWeekly(odoo, config.odooUrl);
-  if (weekly === undefined) return ctx.reply('Статтю тижневого звіту не знайдено: запустіть npm run seed:weekly.');
+  if (weekly === undefined) return ctx.reply('Weekly report article not found: run npm run seed:weekly.');
 
   return ctx.reply(weekly.text, { ...html, reply_markup: weekly.keyboard });
 });
@@ -192,7 +192,7 @@ bot.on('callback_query:data', async (ctx) => {
     const result = await runAction({ odoo, odooUserId: config.odooUserId, odooUrl: config.odooUrl, actor }, data);
     await ctx.reply(result.text, { ...html, reply_markup: result.keyboard });
   } catch (error) {
-    await ctx.reply(`Помилка: ${error instanceof Error ? error.message : String(error)}`);
+    await ctx.reply(`Error: ${error instanceof Error ? error.message : String(error)}`);
   }
 });
 
@@ -237,7 +237,7 @@ const main = async () => {
   await saveState(state);
   await bot.api.setMyCommands(COMMANDS);
   await bot.api.setMyDescription(DESCRIPTION);
-  await bot.api.setMyShortDescription('Демо: Odoo + AI для smart home компанії. Ліди, погодження, статистика.');
+  await bot.api.setMyShortDescription('Opsline demo: Odoo + AI for a service business. Leads, approvals, stats.');
 
   let running = false;
   setInterval(() => {

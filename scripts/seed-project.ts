@@ -33,13 +33,13 @@ async function ensureAutomation(name: string, values: Record<string, unknown>, c
   return automationId;
 }
 
-const deadlinesId = await ensureAutomation('Opsline: дедлайни задач проєкту', {
+const deadlinesId = await ensureAutomation('Opsline: project task deadlines', {
   trigger: 'on_create',
-  filter_domain: "[('date_deadline', '=', False), '!', ('tag_ids.name', '=', 'AI-чернетка')]",
+  filter_domain: "[('date_deadline', '=', False), '!', ('tag_ids.name', '=', 'AI draft')]",
 }, deadlinesCode);
 console.log(`deadlines automation -> ${deadlinesId}`);
 
-const escalateId = await ensureAutomation('Opsline: ескалація простроченої задачі', {
+const escalateId = await ensureAutomation('Opsline: overdue task escalation', {
   trigger: 'on_time',
   trg_date_id: deadlineFieldId,
   trg_date_range: 1,

@@ -3,9 +3,9 @@
   "properties": {
     "category": { "type": "string", "enum": ["lighting", "climate", "security", "network", "electrical", "heat_pump", "other"] },
     "urgency": { "type": "string", "enum": ["critical", "high", "normal", "low"] },
-    "summary_uk": { "type": "string", "description": "1-2 sentences in Ukrainian" },
-    "next_action_uk": { "type": "string", "description": "One concrete next step for the service engineer in Ukrainian" },
-    "reply_draft_uk": { "type": "string", "description": "Short polite reply to the customer in Ukrainian, no promises of time or price" }
+    "summary": { "type": "string", "description": "1-2 sentences in English" },
+    "next_action": { "type": "string", "description": "One concrete next step for the service engineer in English" },
+    "reply_draft": { "type": "string", "description": "Short polite reply to the customer in English, no promises of time or price" }
   },
-  "required": ["category", "urgency", "summary_uk", "next_action_uk", "reply_draft_uk"]
+  "required": ["category", "urgency", "summary", "next_action", "reply_draft"]
 }

@@ -14,14 +14,14 @@ interface RuleSpec {
 
 const RULES: RuleSpec[] = [
   {
-    name: 'Opsline: замовлення підтверджено → рахунок на передоплату',
+    name: 'Opsline: order confirmed → prepayment invoice',
     model: 'sale.order',
     preDomain: "[('state', '!=', 'sale')]",
     domain: "[('state', '=', 'sale')]",
     codeFile: 'odoo/contract/order-confirmed.py',
   },
   {
-    name: 'Opsline: передоплату отримано → PM запускає закупівлі',
+    name: 'Opsline: prepayment received → PM starts purchasing',
     model: 'account.move',
     preDomain: "[('payment_state', 'not in', ['paid', 'in_payment'])]",
     domain: "[('move_type', '=', 'out_invoice'), ('payment_state', 'in', ['paid', 'in_payment'])]",

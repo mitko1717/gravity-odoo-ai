@@ -12,18 +12,18 @@ export const stripHtml = (value: unknown): string =>
 
 export const recordUrl = (odooUrl: string, model: string, id: number): string => `${odooUrl}/odoo/${model}/${id}`;
 
-export const PRIORITY_LABEL: Record<string, string> = { high: '🔴 високий', medium: '🟡 середній', low: '⚪ низький' };
+export const PRIORITY_LABEL: Record<string, string> = { high: '🔴 high', medium: '🟡 medium', low: '⚪ low' };
 
 const SERVICE_LABEL: Record<string, string> = {
-  smart_home: 'розумний дім',
-  lighting: 'освітлення',
-  climate: 'клімат',
-  security: 'безпека',
-  electrical: 'електрика',
-  engineering: 'інженерні системи',
-  heat_pump: 'тепловий насос',
-  service: 'сервіс',
-  other: 'інше',
+  smart_home: 'smart home',
+  lighting: 'lighting',
+  climate: 'climate',
+  security: 'security',
+  electrical: 'electrical',
+  engineering: 'engineering systems',
+  heat_pump: 'heat pump',
+  service: 'service',
+  other: 'other',
 };
 
 export const serviceLabels = (codes: string): string =>
@@ -35,17 +35,17 @@ export const serviceLabels = (codes: string): string =>
     .join(', ');
 
 const MISSING_LABEL: Record<string, string> = {
-  phone_or_email: 'телефон або email',
-  phone: 'телефон',
+  phone_or_email: 'phone or email',
+  phone: 'phone',
   email: 'email',
-  object_type: 'тип об’єкта',
-  location: 'локація',
-  city: 'місто',
-  area: 'площа',
-  area_m2: 'площа',
-  budget: 'бюджет',
-  timeline: 'строки',
-  services: 'послуги',
+  object_type: 'property type',
+  location: 'location',
+  city: 'city',
+  area: 'area',
+  area_m2: 'area',
+  budget: 'budget',
+  timeline: 'timeline',
+  services: 'services',
 };
 
 export const missingLabels = (codes: string): string =>

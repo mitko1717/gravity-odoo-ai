@@ -1,7 +1,7 @@
 # Automation (calendar.event, on create, appointment bookings only): attach the booking to the client's lead.
 # Match: the booker's contact (same email) on an open lead; the newest lead wins.
-CONSULT_STAGE = 'Консультація / виїзд'
-ACTIVITY_SUMMARY = 'Перевірити запис на консультацію'
+CONSULT_STAGE = 'Consultation / site visit'
+ACTIVITY_SUMMARY = 'Check the consultation booking'
 
 for event in records:
     booker = event.appointment_booker_id
@@ -24,6 +24,6 @@ for event in records:
     # The booking runs as the public website user: activities are read with sudo to see the manager's To-Do.
     pending = env['mail.activity'].sudo().search([('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id), ('summary', '=', ACTIVITY_SUMMARY)])
     if pending:
-        pending.action_feedback(feedback='Клієнт записався сам через сторінку запису.')
+        pending.action_feedback(feedback='The client booked via the booking page.')
 
-    lead.message_post(body='📅 Клієнт записався на консультацію: %s. Зустріч прив’язана до ліда.' % event.display_name)
+    lead.message_post(body='📅 The client booked a consultation: %s. The meeting is linked to the lead.' % event.display_name)

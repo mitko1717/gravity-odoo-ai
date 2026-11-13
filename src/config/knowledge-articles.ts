@@ -1,58 +1,58 @@
-// Synthetic internal regulations for the demo. Not Opsline's real policies.
+// Synthetic internal regulations for the demo company Northwind Home Systems. Not real policies.
 export interface ArticleSpec {
   name: string;
   body: string;
 }
 
-const DEMO_NOTE = '<p><i>Демо-регламент для тестового завдання. Не є чинним документом компанії.</i></p>';
+const DEMO_NOTE = '<p><i>Demo regulation with synthetic content. Not a binding company document.</i></p>';
 
 export const KNOWLEDGE_ARTICLES: ArticleSpec[] = [
   {
-    name: 'Регламент сервісу та SLA (демо)',
+    name: 'Service and SLA policy (demo)',
     body: DEMO_NOTE + [
-      '<h2>Пріоритети звернень</h2>',
-      '<ul><li>Критичний (запах гару, іскріння, відсутність живлення об’єкта): реакція до 2 год, виїзд того ж дня.</li>',
-      '<li>Високий (не працює безпека, опалення взимку): реакція до 8 год.</li>',
-      '<li>Звичайний (окремий сценарій, застосунок): реакція до 24 год.</li>',
-      '<li>Низький (побажання, нові сценарії): планується в робочому порядку.</li></ul>',
-      '<h2>Кроки інженера</h2>',
-      '<ol><li>Підтвердити звернення клієнту.</li><li>Уточнити симптоми, фото/відео.</li>',
-      '<li>Спробувати віддалену діагностику.</li><li>Якщо не вирішено — запланувати виїзд.</li>',
-      '<li>Закрити тікет із коментарем про причину.</li></ol>',
-      '<p>При ризику для життя (іскріння, запах гару) клієнту радять знеструмити об’єкт і викликати аварійну службу.</p>',
+      '<h2>Request priorities</h2>',
+      '<ul><li>Critical (burning smell, sparking, no power at the property): response within 2 h, visit the same day.</li>',
+      '<li>High (security down, no heating in winter): response within 8 h.</li>',
+      '<li>Normal (a single scene, the app): response within 24 h.</li>',
+      '<li>Low (wishes, new scenes): scheduled in the normal order.</li></ul>',
+      '<h2>Engineer steps</h2>',
+      '<ol><li>Confirm the request to the client.</li><li>Clarify symptoms, photos/videos.</li>',
+      '<li>Try remote diagnostics.</li><li>If not solved, schedule a site visit.</li>',
+      '<li>Close the ticket with a comment on the root cause.</li></ol>',
+      '<p>If there is a risk to life (sparking, burning smell), advise the client to cut the power and call the emergency service.</p>',
     ].join(''),
   },
   {
-    name: 'Гарантія на роботи та обладнання (демо)',
+    name: 'Warranty on works and equipment (demo)',
     body: DEMO_NOTE + [
-      '<ul><li>Гарантія на монтажні роботи: 24 місяці з дати акту здачі.</li>',
-      '<li>Гарантія на обладнання: за умовами виробника (зазвичай 12–36 місяців).</li>',
-      '<li>Не гарантійні випадки: втручання третіх осіб, перепади напруги без стабілізатора, механічні пошкодження.</li>',
-      '<li>Гарантійний виїзд безкоштовний; негарантійний оплачується за прайсом сервісу.</li></ul>',
-      '<p>Для гарантійного випадку потрібні: номер договору, акт здачі, опис проблеми.</p>',
+      '<ul><li>Warranty on installation works: 24 months from the handover certificate date.</li>',
+      '<li>Warranty on equipment: per manufacturer terms (usually 12–36 months).</li>',
+      '<li>Not covered: third-party interference, voltage surges without a stabilizer, mechanical damage.</li>',
+      '<li>Warranty visits are free; non-warranty visits are charged per the service price list.</li></ul>',
+      '<p>A warranty case requires: contract number, handover certificate, problem description.</p>',
     ].join(''),
   },
   {
-    name: 'Чек-лист монтажу розумного дому (демо)',
+    name: 'Smart home installation checklist (demo)',
     body: DEMO_NOTE + [
-      '<h2>Перед виїздом</h2>',
-      '<ul><li>Погоджена специфікація та схема щита.</li><li>Обладнання перевірене на складі.</li>',
-      '<li>Доступ на об’єкт і контакт відповідальної особи.</li></ul>',
-      '<h2>На об’єкті</h2>',
-      '<ul><li>Фото трас до закриття стін.</li><li>Маркування всіх кабелів з обох кінців.</li>',
-      '<li>Вимірювання опору ізоляції, протокол.</li><li>Фото зібраного щита.</li></ul>',
-      '<h2>Після монтажу</h2>',
-      '<ul><li>Завантажити фото й протоколи в задачу проєкту.</li><li>Перевести задачу «Монтаж» у «На перевірці».</li></ul>',
+      '<h2>Before the visit</h2>',
+      '<ul><li>Approved specification and switchboard diagram.</li><li>Equipment checked at the warehouse.</li>',
+      '<li>Site access and a responsible contact person.</li></ul>',
+      '<h2>On site</h2>',
+      '<ul><li>Photos of cable routes before walls are closed.</li><li>Every cable labelled at both ends.</li>',
+      '<li>Insulation resistance measured, protocol filled in.</li><li>Photo of the assembled switchboard.</li></ul>',
+      '<h2>After installation</h2>',
+      '<ul><li>Upload photos and protocols to the project task.</li><li>Move the «Installation» task to «In review».</li></ul>',
     ].join(''),
   },
   {
-    name: 'Онбординг нового співробітника (демо)',
+    name: 'New employee onboarding (demo)',
     body: DEMO_NOTE + [
-      '<ol><li>День 1: доступи до Odoo (CRM, Проєкти, Сервіс), знайомство з наскрізною картою процесів.</li>',
-      '<li>Тиждень 1: інструктаж з охорони праці та електробезпеки, виїзд з наставником.</li>',
-      '<li>Місяць 1: самостійні задачі під контролем PM, щотижневий зворотний зв’язок.</li></ol>',
-      '<p>Правило для всіх: отримав задачу → уточнив результат і термін → виконав → перевірив → передав далі.</p>',
-      '<p>Питання щодо доступів — до адміністратора, щодо задач — до свого PM.</p>',
+      '<ol><li>Day 1: Odoo access (CRM, Projects, Helpdesk), walkthrough of the end-to-end process map.</li>',
+      '<li>Week 1: occupational and electrical safety briefing, site visit with a mentor.</li>',
+      '<li>Month 1: own tasks under PM supervision, weekly feedback.</li></ol>',
+      '<p>Rule for everyone: got a task → clarified the result and deadline → did it → checked it → handed it on.</p>',
+      '<p>Access questions go to the administrator, task questions to your PM.</p>',
     ].join(''),
   },
 ];

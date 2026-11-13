@@ -1,8 +1,8 @@
 {
   "type": "object",
   "properties": {
-    "summary_uk": { "type": "string", "description": "Exactly 3 sentences in Ukrainian for the owner: what happened this week compared to the previous one" },
-    "attention_uk": { "type": "string", "description": "1-3 concrete items that need the owner's attention this week, one per line, based only on the figures" }
+    "summary": { "type": "string", "description": "Exactly 3 sentences in English for the owner: what happened this week compared to the previous one" },
+    "attention": { "type": "string", "description": "1-3 concrete items that need the owner's attention this week, one per line, based only on the figures" }
   },
-  "required": ["summary_uk", "attention_uk"]
+  "required": ["summary", "attention"]
 }

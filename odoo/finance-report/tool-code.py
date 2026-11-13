@@ -14,13 +14,13 @@ for project in env['project.project'].search([('sale_order_id', '!=', False), ('
     table_rows.append('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s%%</td></tr>' % (
         project.name, money(revenue), money(purchases), money(expenses), money(margin), margin_pct))
 
-table = '<table class="table table-bordered"><tr><th>Проєкт</th><th>Виручка</th><th>Закупівлі</th><th>Витрати</th><th>Маржа</th><th>Маржа, %%</th></tr>%s</table>' % ''.join(table_rows)
-body = '<h2>Управлінський звіт по об’єктах (демо) — %s</h2><p><i>Грн без ПДВ. Демо-ціни, синтетичні витрати. Цифри розраховано правилами, коментар — AI-чернетка.</i></p>%s<h3>Висновки</h3><p>%s</p><h3>Ризики</h3><p>%s</p><h3>Рекомендації</h3><p>%s</p>' % (
+table = '<table class="table table-bordered"><tr><th>Project</th><th>Revenue</th><th>Purchases</th><th>Expenses</th><th>Margin</th><th>Margin, %%</th></tr>%s</table>' % ''.join(table_rows)
+body = '<h2>Management report by project (demo) — %s</h2><p><i>UAH excl. VAT. Demo prices, synthetic expenses. Figures are computed by rules; the commentary is an AI draft.</i></p>%s<h3>Findings</h3><p>%s</p><h3>Risks</h3><p>%s</p><h3>Recommendations</h3><p>%s</p>' % (
     datetime.date.today().isoformat(),
     table,
-    summary_uk or '',
-    (risks_uk or 'немає').replace('\n', '<br/>'),
-    (recommendations_uk or '').replace('\n', '<br/>'),
+    summary or '',
+    (risks or 'none').replace('\n', '<br/>'),
+    (recommendations or '').replace('\n', '<br/>'),
 )
 record.write({'body': body})
 

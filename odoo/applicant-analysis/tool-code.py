@@ -9,17 +9,17 @@ if safe_fit != fit:
 values = {
     'x_ai_status': 'needs_review' if problems else 'done',
     'x_ai_fit': safe_fit,
-    'x_ai_profile': profile_uk or '',
-    'x_ai_skills': (skills_uk or '')[:250],
-    'x_ai_gaps': gaps_uk or '',
-    'x_ai_questions': questions_uk or '',
-    'x_ai_next_action': (next_action_uk or '')[:250],
+    'x_ai_profile': profile or '',
+    'x_ai_skills': (skills or '')[:250],
+    'x_ai_gaps': gaps or '',
+    'x_ai_questions': questions or '',
+    'x_ai_next_action': (next_action or '')[:250],
 }
 record.write(values)
 
-note = 'AI-профіль кандидата: відповідність «%s» (рекомендація). Рішення ухвалює рекрутер, етап не змінено.' % safe_fit
+note = 'AI candidate profile: fit «%s» (a recommendation). The recruiter decides; the stage is unchanged.' % safe_fit
 if problems:
-    note += ' Відхилені значення AI: ' + ', '.join(problems)
+    note += ' Rejected AI values: ' + ', '.join(problems)
 record.message_post(body=note)
 
 ai['result'] = 'saved: %s' % safe_fit

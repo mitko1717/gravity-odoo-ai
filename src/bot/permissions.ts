@@ -44,5 +44,5 @@ export async function checkButton(odoo: OdooClient, access: PermissionCheck, cha
   if (role === undefined) return undefined;
   if (access.hasRole(chatId, role) || access.hasRole(chatId, 'pm')) return undefined;
 
-  return `Ця дія для ролі «${roleLabel(role)}». Попросіть адміністратора додати роль у /users.`;
+  return `This action is for the «${roleLabel(role)}» role. Ask the administrator to add the role in /users.`;
 }

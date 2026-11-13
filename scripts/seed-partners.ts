@@ -5,14 +5,14 @@ import { CONTACT_INTERVAL_DAYS, DEMO_PARTNERS, PARTNER_TAGS } from '../src/confi
 
 // Partners: last-contact field, tags and the 40/90-day reminder automation.
 
-const REMIND_NAME = 'Opsline: нагадування про контакт з партнером';
-const MARK_NAME = 'Партнер: контакт відбувся';
+const REMIND_NAME = 'Opsline: partner contact reminder';
+const MARK_NAME = 'Partner: contact made';
 
 const daysAgo = (days: number) => new Date(Date.now() - days * 86_400_000).toISOString().slice(0, 10);
 
 const odoo = OdooClient.fromEnv();
 
-await ensureField(odoo, 'res.partner', { name: 'x_partner_last_contact', label: 'Партнер: останній контакт', type: 'date' });
+await ensureField(odoo, 'res.partner', { name: 'x_partner_last_contact', label: 'Partner: last contact', type: 'date' });
 
 const tagIds = new Map<string, number>();
 for (const name of PARTNER_TAGS) tagIds.set(name, await ensureRecord(odoo, 'res.partner.category', [['name', '=', name]], { name }));
@@ -25,7 +25,7 @@ const adminId = adminRef.res_id;
 for (const partner of DEMO_PARTNERS) {
   await ensureRecord(odoo, 'res.partner', [['name', '=', partner.name]], {
     name: partner.name,
-    is_company: !partner.name.includes('Демо,') && !partner.name.startsWith('Дизайнерка'),
+    is_company: !partner.name.startsWith('Designer '),
     category_id: [[6, 0, [tagIds.get(partner.tag)]]],
     user_id: adminId,
     x_partner_last_contact: daysAgo(partner.daysSinceContact),
@@ -45,7 +45,7 @@ const automationId = await ensureRecord(odoo, 'base.automation', [['name', '=', 
   trg_date_id: dateFieldId,
   trg_date_range: CONTACT_INTERVAL_DAYS,
   trg_date_range_type: 'day',
-  filter_domain: "[('category_id.name', '=like', 'Партнер:%')]",
+  filter_domain: "[('category_id.name', '=like', 'Partner:%')]",
 });
 await ensureRecord(odoo, 'ir.actions.server', [['name', '=', `${REMIND_NAME} (code)`]], {
   name: `${REMIND_NAME} (code)`,

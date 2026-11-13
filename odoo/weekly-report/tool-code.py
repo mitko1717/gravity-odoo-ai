@@ -8,29 +8,29 @@ high = env['crm.lead'].search_count([('create_date', '>=', week_ago), ('x_ai_pri
 orders = env['sale.order'].search([('state', '=', 'sale'), ('date_order', '>=', week_ago)])
 overdue = env['project.task'].search_count([
     ('date_deadline', '<', now), ('parent_id', '=', False),
-    ('project_id.is_template', '=', False), ('stage_id.name', '!=', 'Готово'),
+    ('project_id.is_template', '=', False), ('stage_id.name', '!=', 'Done'),
 ])
 open_tickets = env['helpdesk.ticket'].search([('stage_id.fold', '=', False)])
 critical = len(open_tickets.filtered(lambda ticket: ticket.priority == '3'))
 
 figures = [
-    'Нові ліди: %d (високий пріоритет AI: %d)' % (leads, high),
-    'Підтверджені замовлення: %d на %.0f грн без ПДВ' % (len(orders), sum(orders.mapped('amount_untaxed'))),
-    'Прострочені задачі проєктів: %d' % overdue,
-    'Відкриті сервісні тікети: %d (критичних: %d)' % (len(open_tickets), critical),
+    'New leads: %d (AI high priority: %d)' % (leads, high),
+    'Confirmed orders: %d for UAH %.0f excl. VAT' % (len(orders), sum(orders.mapped('amount_untaxed'))),
+    'Overdue project tasks: %d' % overdue,
+    'Open service tickets: %d (critical: %d)' % (len(open_tickets), critical),
 ]
-attention = [line.strip() for line in (attention_uk or '').split('\n') if line.strip()]
+attention = [line.strip() for line in (attention or '').split('\n') if line.strip()]
 
-body = '<h2>Тижневий звіт керівнику — %s</h2><p><i>Цифри розраховано правилами (демо-дані), коментар — AI-чернетка.</i></p><h3>Цифри тижня</h3><ul>%s</ul><h3>Коментар AI</h3><p>%s</p><h3>На що звернути увагу</h3><ul>%s</ul>' % (
+body = '<h2>Weekly owner report — %s</h2><p><i>Figures are computed by rules (demo data); the commentary is an AI draft.</i></p><h3>Figures of the week</h3><ul>%s</ul><h3>AI commentary</h3><p>%s</p><h3>Needs attention</h3><ul>%s</ul>' % (
     now.date().isoformat(),
     ''.join(['<li>%s</li>' % line for line in figures]),
-    summary_uk or '',
-    ''.join(['<li>%s</li>' % line for line in attention]) or '<li>немає</li>',
+    summary or '',
+    ''.join(['<li>%s</li>' % line for line in attention]) or '<li>none</li>',
 )
 # Each week is a new child article: an archive of reports, and no clash with the editor of an article
 # someone has open (the collaborative editor can overwrite a body written from the server).
 report = env['knowledge.article'].create({
-    'name': 'Тижневий звіт — %s' % now.date().isoformat(),
+    'name': 'Weekly report — %s' % now.date().isoformat(),
     'parent_id': record.id,
     'body': body,
 })

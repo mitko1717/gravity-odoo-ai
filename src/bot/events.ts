@@ -54,7 +54,7 @@ export async function leadsList(odoo: OdooClient, limit = 15): Promise<string> {
     order: 'id desc',
     limit,
   });
-  if (rows.length === 0) return 'Немає лідів без пропозиції.';
+  if (rows.length === 0) return 'No leads without a quotation.';
 
   const newStageId = await firstStageId(odoo);
   const lines = rows.map((lead) => {
@@ -66,9 +66,9 @@ export async function leadsList(odoo: OdooClient, limit = 15): Promise<string> {
     return `${status}${priority} /lead_${lead.id} · ${escapeHtml(stage)}\n      ${escapeHtml(name)}`;
   });
 
-  const legend = '🆕 нова · 🟢 в роботі · 🔴🟡⚪ пріоритет AI';
+  const legend = '🆕 new · 🟢 in progress · 🔴🟡⚪ AI priority';
 
-  return [`📋 <b>Ліди без пропозиції</b> (останні ${rows.length}). Натисніть /lead_ID, щоб відкрити картку.`, legend, '', ...lines].join('\n');
+  return [`📋 <b>Leads without a quotation</b> (last ${rows.length}). Tap /lead_ID to open a card.`, legend, '', ...lines].join('\n');
 }
 
 export async function leadCard(odoo: OdooClient, odooUrl: string, id: number): Promise<Notification | undefined> {
@@ -77,7 +77,7 @@ export async function leadCard(odoo: OdooClient, odooUrl: string, id: number): P
 
   const taken = isTaken(lead, await firstStageId(odoo));
 
-  return leadNotification(lead, odooUrl, `📇 <b>Лід #${lead.id}</b>`, taken);
+  return leadNotification(lead, odooUrl, `📇 <b>Lead #${lead.id}</b>`, taken);
 }
 
 async function newLeads(odoo: OdooClient, state: BotState, odooUrl: string): Promise<Notification[]> {
@@ -88,30 +88,30 @@ async function newLeads(odoo: OdooClient, state: BotState, odooUrl: string): Pro
   });
   state.lastLeadId = maxId(rows, state.lastLeadId);
 
-  return rows.map((lead) => leadNotification(lead, odooUrl, '🆕 <b>Новий лід</b>'));
+  return rows.map((lead) => leadNotification(lead, odooUrl, '🆕 <b>New lead</b>'));
 }
 
 function leadNotification(lead: LeadRow, odooUrl: string, title: string, taken = false): Notification {
-  const budget = lead.x_ai_budget_usd ? `$${lead.x_ai_budget_usd}` : 'не вказано';
+  const budget = lead.x_ai_budget_usd ? `$${lead.x_ai_budget_usd}` : 'not stated';
   const lines = [
     `${title}: ${escapeHtml(lead.name)}`,
-    ...(lead.stage_id ? [`${taken ? '🟢 В роботі' : '🆕 Нова'} · етап: ${escapeHtml(lead.stage_id[1])} · менеджер: ${escapeHtml(lead.user_id ? lead.user_id[1] : 'не призначено')}`] : []),
-    `Пріоритет (AI): ${PRIORITY_LABEL[String(lead.x_ai_priority)] ?? '—'}`,
-    `Контакт: ${escapeHtml(lead.contact_name || '—')}, ${escapeHtml(lead.x_city || '—')}, ${lead.x_area_m2 || '—'} м²`,
-    `Послуги: ${escapeHtml(serviceLabels(lead.x_ai_services || '') || '—')} · Бюджет: ${budget}`,
+    ...(lead.stage_id ? [`${taken ? '🟢 In progress' : '🆕 New'} · stage: ${escapeHtml(lead.stage_id[1])} · manager: ${escapeHtml(lead.user_id ? lead.user_id[1] : 'not assigned')}`] : []),
+    `Priority (AI): ${PRIORITY_LABEL[String(lead.x_ai_priority)] ?? '—'}`,
+    `Contact: ${escapeHtml(lead.contact_name || '—')}, ${escapeHtml(lead.x_city || '—')}, ${lead.x_area_m2 || '—'} m²`,
+    `Services: ${escapeHtml(serviceLabels(lead.x_ai_services || '') || '—')} · Budget: ${budget}`,
     `\n${escapeHtml(lead.x_ai_summary || '')}`,
-    `Бракує: ${escapeHtml(missingLabels(lead.x_ai_missing || '') || 'нічого')}`,
-    `Далі: ${escapeHtml(lead.x_ai_next_action || '—')}`,
+    `Missing: ${escapeHtml(missingLabels(lead.x_ai_missing || '') || 'nothing')}`,
+    `Next: ${escapeHtml(lead.x_ai_next_action || '—')}`,
   ];
   const keyboard = new InlineKeyboard();
-  if (taken === false) keyboard.text('✅ Взяти в роботу', `lead:take:${lead.id}`);
+  if (taken === false) keyboard.text('✅ Take it', `lead:take:${lead.id}`);
   keyboard
-    .text('✉️ Чернетка відповіді', `lead:reply:${lead.id}`)
-    .text('📅 Консультація', `lead:consult:${lead.id}`)
+    .text('✉️ Reply draft', `lead:reply:${lead.id}`)
+    .text('📅 Consultation', `lead:consult:${lead.id}`)
     .row()
-    .text('📄 Створити пропозицію', `lead:quote:${lead.id}`)
+    .text('📄 Create quotation', `lead:quote:${lead.id}`)
     .row()
-    .url('Відкрити в Odoo', recordUrl(odooUrl, 'crm.lead', lead.id));
+    .url('Open in Odoo', recordUrl(odooUrl, 'crm.lead', lead.id));
 
   return { text: lines.join('\n'), keyboard, role: 'sales' };
 }
@@ -135,19 +135,19 @@ async function newActivities(odoo: OdooClient, state: BotState, odooUrl: string)
   const result: Notification[] = [];
   for (const activity of rows) {
     const summary = String(activity.summary || '');
-    const link = new InlineKeyboard().url('Відкрити в Odoo', recordUrl(odooUrl, activity.res_model, activity.res_id));
+    const link = new InlineKeyboard().url('Open in Odoo', recordUrl(odooUrl, activity.res_model, activity.res_id));
 
-    if (summary.startsWith('Прострочено')) {
+    if (summary.startsWith('Overdue')) {
       const keyboard = new InlineKeyboard()
-        .text('⏩ +3 дні', `task:shift:${activity.res_id}`)
-        .text('✅ Готово', `task:done:${activity.res_id}`)
+        .text('⏩ +3 days', `task:shift:${activity.res_id}`)
+        .text('✅ Done', `task:done:${activity.res_id}`)
         .row()
-        .url('Відкрити в Odoo', recordUrl(odooUrl, 'project.task', activity.res_id));
+        .url('Open in Odoo', recordUrl(odooUrl, 'project.task', activity.res_id));
       result.push({ text: `⏰ <b>${escapeHtml(summary)}</b>\n${escapeHtml(activity.res_name)}`, keyboard, role: 'pm' });
       continue;
     }
 
-    if (summary.startsWith('Передоплату отримано') || summary.startsWith('Тести пройдено')) {
+    if (summary.startsWith('Prepayment received') || summary.startsWith('Tests passed')) {
       result.push({ text: `💬 <b>${escapeHtml(summary)}</b>\n${escapeHtml(activity.res_name)}`, keyboard: link, role: 'pm' });
     }
   }
@@ -165,7 +165,7 @@ interface MessageRow {
 
 async function newMessages(odoo: OdooClient, state: BotState, odooUrl: string): Promise<Notification[]> {
   const rows = await odoo.call<MessageRow[]>('mail.message', 'search_read', {
-    domain: [['id', '>', state.lastMessageId], '|', ['body', 'ilike', 'Здача заблокована'], ['body', 'ilike', 'AI-чернетку специфікації']],
+    domain: [['id', '>', state.lastMessageId], '|', ['body', 'ilike', 'Handover blocked'], ['body', 'ilike', 'AI draft specification saved']],
     fields: ['model', 'res_id', 'record_name', 'body'],
     order: 'id',
   });
@@ -176,17 +176,17 @@ async function newMessages(odoo: OdooClient, state: BotState, odooUrl: string): 
     const body = stripHtml(message.body);
     const link = recordUrl(odooUrl, message.model, message.res_id);
 
-    if (body.includes('Здача заблокована')) {
-      result.push({ text: `⛔ <b>Здача заблокована</b>\n${escapeHtml(message.record_name)}\n${escapeHtml(body)}`, keyboard: new InlineKeyboard().url('Відкрити в Odoo', link), role: 'pm' });
+    if (body.includes('Handover blocked')) {
+      result.push({ text: `⛔ <b>Handover blocked</b>\n${escapeHtml(message.record_name)}\n${escapeHtml(body)}`, keyboard: new InlineKeyboard().url('Open in Odoo', link), role: 'pm' });
       continue;
     }
 
-    const keyboard = new InlineKeyboard().text('✅ Погодити специфікацію', `spec:approve:${message.res_id}`).row().url('Перевірити в Odoo', link);
+    const keyboard = new InlineKeyboard().text('✅ Approve specification', `spec:approve:${message.res_id}`).row().url('Review in Odoo', link);
 
     const project = await odoo.searchRead<{ project_id: [number, string] | false }>('project.task', [['id', '=', message.res_id]], ['project_id']);
     const projectName = project[0]?.project_id ? project[0].project_id[1] : String(message.record_name || '');
 
-    result.push({ text: `📐 <b>AI-чернетка специфікації готова</b>\n${escapeHtml(projectName)}\nПеревірте позиції в задачі «Проєктування» перед погодженням: після нього створяться RFQ.`, keyboard, role: 'engineer' });
+    result.push({ text: `📐 <b>AI draft specification is ready</b>\n${escapeHtml(projectName)}\nReview the items in the «System design» task before approving: approval creates RFQs.`, keyboard, role: 'engineer' });
   }
 
   return result;
@@ -210,8 +210,8 @@ async function criticalTickets(odoo: OdooClient, state: BotState, odooUrl: strin
   return rows
     .filter((ticket) => ticket.priority === '3')
     .map((ticket) => ({
-      text: `🚨 <b>Критичний сервісний тікет #${ticket.id}</b>\n${escapeHtml(ticket.name)}\nКлієнт: ${escapeHtml(ticket.partner_name || '—')}`,
-      keyboard: new InlineKeyboard().text('🙋 Беру', `ticket:take:${ticket.id}`).row().url('Відкрити в Odoo', recordUrl(odooUrl, 'helpdesk.ticket', ticket.id)),
+      text: `🚨 <b>Critical service ticket #${ticket.id}</b>\n${escapeHtml(ticket.name)}\nClient: ${escapeHtml(ticket.partner_name || '—')}`,
+      keyboard: new InlineKeyboard().text('🙋 I take it', `ticket:take:${ticket.id}`).row().url('Open in Odoo', recordUrl(odooUrl, 'helpdesk.ticket', ticket.id)),
       role: 'service' as const,
     }));
 }
@@ -233,8 +233,8 @@ async function draftRfqs(odoo: OdooClient, state: BotState, odooUrl: string): Pr
   state.lastRfqId = maxId(rows, state.lastRfqId);
 
   return rows.map((rfq) => ({
-    text: `🛒 <b>Чернетка закупівлі ${escapeHtml(rfq.name)}</b>\nПостачальник: ${escapeHtml(rfq.partner_id[1])}\nДжерело: ${escapeHtml(rfq.origin || '—')} · Сума: ${rfq.amount_total} грн`,
-    keyboard: new InlineKeyboard().text('✅ Підтвердити закупівлю', `rfq:confirm:${rfq.id}`).row().url('Перевірити в Odoo', recordUrl(odooUrl, 'purchase.order', rfq.id)),
+    text: `🛒 <b>Draft purchase ${escapeHtml(rfq.name)}</b>\nVendor: ${escapeHtml(rfq.partner_id[1])}\nSource: ${escapeHtml(rfq.origin || '—')} · Amount: UAH ${rfq.amount_total}`,
+    keyboard: new InlineKeyboard().text('✅ Confirm purchase', `rfq:confirm:${rfq.id}`).row().url('Review in Odoo', recordUrl(odooUrl, 'purchase.order', rfq.id)),
     role: 'procurement' as const,
   }));
 }
@@ -249,7 +249,7 @@ interface ApplicantRow {
   x_ai_next_action: string | false;
 }
 
-const FIT_LABEL: Record<string, string> = { strong: '🟢 сильна', possible: '🟡 можлива', weak: '🔴 слабка', unclear: '⚪ недостатньо даних' };
+const FIT_LABEL: Record<string, string> = { strong: '🟢 strong', possible: '🟡 possible', weak: '🔴 weak', unclear: '⚪ not enough data' };
 
 async function newApplicants(odoo: OdooClient, state: BotState, odooUrl: string): Promise<Notification[]> {
   const rows = await odoo.call<ApplicantRow[]>('hr.applicant', 'search_read', {
@@ -261,14 +261,14 @@ async function newApplicants(odoo: OdooClient, state: BotState, odooUrl: string)
 
   return rows.map((applicant) => ({
     text: [
-      `👤 <b>Новий кандидат</b>: ${escapeHtml(applicant.partner_name || '—')}`,
-      `Вакансія: ${escapeHtml(applicant.job_id ? applicant.job_id[1] : '—')}`,
-      `Відповідність (AI, рекомендація): ${FIT_LABEL[String(applicant.x_ai_fit)] ?? '—'}`,
-      `Навички: ${escapeHtml(applicant.x_ai_skills || '—')}`,
-      `Далі: ${escapeHtml(applicant.x_ai_next_action || '—')}`,
-      '<i>AI не відхиляє кандидатів: рішення за рекрутером.</i>',
+      `👤 <b>New applicant</b>: ${escapeHtml(applicant.partner_name || '—')}`,
+      `Job: ${escapeHtml(applicant.job_id ? applicant.job_id[1] : '—')}`,
+      `Fit (AI, recommendation): ${FIT_LABEL[String(applicant.x_ai_fit)] ?? '—'}`,
+      `Skills: ${escapeHtml(applicant.x_ai_skills || '—')}`,
+      `Next: ${escapeHtml(applicant.x_ai_next_action || '—')}`,
+      '<i>AI never rejects applicants: the recruiter decides.</i>',
     ].join('\n'),
-    keyboard: new InlineKeyboard().url('Відкрити в Odoo', recordUrl(odooUrl, 'hr.applicant', applicant.id)),
+    keyboard: new InlineKeyboard().url('Open in Odoo', recordUrl(odooUrl, 'hr.applicant', applicant.id)),
     role: 'hr' as const,
   }));
 }
@@ -292,12 +292,12 @@ async function newBookings(odoo: OdooClient, state: BotState, odooUrl: string): 
 
   return rows.map((event) => {
     const client = event.appointment_booker_id ? event.appointment_booker_id[1] : '—';
-    const leadLine = event.opportunity_id ? `Лід: ${escapeHtml(event.opportunity_id[1])} → «Консультація / виїзд»` : 'Лід не знайдено: перевірте вручну';
-    const keyboard = new InlineKeyboard().url('Зустріч в Odoo', recordUrl(odooUrl, 'calendar.event', event.id));
-    if (event.opportunity_id) keyboard.row().url('Лід в Odoo', recordUrl(odooUrl, 'crm.lead', event.opportunity_id[0]));
+    const leadLine = event.opportunity_id ? `Lead: ${escapeHtml(event.opportunity_id[1])} → «Consultation / site visit»` : 'Lead not found: check manually';
+    const keyboard = new InlineKeyboard().url('Meeting in Odoo', recordUrl(odooUrl, 'calendar.event', event.id));
+    if (event.opportunity_id) keyboard.row().url('Lead in Odoo', recordUrl(odooUrl, 'crm.lead', event.opportunity_id[0]));
 
     return {
-      text: `📅 <b>Клієнт записався на консультацію</b>\n${escapeHtml(event.name)}\nКлієнт: ${escapeHtml(client)}\n${leadLine}\nПочаток: ${kyivTime(event.start)} (Київ)`,
+      text: `📅 <b>Client booked a consultation</b>\n${escapeHtml(event.name)}\nClient: ${escapeHtml(client)}\n${leadLine}\nStart: ${kyivTime(event.start)} (Kyiv time)`,
       keyboard,
       role: 'sales' as const,
     };

@@ -1,4 +1,4 @@
-# Odoo server action (AI tool, project.task «Тестування системи»): approved spec and requested services.
+# Odoo server action (AI tool, project.task «System testing»): approved spec and requested services.
 project = record.project_id
 lead = project.sale_order_id.opportunity_id
 spec = []

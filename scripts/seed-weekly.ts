@@ -5,7 +5,7 @@ import { WEEKLY_ACTION, WEEKLY_ARTICLE } from '../src/config/weekly.js';
 
 // Weekly owner report: a Knowledge article filled by an AI action (rules compute the figures, AI writes
 // 3 sentences and attention items). A scheduled action runs it every Monday 08:00 Kyiv; the bot delivers it.
-const CRON_NAME = 'Opsline: тижневий звіт керівнику';
+const CRON_NAME = 'Opsline: weekly owner report';
 const FIRST_RUN_UTC = '2026-11-09 06:00:00';
 
 const odoo = OdooClient.fromEnv();

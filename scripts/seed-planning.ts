@@ -4,10 +4,10 @@ import { ensureRecord } from '../src/ensure.js';
 
 // Synthetic crew: roles and employees for the demo, not Opsline's staff.
 const CREW: Array<{ role: string; employees: string[] }> = [
-  { role: 'Монтажник (демо)', employees: ['Монтажник Андрій (демо)', 'Монтажник Богдан (демо)'] },
-  { role: 'Інженер-налагоджувальник (демо)', employees: ['Інженер Віктор (демо)'] },
+  { role: 'Installer (demo)', employees: ['Installer Andrii (demo)', 'Installer Bohdan (demo)'] },
+  { role: 'Commissioning engineer (demo)', employees: ['Engineer Viktor (demo)'] },
 ];
-const ACTION_NAME = 'Запланувати бригади';
+const ACTION_NAME = 'Plan crews';
 
 const odoo = OdooClient.fromEnv();
 

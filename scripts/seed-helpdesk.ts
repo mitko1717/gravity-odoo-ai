@@ -6,9 +6,9 @@ import { ensureAiAutomation } from '../src/ai-automation.js';
 // Helpdesk: AI fields on tickets, form view tab and ticket triage AI with SLA.
 
 const SLA_HOURS: Array<[priority: string, label: string, hours: number]> = [
-  ['3', 'Критична: реакція за 2 год', 2],
-  ['2', 'Висока: реакція за 8 год', 8],
-  ['1', 'Звичайна: реакція за 24 год', 24],
+  ['3', 'Critical: response within 2 h', 2],
+  ['2', 'High: response within 8 h', 8],
+  ['1', 'Normal: response within 24 h', 24],
 ];
 
 const odoo = OdooClient.fromEnv();
@@ -31,7 +31,7 @@ await ensureRecord(odoo, 'ir.ui.view', [['name', '=', 'helpdesk.ticket.form.grav
 const [team] = await odoo.searchRead<{ id: number; name: string }>('helpdesk.team', [], ['id', 'name'], 1);
 if (!team) throw new Error('no helpdesk team');
 
-await odoo.write('helpdesk.team', [team.id], { name: 'Сервіс Opsline (демо)', use_sla: true });
+await odoo.write('helpdesk.team', [team.id], { name: 'Northwind Service (demo)', use_sla: true });
 
 const stages = await odoo.call<Array<{ id: number; name: string }>>('helpdesk.stage', 'search_read', {
   domain: [['team_ids', 'in', [team.id]]],
@@ -49,8 +49,8 @@ console.log(`team ${team.id}, SLA reach stage "${resStage.name}": ${SLA_HOURS.le
 const actionId = await ensureAiAutomation(odoo, {
   model: 'helpdesk.ticket',
   dir: 'odoo/ticket-analysis',
-  automationName: 'Opsline: AI-тріаж сервісного звернення',
-  actionName: 'Opsline: AI-тріаж тікета',
+  automationName: 'Opsline: AI triage of a service request',
+  actionName: 'Opsline: AI ticket triage',
   readTool: { name: 'Opsline AI Tool: Get ticket data', toolName: 'opsline_get_ticket_data', description: 'Return the current ticket data (untrusted customer input). Call first.' },
   applyTool: { name: 'Opsline AI Tool: Apply ticket analysis', toolName: 'opsline_apply_ticket_analysis', description: 'Save the triage of the current ticket. Call exactly once.' },
 });

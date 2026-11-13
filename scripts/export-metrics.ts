@@ -26,8 +26,8 @@ const leads = {
 };
 
 const projects = {
-  openTasks: await count('project.task', [['parent_id', '=', false], ['project_id.is_template', '=', false], ['stage_id.name', '!=', 'Готово']]),
-  overdueTasks: await count('project.task', [['date_deadline', '<', now], ['parent_id', '=', false], ['project_id.is_template', '=', false], ['stage_id.name', '!=', 'Готово']]),
+  openTasks: await count('project.task', [['parent_id', '=', false], ['project_id.is_template', '=', false], ['stage_id.name', '!=', 'Done']]),
+  overdueTasks: await count('project.task', [['date_deadline', '<', now], ['parent_id', '=', false], ['project_id.is_template', '=', false], ['stage_id.name', '!=', 'Done']]),
 };
 
 const service = {

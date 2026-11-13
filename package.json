@@ -54,7 +54,8 @@
     "seed:quote-field": "tsx --env-file=.env scripts/seed-quotation-template-field.ts",
     "bot": "tsx --env-file=.env src/bot/index.ts",
     "start": "tsx src/bot/index.ts",
-    "rename:brand": "tsx --env-file=.env scripts/rename-brand.ts"
+    "rename:brand": "tsx --env-file=.env scripts/rename-brand.ts",
+    "translate:records": "tsx --env-file=.env scripts/translate-records.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",

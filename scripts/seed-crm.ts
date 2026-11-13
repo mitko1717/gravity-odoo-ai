@@ -2,25 +2,25 @@ import { OdooClient } from '../src/odoo-client.js';
 import { ensureField, ensureRecord } from '../src/ensure.js';
 import { AI_FIELDS, FORM_FIELDS } from '../src/config/lead-fields.js';
 
-// CRM pipeline stages in Ukrainian (Нова заявка → … → Договір підписано) and custom lead fields (form + AI).
+// CRM pipeline stages in Ukrainian (New request → … → Contract signed) and custom lead fields (form + AI).
 
 const STAGES = [
-  { id: 1, name: 'Нова заявка', sequence: 1 },
-  { id: 2, name: 'Кваліфікована', sequence: 2 },
-  { id: null, name: 'Консультація / виїзд', sequence: 3 },
-  { id: 3, name: 'Комерційна пропозиція', sequence: 4 },
-  { id: 4, name: 'Договір підписано', sequence: 5 },
+  { id: 1, name: 'New request', sequence: 1 },
+  { id: 2, name: 'Qualified', sequence: 2 },
+  { id: null, name: 'Consultation / site visit', sequence: 3 },
+  { id: 3, name: 'Quotation', sequence: 4 },
+  { id: 4, name: 'Contract signed', sequence: 5 },
 ];
 
 const TAGS = [
-  'Розумний дім',
-  'Електромонтаж',
-  'Інженерні системи',
-  'Теплові насоси',
-  'Сервіс',
-  'B2B / ЖК',
-  'Партнерський канал',
-  'AI: потрібна перевірка',
+  'Smart home',
+  'Electrical installation',
+  'Engineering systems',
+  'Heat pumps',
+  'Service',
+  'B2B / residential complex',
+  'Partner channel',
+  'AI: needs review',
 ];
 
 const odoo = OdooClient.fromEnv();

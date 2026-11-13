@@ -7,8 +7,8 @@ import { ensureRecord } from '../src/ensure.js';
 const DIR = 'odoo/lead-analysis';
 const TOOL_NAME = 'Opsline AI Tool: Apply lead analysis';
 const READ_TOOL_NAME = 'Opsline AI Tool: Get lead data';
-const AUTOMATION_NAME = 'Opsline: AI-аналіз нової заявки';
-const AI_ACTION_NAME = 'Opsline: AI-аналіз ліда';
+const AUTOMATION_NAME = 'Opsline: AI analysis of a new request';
+const AI_ACTION_NAME = 'Opsline: AI lead analysis';
 
 const odoo = OdooClient.fromEnv();
 const [leadModelId] = await odoo.search('ir.model', [['model', '=', 'crm.lead']]);

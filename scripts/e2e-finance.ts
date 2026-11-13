@@ -1,11 +1,11 @@
 import { OdooClient } from '../src/odoo-client.js';
 
-// E2E: runs «AI: управлінський звіт» on its Knowledge article and prints the result.
+// E2E: runs «AI: management report» on its Knowledge article and prints the result.
 
 const odoo = OdooClient.fromEnv();
 
-const [articleId] = await odoo.search('knowledge.article', [['name', '=', 'Управлінський звіт по об’єктах (демо)']]);
-const [actionId] = await odoo.search('ir.actions.server', [['name', '=', 'AI: управлінський звіт']]);
+const [articleId] = await odoo.search('knowledge.article', [['name', '=', 'Management report by project (demo)']]);
+const [actionId] = await odoo.search('ir.actions.server', [['name', '=', 'AI: management report']]);
 if (articleId === undefined || actionId === undefined) throw new Error('run seed:finance first');
 
 const started = Date.now();

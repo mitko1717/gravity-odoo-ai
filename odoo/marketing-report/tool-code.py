@@ -14,14 +14,14 @@ for campaign in env['utm.campaign'].search([('name', '=like', 'demo_%')]):
     table_rows.append('<tr><td>%s</td><td>%s</td><td>%d</td><td>%d (%d%%)</td><td>%d</td><td>%s</td><td>%s</td></tr>' % (
         campaign.title, money(spend), len(leads), len(qualified), share, campaign.quotation_count, money(cpl), money(cpql)))
 
-header = '<tr><th>Кампанія</th><th>Бюджет</th><th>Ліди</th><th>Кваліфіковані</th><th>Пропозиції</th><th>Ціна ліда</th><th>Ціна кваліф. ліда</th></tr>'
-body = '<h2>Маркетинговий звіт по кампаніях (демо) — %s</h2><p><i>Грн. Демо-кампанії, синтетичні заявки. Кваліфікований = AI-пріоритет «високий» або «середній». Цифри — правила, коментар — AI-чернетка.</i></p><table class="table table-bordered">%s%s</table><h3>Висновки</h3><p>%s</p><h3>Попит</h3><p>%s</p><h3>Рекомендації</h3><p>%s</p>' % (
+header = '<tr><th>Campaign</th><th>Spend</th><th>Leads</th><th>Qualified</th><th>Quotations</th><th>Cost per lead</th><th>Cost per qualified lead</th></tr>'
+body = '<h2>Marketing campaign report (demo) — %s</h2><p><i>UAH. Demo campaigns, synthetic requests. Qualified = AI priority «high» or «medium». Figures are rules; the commentary is an AI draft.</i></p><table class="table table-bordered">%s%s</table><h3>Findings</h3><p>%s</p><h3>Demand</h3><p>%s</p><h3>Recommendations</h3><p>%s</p>' % (
     datetime.date.today().isoformat(),
     header,
     ''.join(table_rows),
-    summary_uk or '',
-    demand_uk or '',
-    (recommendations_uk or '').replace('\n', '<br/>'),
+    summary or '',
+    demand or '',
+    (recommendations or '').replace('\n', '<br/>'),
 )
 record.write({'body': body})
 

@@ -3,20 +3,20 @@ import { ensureRecord } from '../src/ensure.js';
 import { ensureAiButton } from '../src/ai-automation.js';
 
 export const EXPENSE_MODEL = 'x_gravity_expense';
-export const REPORT_ARTICLE = 'Управлінський звіт по об’єктах (демо)';
+export const REPORT_ARTICLE = 'Management report by project (demo)';
 
 const FIELDS = [
-  { name: 'x_project_id', field_description: 'Проєкт', ttype: 'many2one', relation: 'project.project' },
-  { name: 'x_date', field_description: 'Дата', ttype: 'date' },
-  { name: 'x_category', field_description: 'Категорія', ttype: 'char' },
-  { name: 'x_amount', field_description: 'Сума, грн', ttype: 'float' },
-  { name: 'x_source', field_description: 'Джерело (файл)', ttype: 'char' },
+  { name: 'x_project_id', field_description: 'Project', ttype: 'many2one', relation: 'project.project' },
+  { name: 'x_date', field_description: 'Date', ttype: 'date' },
+  { name: 'x_category', field_description: 'Category', ttype: 'char' },
+  { name: 'x_amount', field_description: 'Amount, UAH', ttype: 'float' },
+  { name: 'x_source', field_description: 'Source (file)', ttype: 'char' },
 ];
 
 const odoo = OdooClient.fromEnv();
 
 const modelId = await ensureRecord(odoo, 'ir.model', [['model', '=', EXPENSE_MODEL]], {
-  name: 'Opsline: витрати по об’єктах (демо)',
+  name: 'Opsline: project expenses (demo)',
   model: EXPENSE_MODEL,
 });
 for (const field of FIELDS) {
@@ -43,7 +43,7 @@ const articleId = await ensureRecord(odoo, 'knowledge.article', [['name', '=', R
 const actionId = await ensureAiButton(odoo, {
   model: 'knowledge.article',
   dir: 'odoo/finance-report',
-  actionName: 'AI: управлінський звіт',
+  actionName: 'AI: management report',
   readTool: { name: 'Opsline AI Tool: Get finance data', toolName: 'opsline_get_finance_data', description: 'Return revenue, purchases, expenses and margin per project. Call first.' },
   applyTool: { name: 'Opsline AI Tool: Apply finance report', toolName: 'opsline_apply_finance_report', description: 'Write the management report into the current article. Call exactly once.' },
 });

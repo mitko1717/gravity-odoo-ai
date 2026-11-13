@@ -9,13 +9,13 @@
         "properties": {
           "product_id": { "type": "integer", "description": "product_id from the catalog" },
           "qty": { "type": "integer", "description": "Quantity, 1-200" },
-          "reason_uk": { "type": "string", "description": "Why this quantity, in Ukrainian, one sentence" }
+          "reason": { "type": "string", "description": "Why this quantity, in English, one sentence" }
         },
-        "required": ["product_id", "qty", "reason_uk"]
+        "required": ["product_id", "qty", "reason"]
       }
     },
-    "assumptions_uk": { "type": "string", "description": "Assumptions made because data was missing, one per line, in Ukrainian" },
-    "questions_uk": { "type": "string", "description": "What the engineer must clarify on site, one per line, in Ukrainian" }
+    "assumptions": { "type": "string", "description": "Assumptions made because data was missing, one per line, in English" },
+    "questions": { "type": "string", "description": "What the engineer must clarify on site, one per line, in English" }
   },
-  "required": ["lines", "assumptions_uk", "questions_uk"]
+  "required": ["lines", "assumptions", "questions"]
 }

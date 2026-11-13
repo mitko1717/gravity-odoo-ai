@@ -15,9 +15,9 @@ values = {
     'x_ai_status': 'needs_review' if problems else 'done',
     'x_ai_category': safe_category,
     'x_ai_urgency': safe_urgency,
-    'x_ai_summary': summary_uk or '',
-    'x_ai_next_action': (next_action_uk or '')[:250],
-    'x_ai_reply_draft': reply_draft_uk or '',
+    'x_ai_summary': summary or '',
+    'x_ai_next_action': (next_action or '')[:250],
+    'x_ai_reply_draft': reply_draft or '',
     'priority': URGENCY_TO_PRIORITY[safe_urgency],
 }
 if not record.user_id:
@@ -26,9 +26,9 @@ if not record.user_id:
 
 record.write(values)
 
-note = 'AI-тріаж: %s / %s. Пріоритет і SLA встановлено автоматично, інженер може змінити.' % (safe_category, safe_urgency)
+note = 'AI triage: %s / %s. Priority and SLA were set automatically; the engineer can change them.' % (safe_category, safe_urgency)
 if problems:
-    note += ' Відхилені значення AI: ' + ', '.join(problems)
+    note += ' Rejected AI values: ' + ', '.join(problems)
 record.message_post(body=note)
 
 ai['result'] = 'saved: %s/%s' % (safe_category, safe_urgency)

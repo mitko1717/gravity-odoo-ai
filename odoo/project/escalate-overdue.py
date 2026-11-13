@@ -3,8 +3,8 @@ for task in records:
     manager = task.project_id.user_id or env.ref('base.user_admin')
     task.activity_schedule(
         'mail.mail_activity_data_todo',
-        summary=('Прострочено: ' + task.name)[:100],
-        note='Дедлайн задачі минув. Перевірте статус, заблокованість або перенесіть строк.',
+        summary=('Overdue: ' + task.name)[:100],
+        note='The task deadline has passed. Check the status and blockers, or move the deadline.',
         user_id=manager.id,
     )
-    task.message_post(body='Задача прострочена. Ескалацію надіслано керівнику проєкту: %s.' % manager.name)
+    task.message_post(body='The task is overdue. Escalated to the project manager: %s.' % manager.name)

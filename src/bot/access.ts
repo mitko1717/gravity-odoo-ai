@@ -37,9 +37,9 @@ export function createAccess(deps: AccessDeps) {
   const userText = (chatId: string) => {
     const user = state.users[chatId];
 
-    const status = user?.active === false ? '🚫 доступ закрито' : '✅ доступ відкрито';
+    const status = user?.active === false ? '🚫 access closed' : '✅ access open';
 
-    return `👤 <b>${escapeHtml(user?.name ?? chatId)}</b> · <code>${chatId}</code>\n${status}\nРолі: ${roleLabels(user?.roles ?? [])}`;
+    return `👤 <b>${escapeHtml(user?.name ?? chatId)}</b> · <code>${chatId}</code>\n${status}\nRoles: ${roleLabels(user?.roles ?? [])}`;
   };
 
   const userKeyboard = (chatId: string) => {
@@ -51,9 +51,9 @@ export function createAccess(deps: AccessDeps) {
     });
 
     const active = state.users[chatId]?.active !== false;
-    keyboard.row().text(active ? '🚫 Закрити доступ' : '✅ Відкрити доступ', `user:active:${chatId}:${active ? 'off' : 'on'}`);
+    keyboard.row().text(active ? '🚫 Close access' : '✅ Open access', `user:active:${chatId}:${active ? 'off' : 'on'}`);
 
-    return keyboard.text('🗑 Видалити', `user:delete:${chatId}`);
+    return keyboard.text('🗑 Delete', `user:delete:${chatId}`);
   };
 
   const isAdmin = (chatId: number | undefined) => chatId === adminChatId;
@@ -73,13 +73,13 @@ export function createAccess(deps: AccessDeps) {
 
     bot.command('request', async (ctx) => {
       const chatId = ctx.chat.id;
-      if (allowedChats().includes(chatId)) return ctx.reply('У вас уже є доступ. /help — список команд.');
+      if (allowedChats().includes(chatId)) return ctx.reply('You already have access. /help for the command list.');
 
-      const who = ctx.from?.username ? `@${ctx.from.username}` : (ctx.from?.first_name ?? 'невідомий');
-      const keyboard = new InlineKeyboard().text('✅ Дозволити', `access:approve:${chatId}:${encodeURIComponent(who).slice(0, 30)}`).text('❌ Відхилити', `access:deny:${chatId}`);
-      await bot.api.sendMessage(adminChatId, `🔑 Запит на доступ: ${escapeHtml(who)}, chat ID <code>${chatId}</code>`, { ...html, reply_markup: keyboard });
+      const who = ctx.from?.username ? `@${ctx.from.username}` : (ctx.from?.first_name ?? 'unknown');
+      const keyboard = new InlineKeyboard().text('✅ Allow', `access:approve:${chatId}:${encodeURIComponent(who).slice(0, 30)}`).text('❌ Deny', `access:deny:${chatId}`);
+      await bot.api.sendMessage(adminChatId, `🔑 Access request: ${escapeHtml(who)}, chat ID <code>${chatId}</code>`, { ...html, reply_markup: keyboard });
 
-      return ctx.reply('Запит надіслано адміністратору. Ви отримаєте повідомлення після рішення.');
+      return ctx.reply('Request sent to the administrator. You will get a message after the decision.');
     });
 
     bot.use(async (ctx, next) => {
@@ -88,12 +88,12 @@ export function createAccess(deps: AccessDeps) {
 
       // Service updates (e.g. the user blocked the bot) get no reply: Telegram would reject it.
       const isUserInput = ctx.message !== undefined || ctx.callbackQuery !== undefined;
-      if (isUserInput) await ctx.reply('Доступ закрито. Надішліть /request, щоб попросити доступ.');
+      if (isUserInput) await ctx.reply('Access closed. Send /request to ask for access.');
     });
 
     bot.callbackQuery(/^access:(approve|deny):(-?\d+)(?::(.*))?$/, async (ctx) => {
       await ctx.answerCallbackQuery();
-      if (isAdmin(ctx.chat?.id) === false) return ctx.reply('Лише адміністратор може надавати доступ.');
+      if (isAdmin(ctx.chat?.id) === false) return ctx.reply('Only the administrator can grant access.');
 
       const approve = ctx.match[1] === 'approve';
       const chatId = String(ctx.match[2]);
@@ -102,18 +102,18 @@ export function createAccess(deps: AccessDeps) {
       await saveState(state);
       await updateAllowedChatIds(Number(chatId), approve);
 
-      const notice = approve ? '✅ Доступ надано. Адміністратор призначить вам ролі. /help — список команд.' : '❌ У доступі відмовлено.';
+      const notice = approve ? '✅ Access granted. The administrator will assign your roles. /help for the command list.' : '❌ Access denied.';
       await bot.api.sendMessage(Number(chatId), notice).catch(() => undefined);
-      if (approve === false) return ctx.reply(`Відмовлено: ${chatId}`);
+      if (approve === false) return ctx.reply(`Denied: ${chatId}`);
 
-      return ctx.reply(`Доступ надано. Оберіть ролі:\n\n${userText(chatId)}`, { ...html, reply_markup: userKeyboard(chatId) });
+      return ctx.reply(`Access granted. Choose roles:\n\n${userText(chatId)}`, { ...html, reply_markup: userKeyboard(chatId) });
     });
 
     bot.command('users', async (ctx) => {
-      if (isAdmin(ctx.chat.id) === false) return ctx.reply('Команда лише для адміністратора.');
+      if (isAdmin(ctx.chat.id) === false) return ctx.reply('Admin-only command.');
 
       const chatIds = Object.keys(state.users);
-      if (chatIds.length === 0) return ctx.reply('Користувачів ще немає. Нові приходять через /request.');
+      if (chatIds.length === 0) return ctx.reply('No users yet. New users come via /request.');
 
       for (const chatId of chatIds) await ctx.reply(userText(chatId), { ...html, reply_markup: userKeyboard(chatId) });
     });
@@ -141,7 +141,7 @@ export function createAccess(deps: AccessDeps) {
       await updateAllowedChatIds(Number(chatId), user.active);
       await ctx.editMessageText(userText(chatId), { ...html, reply_markup: userKeyboard(chatId) });
 
-      const notice = user.active ? '✅ Доступ до бота відкрито знову. /help — список команд.' : '🚫 Доступ до бота закрито адміністратором.';
+      const notice = user.active ? '✅ Bot access reopened. /help for the command list.' : '🚫 Bot access closed by the administrator.';
       await bot.api.sendMessage(Number(chatId), notice).catch(() => undefined);
     });
 
@@ -150,8 +150,8 @@ export function createAccess(deps: AccessDeps) {
       if (isAdmin(ctx.chat?.id) === false) return;
 
       const chatId = String(ctx.match[1]);
-      const keyboard = new InlineKeyboard().text('🗑 Так, видалити', `user:delete-confirm:${chatId}`).text('↩️ Скасувати', `user:show:${chatId}`);
-      await ctx.editMessageText(`${userText(chatId)}\n\n<b>Видалити користувача повністю?</b> Ролі буде втрачено, повернутися він зможе лише через /request.`, { ...html, reply_markup: keyboard });
+      const keyboard = new InlineKeyboard().text('🗑 Yes, delete', `user:delete-confirm:${chatId}`).text('↩️ Cancel', `user:show:${chatId}`);
+      await ctx.editMessageText(`${userText(chatId)}\n\n<b>Delete this user completely?</b> Roles will be lost; they can come back only via /request.`, { ...html, reply_markup: keyboard });
     });
 
     bot.callbackQuery(/^user:show:(-?\d+)$/, async (ctx) => {
@@ -170,8 +170,8 @@ export function createAccess(deps: AccessDeps) {
       delete state.users[chatId];
       await saveState(state);
       await updateAllowedChatIds(Number(chatId), false);
-      await bot.api.sendMessage(Number(chatId), '🚫 Доступ до бота закрито адміністратором.').catch(() => undefined);
-      await ctx.editMessageText(`🗑 Користувача <code>${chatId}</code> видалено.`, html);
+      await bot.api.sendMessage(Number(chatId), '🚫 Bot access closed by the administrator.').catch(() => undefined);
+      await ctx.editMessageText(`🗑 User <code>${chatId}</code> deleted.`, html);
     });
 
   };

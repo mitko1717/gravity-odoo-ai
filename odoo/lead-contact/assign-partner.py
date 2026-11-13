@@ -7,6 +7,6 @@ for lead in records:
     existing = env['res.partner'].search([('email', '=ilike', lead.email_from)], limit=1)
     lead._handle_partner_assignment(force_partner_id=existing.id, create_missing=True)
     if existing:
-        lead.message_post(body='Контакт знайдено за email: %s. Лід прив’язано до існуючого клієнта.' % existing.display_name)
+        lead.message_post(body='Contact found by email: %s. The lead is linked to the existing client.' % existing.display_name)
     else:
-        lead.message_post(body='Створено контакт клієнта з даних заявки: %s.' % lead.partner_id.display_name)
+        lead.message_post(body='Client contact created from the request data: %s.' % lead.partner_id.display_name)

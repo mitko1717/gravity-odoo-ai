@@ -5,33 +5,33 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-3 col-10 offset-1 offset-lg-0 pb16">
-                            <h5>Навігація</h5>
+                            <h5>Navigation</h5>
                             <ul class="list-unstyled">
-                                <li><a href="/">Головна</a></li>
-                                <li><a href="/zayavka">Залишити заявку</a></li>
-                                <li><a href="/appointment">Записатися на консультацію</a></li>
-                                <li><a href="/jobs">Вакансії</a></li>
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/zayavka">Send a request</a></li>
+                                <li><a href="/appointment">Book a consultation</a></li>
+                                <li><a href="/jobs">Careers</a></li>
                             </ul>
                         </div>
                         <div class="col-lg-3 col-10 offset-1 offset-lg-0 pb16">
-                            <h5>Послуги</h5>
+                            <h5>Services</h5>
                             <ul class="list-unstyled">
-                                <li>Розумний дім</li>
-                                <li>Електромонтаж</li>
-                                <li>Інженерні системи</li>
-                                <li>Сервісне обслуговування</li>
+                                <li>Smart home</li>
+                                <li>Electrical installation</li>
+                                <li>Engineering systems</li>
+                                <li>Service and maintenance</li>
                             </ul>
                         </div>
                         <div class="col-lg-3 col-10 offset-1 offset-lg-0 pb16">
-                            <h5>Контакти (демо)</h5>
+                            <h5>Contacts (demo)</h5>
                             <ul class="list-unstyled">
                                 <li><i class="oi oi-fw oi-filled me-2" data-icon="mail"/><a href="mailto:demo@example.com">demo@example.com</a></li>
                                 <li><i class="oi oi-fw oi-filled me-2" data-icon="phone"/><span class="o_force_ltr">+380 00 000 0000</span></li>
                             </ul>
                         </div>
                         <div class="col-lg-3 col-10 offset-1 offset-lg-0 pb16">
-                            <h5>Про стенд</h5>
-                            <p>Неофіційний демонстраційний стенд для тестового завдання. Не є сайтом компанії Opsline. Усі дані синтетичні.</p>
+                            <h5>About this demo</h5>
+                            <p>Northwind Home Systems is a fictional company. Demo stand built by Opsline; all data is synthetic.</p>
                         </div>
                     </div>
                 </div>

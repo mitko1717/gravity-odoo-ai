@@ -25,12 +25,12 @@ function breachNotification(row: SlaStatusRow, odooUrl: string): Notification | 
   const deadline = row.deadline ? kyivTime(row.deadline) : '—';
   const policy = row.sla_id ? row.sla_id[1] : '—';
   const keyboard = new InlineKeyboard()
-    .text('🙋 Беру', `ticket:take:${ticketId}`)
+    .text('🙋 I take it', `ticket:take:${ticketId}`)
     .row()
-    .url('Відкрити в Odoo', recordUrl(odooUrl, 'helpdesk.ticket', ticketId));
+    .url('Open in Odoo', recordUrl(odooUrl, 'helpdesk.ticket', ticketId));
 
   return {
-    text: `🚨 <b>SLA прострочено</b>\nТікет #${ticketId}: ${escapeHtml(ticketName)}\nПолітика: ${escapeHtml(policy)} · дедлайн: ${deadline} (Київ)`,
+    text: `🚨 <b>SLA breached</b>\nTicket #${ticketId}: ${escapeHtml(ticketName)}\nPolicy: ${escapeHtml(policy)} · deadline: ${deadline} (Kyiv time)`,
     keyboard,
     role: 'pm',
   };
@@ -59,9 +59,9 @@ export async function slaOnTime(odoo: OdooClient): Promise<string> {
   const reached = await odoo.call<number>('helpdesk.sla.status', 'search_count', { domain: [...period, ['status', '=', 'reached']] });
   const failed = await odoo.call<number>('helpdesk.sla.status', 'search_count', { domain: [...period, ['status', '=', 'failed']] });
   const total = reached + failed;
-  if (total === 0) return 'SLA вчасно (30 днів): немає завершених';
+  if (total === 0) return 'SLA on time (30 days): none closed';
 
   const percent = Math.round((reached / total) * 100);
 
-  return `SLA вчасно (30 днів): ${percent}% (${reached} з ${total})`;
+  return `SLA on time (30 days): ${percent}% (${reached} of ${total})`;
 }

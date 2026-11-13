@@ -1,6 +1,6 @@
 import { OdooClient } from '../src/odoo-client.js';
 
-// Removes records created by e2e scripts (partner «E2E Демо Клієнт», leads «(тест)»).
+// Removes records created by e2e scripts (partner «E2E Demo Client», leads «(test)»).
 // Posted/paid invoices are kept on purpose: accounting entries are not deleted, their orders are only archived.
 interface OrderRow {
   id: number;
@@ -13,12 +13,12 @@ const odoo = OdooClient.fromEnv();
 
 const errorText = (error: unknown) => (error instanceof Error ? error.message.split('\n')[0] : String(error));
 
-const testLeads = await odoo.search('crm.lead', [['name', 'like', '(тест)']]);
+const testLeads = await odoo.search('crm.lead', [['name', 'like', '(test)']]);
 if (testLeads.length > 0) await odoo.call('crm.lead', 'unlink', { ids: testLeads });
 console.log(`leads removed: ${testLeads.length}`);
 
 // Archived partners included: previous runs archive them, but new e2e orders may still point to them.
-const e2ePartners = await odoo.search('res.partner', [['name', '=', 'E2E Демо Клієнт'], ['active', 'in', [true, false]]]);
+const e2ePartners = await odoo.search('res.partner', [['name', '=', 'E2E Demo Client'], ['active', 'in', [true, false]]]);
 const orders = await odoo.searchRead<OrderRow>('sale.order', [['partner_id', 'in', e2ePartners]], ['name', 'project_ids', 'invoice_ids']);
 const orderNames = orders.map((order) => order.name);
 const projectIds = [...new Set(orders.flatMap((order) => order.project_ids))];
@@ -79,4 +79,4 @@ const dedupeByName = async (model: string, domain: unknown[], nameField: string,
 
 await dedupeByName('helpdesk.ticket', [], 'name', 'unlink');
 await dedupeByName('hr.applicant', [], 'partner_name', 'archive');
-await dedupeByName('project.task', [['tag_ids.name', '=', 'AI-чернетка']], 'name', 'unlink');
+await dedupeByName('project.task', [['tag_ids.name', '=', 'AI draft']], 'name', 'unlink');

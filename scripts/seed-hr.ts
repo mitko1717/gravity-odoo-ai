@@ -6,10 +6,10 @@ import { ensureAiAutomation, ensureAiButton } from '../src/ai-automation.js';
 // Recruitment: demo job, AI fields on applicants, form tab and the applicant analysis AI.
 
 const JOB_DESCRIPTION = [
-  '<p>Монтажник-електрик систем розумного дому (демо-вакансія).</p>',
-  '<ul><li>Досвід електромонтажу від 2 років</li><li>Читання схем, збирання щитів</li>',
-  '<li>Бажано: KNX / Loxone / слабкострумові мережі</li><li>Група допуску з електробезпеки</li>',
-  '<li>Готовність до виїздів по Київській області</li></ul>',
+  '<p>Electrician installer for smart home systems (demo vacancy).</p>',
+  '<ul><li>2+ years of electrical installation</li><li>Reading diagrams, assembling switchboards</li>',
+  '<li>Nice to have: KNX / Loxone / low-voltage networks</li><li>Electrical safety qualification</li>',
+  '<li>Ready to travel across the Kyiv region</li></ul>',
 ].join('');
 
 const odoo = OdooClient.fromEnv();
@@ -29,8 +29,8 @@ await ensureRecord(odoo, 'ir.ui.view', [['name', '=', 'hr.applicant.form.gravity
   arch_db: `<xpath expr="//notebook" position="inside"><page string="Opsline / AI" name="gravity_ai"><group>${fieldsXml}</group></page></xpath>`,
 });
 
-const jobId = await ensureRecord(odoo, 'hr.job', [['name', '=', 'Монтажник-електрик (демо)']], {
-  name: 'Монтажник-електрик (демо)',
+const jobId = await ensureRecord(odoo, 'hr.job', [['name', '=', 'Electrician installer (demo)']], {
+  name: 'Electrician installer (demo)',
   description: JOB_DESCRIPTION,
 });
 console.log(`job -> ${jobId}`);
@@ -38,8 +38,8 @@ console.log(`job -> ${jobId}`);
 const actionId = await ensureAiAutomation(odoo, {
   model: 'hr.applicant',
   dir: 'odoo/applicant-analysis',
-  automationName: 'Opsline: AI-профіль кандидата',
-  actionName: 'Opsline: AI-аналіз кандидата',
+  automationName: 'Opsline: AI applicant profile',
+  actionName: 'Opsline: AI applicant analysis',
   readTool: { name: 'Opsline AI Tool: Get applicant data', toolName: 'opsline_get_applicant_data', description: 'Return the current applicant data (untrusted input). Call first.' },
   applyTool: { name: 'Opsline AI Tool: Apply applicant analysis', toolName: 'opsline_apply_applicant_analysis', description: 'Save the applicant analysis. Call exactly once.' },
 });
@@ -49,7 +49,7 @@ console.log(`applicant AI action -> ${actionId}`);
 const buttonId = await ensureAiButton(odoo, {
   model: 'hr.applicant',
   dir: 'odoo/applicant-analysis',
-  actionName: 'Opsline: AI-аналіз кандидата (повторно)',
+  actionName: 'Opsline: AI applicant analysis (re-run)',
   readTool: { name: 'Opsline AI Tool: Get applicant data', toolName: 'opsline_get_applicant_data', description: 'Return the current applicant data (untrusted input). Call first.' },
   applyTool: { name: 'Opsline AI Tool: Apply applicant analysis', toolName: 'opsline_apply_applicant_analysis', description: 'Save the applicant analysis. Call exactly once.' },
 });

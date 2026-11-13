@@ -14,7 +14,7 @@ prev_orders = orders_between(two_weeks_ago, week_ago)
 open_tickets = env['helpdesk.ticket'].search([('stage_id.fold', '=', False)])
 overdue_tasks = env['project.task'].search([
     ('date_deadline', '<', now), ('parent_id', '=', False),
-    ('project_id.is_template', '=', False), ('stage_id.name', '!=', 'Готово'),
+    ('project_id.is_template', '=', False), ('stage_id.name', '!=', 'Done'),
 ])
 sla_week = env['helpdesk.sla.status'].search([('deadline', '>=', week_ago), ('deadline', '<', now), ('status', 'in', ['reached', 'failed'])])
 

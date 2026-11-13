@@ -1,6 +1,6 @@
 import { OdooClient } from '../src/odoo-client.js';
 
-// E2E: «Запланувати бригади» creates draft crew shifts in Planning; a rerun creates no duplicates.
+// E2E: «Plan crews» creates draft crew shifts in Planning; a rerun creates no duplicates.
 
 interface SlotRow {
   name: string;
@@ -22,7 +22,7 @@ const [project] = await odoo.call<Array<{ id: number; name: string }>>('project.
 });
 if (project === undefined) throw new Error('no implementation project, run e2e:project first');
 
-const [actionId] = await odoo.search('ir.actions.server', [['name', '=', 'Запланувати бригади']]);
+const [actionId] = await odoo.search('ir.actions.server', [['name', '=', 'Plan crews']]);
 if (actionId === undefined) throw new Error('run seed:planning first');
 
 const context = { active_id: project.id, active_ids: [project.id], active_model: 'project.project' };

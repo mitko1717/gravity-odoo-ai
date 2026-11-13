@@ -1,6 +1,6 @@
 # Odoo server action (AI tool). Returns the meeting transcript as clearly delimited untrusted input.
 # A ready-made calendar is included because LLMs are unreliable at weekday arithmetic.
-WEEKDAYS = ['понеділок', 'вівторок', 'середа', 'четвер', "п'ятниця", 'субота', 'неділя']
+WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 today = datetime.date.today()
 calendar = []

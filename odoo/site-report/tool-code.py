@@ -6,7 +6,7 @@ overdue = []
 # Top-level tasks only: commissioning checks (sub-tasks) must not inflate progress.
 for task in record.task_ids.filtered(lambda t: not t.parent_id):
     total += 1
-    if task.state == '1_done' or task.stage_id.name == 'Готово':
+    if task.state == '1_done' or task.stage_id.name == 'Done':
         done_count += 1
         continue
     deadline = task.date_deadline.date() if task.date_deadline else False
@@ -24,15 +24,15 @@ elif overdue:
 else:
     status = 'on_track'
 
-metrics = 'Виконано %d з %d задач (%d%%). Прострочено: %d (макс. %d дн.).' % (done_count, total, progress, len(overdue), max_overdue)
-description = '<p><b>%s</b></p><p>%s</p><p><b>Ризики / блокери</b><br/>%s</p><p><b>Наступні кроки</b><br/>%s</p><p><i>AI-чернетка звіту; статус і цифри розраховано правилами.</i></p>' % (
+metrics = 'Done %d of %d tasks (%d%%). Overdue: %d (max %d days).' % (done_count, total, progress, len(overdue), max_overdue)
+description = '<p><b>%s</b></p><p>%s</p><p><b>Risks / blockers</b><br/>%s</p><p><b>Next steps</b><br/>%s</p><p><i>AI draft report; status and figures are computed by rules.</i></p>' % (
     metrics,
-    summary_uk or '',
-    (blockers_uk or 'немає').replace('\n', '<br/>'),
-    (next_steps_uk or '').replace('\n', '<br/>'),
+    summary or '',
+    (blockers or 'none').replace('\n', '<br/>'),
+    (next_steps or '').replace('\n', '<br/>'),
 )
 env['project.update'].create({
-    'name': 'Звіт по об’єкту %s' % today.isoformat(),
+    'name': 'Site report %s' % today.isoformat(),
     'project_id': record.id,
     'status': status,
     'progress': progress,

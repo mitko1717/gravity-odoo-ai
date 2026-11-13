@@ -14,12 +14,12 @@ for order in records:
 
     invoice = order.invoice_ids.filtered(lambda move: move.state == 'draft')[:1]
     invoice_name = invoice.display_name or '-'
-    order.message_post(body='Створено чернетку рахунку на передоплату 30%%: %s. Рахунок не проведено і не надіслано клієнту.' % invoice_name)
+    order.message_post(body='Draft 30%% prepayment invoice created: %s. The invoice is not posted and not sent to the client.' % invoice_name)
 
     manager_id = order.user_id.id or env.user.id
     order.activity_schedule(
         'mail.mail_activity_data_todo',
-        summary='Надіслати договір на підпис і рахунок на передоплату',
-        note='Договір: Sign → шаблон «Договір (демо)». Рахунок: %s — перевірити й провести.' % invoice_name,
+        summary='Send the contract for signature and the prepayment invoice',
+        note='Contract: Sign → template «Contract (demo)». Invoice: %s, review and post it.' % invoice_name,
         user_id=manager_id,
     )

@@ -13,9 +13,9 @@ interface TicketRow {
 }
 
 const TICKETS = [
-  { name: 'Запах гару від щитка', description: 'Після грози в щитку пахне горілим, один автомат гарячий. Розумний дім працює частково.' },
-  { name: 'Не працює застосунок', description: 'З учора застосунок не бачить контролер, світло вмикається лише вимикачами.' },
-  { name: 'Додати сценарій', description: 'Хочемо додати сценарій «Кіно» у вітальні: приглушити світло й закрити штори.' },
+  { name: 'Burning smell from the switchboard', description: 'After a thunderstorm the switchboard smells burnt and one breaker is hot. The smart home works only partly.' },
+  { name: 'App not working', description: 'Since yesterday the app cannot see the controller; lights only work from wall switches.' },
+  { name: 'Add a scene', description: 'We want to add a «Movie» scene in the living room: dim the lights and close the blinds.' },
 ];
 
 const odoo = OdooClient.fromEnv();

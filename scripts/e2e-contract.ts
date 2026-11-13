@@ -12,7 +12,7 @@ interface InvoiceRow {
 }
 
 const odoo = OdooClient.fromEnv();
-const partnerId = await odoo.create('res.partner', { name: 'E2E Демо Клієнт', email: 'e2e.demo@example.com' });
+const partnerId = await odoo.create('res.partner', { name: 'E2E Demo Client', email: 'e2e.demo@example.com' });
 const [templateId] = await odoo.search('sale.order.template', [['name', '=', QUOTATION_TEMPLATE_NAME]]);
 if (templateId === undefined) throw new Error('quotation template not found, run seed:sales');
 

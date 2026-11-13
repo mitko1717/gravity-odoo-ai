@@ -1,11 +1,11 @@
-# Server action (project.project button «Запланувати бригади»): draft Planning shifts for field tasks.
+# Server action (project.project button «Plan crews»): draft Planning shifts for field tasks.
 # Durations and roles are demo assumptions. Shifts stay drafts: nobody is notified until the PM publishes them.
 PLAN = [
-    ('Виїзд на об’єкт', 'Інженер-налагоджувальник (демо)', 1),
-    ('Монтаж', 'Монтажник (демо)', 5),
-    ('Налаштування та програмування', 'Інженер-налагоджувальник (демо)', 3),
-    ('Тестування системи', 'Інженер-налагоджувальник (демо)', 1),
-    ('Здача клієнту та навчання', 'Інженер-налагоджувальник (демо)', 1),
+    ('Site visit', 'Commissioning engineer (demo)', 1),
+    ('Installation', 'Installer (demo)', 5),
+    ('Configuration and programming', 'Commissioning engineer (demo)', 3),
+    ('System testing', 'Commissioning engineer (demo)', 1),
+    ('Handover and client training', 'Commissioning engineer (demo)', 1),
 ]
 
 for project in records:
@@ -37,5 +37,5 @@ for project in records:
 
     slots = env['planning.slot'].search([('name', 'like', project.name + ' — ')])
     conflicts = len(slots.filtered(lambda s: s.overlap_slot_count > 0))
-    project.message_post(body='Planning: створено чернеток змін: %d; пропущено: %s; змін із накладками: %d. Перевірте й опублікуйте в Planning.' % (
-        created, ', '.join(skipped) or 'немає', conflicts))
+    project.message_post(body='Planning: draft shifts created: %d; skipped: %s; overlapping shifts: %d. Review and publish them in Planning.' % (
+        created, ', '.join(skipped) or 'none', conflicts))

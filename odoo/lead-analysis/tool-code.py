@@ -3,9 +3,9 @@
 CLIENT_TYPES = ['residential', 'commercial', 'developer', 'partner', 'unknown']
 PRIORITIES = ['high', 'medium', 'low']
 SERVICE_TAGS = {
-    'smart_home': 'Розумний дім', 'lighting': 'Розумний дім', 'climate': 'Розумний дім',
-    'security': 'Розумний дім', 'electrical': 'Електромонтаж', 'engineering': 'Інженерні системи',
-    'heat_pump': 'Теплові насоси', 'service': 'Сервіс',
+    'smart_home': 'Smart home', 'lighting': 'Smart home', 'climate': 'Smart home',
+    'security': 'Smart home', 'electrical': 'Electrical installation', 'engineering': 'Engineering systems',
+    'heat_pump': 'Heat pumps', 'service': 'Service',
 }
 DEMO_USD_RATES = {'USD': 1.0, 'EUR': 1.08, 'UAH': 0.024}
 DEADLINE_DAYS = {'high': 0, 'medium': 1, 'low': 3}
@@ -50,24 +50,24 @@ if contact_filters:
 
 tag_names = set(SERVICE_TAGS[s] for s in safe_services if s in SERVICE_TAGS)
 if safe_client_type in ('developer', 'commercial'):
-    tag_names.add('B2B / ЖК')
+    tag_names.add('B2B / residential complex')
 if safe_client_type == 'partner':
-    tag_names.add('Партнерський канал')
+    tag_names.add('Partner channel')
 
 needs_review = bool(problems) or bool(duplicates)
 if needs_review:
-    tag_names.add('AI: потрібна перевірка')
+    tag_names.add('AI: needs review')
 
 tags = env['crm.tag'].search([('name', 'in', list(tag_names))])
 
-DEFAULT_TITLES = ['Заявка з сайту', '']
+DEFAULT_TITLES = ['Website request', '']
 owner = record.user_id
 if not owner:
     team = record.team_id or env['crm.team'].search([], limit=1)
     owner = team.user_id or env.ref('base.user_admin')
     record.write({'user_id': owner.id, 'team_id': team.id})
-if (record.name or '') in DEFAULT_TITLES and title_uk:
-    record.write({'name': title_uk[:60]})
+if (record.name or '') in DEFAULT_TITLES and title:
+    record.write({'name': title[:60]})
 # Rule over AI: fields filled in the form are never reported as missing (the model sometimes lists them anyway).
 filled_by_form = {
     'phone_or_email': bool(record.email_from or record.phone),
@@ -85,10 +85,10 @@ record.write({
     'x_ai_services': ', '.join(safe_services),
     'x_ai_budget_usd': budget_usd,
     'x_ai_timeline': (timeline or '')[:200],
-    'x_ai_summary': summary_uk or '',
+    'x_ai_summary': summary or '',
     'x_ai_missing': missing_text,
-    'x_ai_next_action': (next_action_uk or '')[:250],
-    'x_ai_reply_draft': reply_draft_uk or '',
+    'x_ai_next_action': (next_action or '')[:250],
+    'x_ai_reply_draft': reply_draft or '',
     'x_ai_raw': repr({
         'client_type': client_type, 'services': services, 'area_m2': area_m2,
         'budget_amount': budget_amount, 'budget_currency': budget_currency, 'location': location,
@@ -102,18 +102,18 @@ deadline = datetime.date.today() + datetime.timedelta(days=DEADLINE_DAYS[safe_pr
 record.activity_schedule(
     'mail.mail_activity_data_todo',
     date_deadline=deadline,
-    summary=('AI: ' + (next_action_uk or 'Зв’язатися з клієнтом'))[:100],
-    note=summary_uk or '',
+    summary=('AI: ' + (next_action or 'Contact the client'))[:100],
+    note=summary or '',
     user_id=owner.id,
 )
 
-note_lines = ['AI-аналіз заявки (рекомендація, потребує підтвердження менеджером).']
+note_lines = ['AI analysis of the request (a recommendation, the manager confirms it).']
 if duplicates:
-    note_lines.append('Можливі дублікати: ' + ', '.join('#%s %s' % (d.id, d.name) for d in duplicates))
+    note_lines.append('Possible duplicates: ' + ', '.join('#%s %s' % (d.id, d.name) for d in duplicates))
 if problems:
-    note_lines.append('Відхилені значення AI: ' + ', '.join(problems))
+    note_lines.append('Rejected AI values: ' + ', '.join(problems))
 if missing_text:
-    note_lines.append('Бракує даних: ' + missing_text)
+    note_lines.append('Missing data: ' + missing_text)
 record.message_post(body='\n'.join(note_lines))
 
 ai['result'] = 'saved: status=%s, priority=%s' % (record.x_ai_status, safe_priority)

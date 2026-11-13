@@ -13,22 +13,22 @@ for line in lines or []:
         rejected += 1
         continue
     stored.append('%d;%d' % (product.id, qty))
-    rows.append('<tr><td>%s</td><td>%d</td><td>%s</td></tr>' % (product.display_name, qty, line.get('reason_uk') or ''))
+    rows.append('<tr><td>%s</td><td>%d</td><td>%s</td></tr>' % (product.display_name, qty, line.get('reason') or ''))
 
 record.write({'x_spec_lines': '\n'.join(stored)})
 
-table = '<table class="table table-sm"><tr><th>Позиція</th><th>К-сть</th><th>Обґрунтування</th></tr>%s</table>' % ''.join(rows)
-html = '<p><b>AI-чернетка специфікації</b> (інженер перевіряє й погоджує; RFQ створюються лише після статусу «Готово» задачі погодження).</p>%s<p><b>Припущення</b><br/>%s</p><p><b>Уточнити на об’єкті</b><br/>%s</p>' % (
+table = '<table class="table table-sm"><tr><th>Item</th><th>Qty</th><th>Reason</th></tr>%s</table>' % ''.join(rows)
+html = '<p><b>AI draft specification</b> (the engineer reviews and approves it; RFQs are created only when the approval task is «Done»).</p>%s<p><b>Assumptions</b><br/>%s</p><p><b>Clarify on site</b><br/>%s</p>' % (
     table,
-    (assumptions_uk or 'немає').replace('\n', '<br/>'),
-    (questions_uk or 'немає').replace('\n', '<br/>'),
+    (assumptions or 'none').replace('\n', '<br/>'),
+    (questions or 'none').replace('\n', '<br/>'),
 )
 if rejected:
-    html += '<p><i>Відхилено рядків поза каталогом або з некоректною кількістю: %d.</i></p>' % rejected
+    html += '<p><i>Rejected lines outside the catalog or with an invalid quantity: %d.</i></p>' % rejected
 
-design_task = record.task_ids.filtered(lambda task: task.name == 'Проєктування')[:1]
+design_task = record.task_ids.filtered(lambda task: task.name == 'System design')[:1]
 target = design_task or record
 target.write({'description': html})
-target.message_post(body='AI-чернетку специфікації збережено в описі: %d позицій. Потрібна перевірка інженера.' % len(stored))
+target.message_post(body='AI draft specification saved in the description: %d items. Engineer review required.' % len(stored))
 
 ai['result'] = 'saved %d lines, rejected %d' % (len(stored), rejected)

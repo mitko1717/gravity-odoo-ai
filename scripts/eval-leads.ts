@@ -22,7 +22,7 @@ interface CaseResult {
 const BUDGET_TOLERANCE = 0.15;
 const odoo = OdooClient.fromEnv();
 
-const oldIds = await odoo.search('crm.lead', [['contact_name', 'like', 'Синтетичний клієнт']]);
+const oldIds = await odoo.search('crm.lead', ['|', ['contact_name', 'like', 'Synthetic client'], ['contact_name', 'like', 'Синтетичний клієнт']]);
 if (oldIds.length > 0) await odoo.call('crm.lead', 'unlink', { ids: oldIds });
 
 function evaluate(item: EvalCase, row: AiRow | undefined): Record<string, boolean | null> {

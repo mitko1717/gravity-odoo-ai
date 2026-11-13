@@ -7,7 +7,7 @@ import { CAMPAIGNS, MARKETING_ARTICLE } from '../src/config/marketing.js';
 
 const odoo = OdooClient.fromEnv();
 
-await ensureField(odoo, 'utm.campaign', { name: 'x_ad_spend', label: 'Рекламний бюджет, грн (демо)', type: 'float' });
+await ensureField(odoo, 'utm.campaign', { name: 'x_ad_spend', label: 'Ad spend, UAH (demo)', type: 'float' });
 
 const [adminRef] = await odoo.searchRead<{ res_id: number }>('ir.model.data', [['module', '=', 'base'], ['name', '=', 'user_admin']], ['res_id']);
 if (!adminRef) throw new Error('base.user_admin not found');
@@ -35,7 +35,7 @@ const articleId = await ensureRecord(odoo, 'knowledge.article', [['name', '=', M
 const actionId = await ensureAiButton(odoo, {
   model: 'knowledge.article',
   dir: 'odoo/marketing-report',
-  actionName: 'AI: маркетинговий звіт',
+  actionName: 'AI: marketing report',
   readTool: { name: 'Opsline AI Tool: Get marketing data', toolName: 'opsline_get_marketing_data', description: 'Return per-campaign spend, leads, qualified leads, quotations and requested services. Call first.' },
   applyTool: { name: 'Opsline AI Tool: Apply marketing report', toolName: 'opsline_apply_marketing_report', description: 'Write the marketing report into the current article. Call exactly once.' },
 });

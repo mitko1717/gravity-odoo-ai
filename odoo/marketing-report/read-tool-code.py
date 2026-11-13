@@ -1,5 +1,5 @@
 # Odoo server action (AI tool). Returns per-campaign metrics computed by rules. Demo campaigns and synthetic leads.
-SERVICE_LABELS = {'lighting': 'освітлення', 'climate': 'клімат', 'security': 'безпека', 'smart_home': 'розумний дім', 'electrical': 'електрика', 'heat_pump': 'тепловий насос', 'multiroom': 'мультирум', 'other': 'інше'}
+SERVICE_LABELS = {'lighting': 'lighting', 'climate': 'climate', 'security': 'security', 'smart_home': 'smart home', 'electrical': 'electrical', 'heat_pump': 'heat pump', 'multiroom': 'multiroom audio', 'other': 'other'}
 
 rows = []
 for campaign in env['utm.campaign'].search([('name', '=like', 'demo_%')]):
