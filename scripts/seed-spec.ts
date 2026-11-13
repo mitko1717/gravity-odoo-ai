@@ -12,7 +12,7 @@ const actionId = await ensureAiButton(odoo, {
   model: 'project.project',
   dir: 'odoo/spec-draft',
   actionName: 'AI: чернетка специфікації',
-  readTool: { name: 'Gravity AI Tool: Get spec inputs', toolName: 'gravity_get_spec_inputs', description: 'Return client data from the lead and the equipment catalog. Call first.' },
-  applyTool: { name: 'Gravity AI Tool: Apply spec draft', toolName: 'gravity_apply_spec_draft', description: 'Validate and save the draft equipment specification. Call exactly once.' },
+  readTool: { name: 'Opsline AI Tool: Get spec inputs', toolName: 'opsline_get_spec_inputs', description: 'Return client data from the lead and the equipment catalog. Call first.' },
+  applyTool: { name: 'Opsline AI Tool: Apply spec draft', toolName: 'opsline_apply_spec_draft', description: 'Validate and save the draft equipment specification. Call exactly once.' },
 });
 console.log(`spec draft AI button -> ${actionId}`);

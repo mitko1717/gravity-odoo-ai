@@ -1,4 +1,4 @@
-// Synthetic internal regulations for the demo. Not Gravity's real policies.
+// Synthetic internal regulations for the demo. Not Opsline's real policies.
 export interface ArticleSpec {
   name: string;
   body: string;

@@ -12,8 +12,8 @@ scene land in the same queue. Urgency and the responsible engineer are decided m
 Ticket created (email / portal / manual / API)
   → Automation Rule "Gravity: AI-тріаж сервісного звернення" (On create)
     → AI action "Gravity: AI-тріаж тікета" (odoo/ticket-analysis/prompt.html)
-      → tool gravity_get_ticket_data        ticket text as untrusted input
-      → tool gravity_apply_ticket_analysis  category + urgency (enums) → validation (tool-code.py)
+      → tool opsline_get_ticket_data        ticket text as untrusted input
+      → tool opsline_apply_ticket_analysis  category + urgency (enums) → validation (tool-code.py)
           → AI fields, native priority (drives SLA), engineer if unassigned, chatter note
 ```
 

@@ -1,4 +1,4 @@
-// Demo equipment and vendors. Names and prices are illustrative, not Gravity's real suppliers.
+// Demo equipment and vendors. Names and prices are illustrative, not Opsline's real suppliers.
 export const VENDORS = ['Постачальник KNX (демо)', 'Електротехніка Опт (демо)'];
 
 export interface EquipmentProduct {

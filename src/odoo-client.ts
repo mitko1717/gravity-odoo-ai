@@ -1,5 +1,10 @@
 type Domain = unknown[];
 
+const MAX_ATTEMPTS = 5;
+const RETRY_BASE_MS = 3000;
+
+const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+
 export class OdooError extends Error {
   constructor(
     message: string,
@@ -26,19 +31,30 @@ export class OdooClient {
 
   async call<T>(model: string, method: string, params: Record<string, unknown> = {}): Promise<T> {
     const endpoint = `${this.baseUrl}/json/2/${model}/${method}`;
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        Authorization: `bearer ${this.apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(params),
-    });
-    const text = await res.text();
+    const body = JSON.stringify(params);
 
-    if (!res.ok) throw new OdooError(`${model}.${method} failed (${res.status})`, res.status, text);
+    for (let attempt = 1; ; attempt++) {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          Authorization: `bearer ${this.apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body,
+      });
+      const text = await res.text();
 
-    return JSON.parse(text) as T;
+      // Odoo Online rate-limits bursts with 429; back off and retry instead of failing the whole seed.
+      const rateLimited = res.status === 429 && attempt < MAX_ATTEMPTS;
+      if (rateLimited) {
+        await sleep(RETRY_BASE_MS * attempt);
+        continue;
+      }
+
+      if (!res.ok) throw new OdooError(`${model}.${method} failed (${res.status})`, res.status, text);
+
+      return JSON.parse(text) as T;
+    }
   }
 
   searchRead<T>(model: string, domain: Domain, fields: string[], limit?: number): Promise<T[]> {

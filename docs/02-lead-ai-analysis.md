@@ -11,8 +11,8 @@ priority and remembers to follow up. Requests are often incomplete or duplicated
 Lead created (website form /zayavka, API or manual)
   → Automation Rule "Gravity: AI-аналіз нової заявки" (On create)
     → AI action "Gravity: AI-аналіз ліда" (odoo/lead-analysis/prompt.html)
-      → tool gravity_get_lead_data        lead fields as untrusted input
-      → tool gravity_apply_lead_analysis  structured JSON (tool-schema.json) → validation (tool-code.py)
+      → tool opsline_get_lead_data        lead fields as untrusted input
+      → tool opsline_apply_lead_analysis  structured JSON (tool-schema.json) → validation (tool-code.py)
           → AI fields, title, salesperson if empty, tags, activity, duplicate check, chatter note
 ```
 

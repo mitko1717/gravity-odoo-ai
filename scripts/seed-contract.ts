@@ -14,14 +14,14 @@ interface RuleSpec {
 
 const RULES: RuleSpec[] = [
   {
-    name: 'Gravity: замовлення підтверджено → рахунок на передоплату',
+    name: 'Opsline: замовлення підтверджено → рахунок на передоплату',
     model: 'sale.order',
     preDomain: "[('state', '!=', 'sale')]",
     domain: "[('state', '=', 'sale')]",
     codeFile: 'odoo/contract/order-confirmed.py',
   },
   {
-    name: 'Gravity: передоплату отримано → PM запускає закупівлі',
+    name: 'Opsline: передоплату отримано → PM запускає закупівлі',
     model: 'account.move',
     preDomain: "[('payment_state', 'not in', ['paid', 'in_payment'])]",
     domain: "[('move_type', '=', 'out_invoice'), ('payment_state', 'in', ['paid', 'in_payment'])]",

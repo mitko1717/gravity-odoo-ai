@@ -1,13 +1,13 @@
 import { OdooClient } from '../src/odoo-client.js';
 import { ensureRecord } from '../src/ensure.js';
 
-// Lead form tab «Gravity / AI» with the website and AI fields.
+// Lead form tab «Opsline / AI» with the website and AI fields.
 
 const VIEW_NAME = 'crm.lead.form.gravity.ai';
 
 const ARCH = `
 <xpath expr="//notebook" position="inside">
-  <page string="Gravity / AI" name="gravity_ai">
+  <page string="Opsline / AI" name="gravity_ai">
     <group>
       <group string="Дані з форми">
         <field name="x_object_type"/>

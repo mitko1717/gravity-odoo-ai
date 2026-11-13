@@ -8,8 +8,8 @@ The owner sees project profitability late and only after manual consolidation.
     data/expenses-demo.csv  (synthetic: date, object, category, amount)
     → npm run import:expenses     custom model x_gravity_expense «витрати по об’єктах (демо)», idempotent per source file
     → Knowledge article «Управлінський звіт по об’єктах (демо)», AI action «AI: управлінський звіт»
-      → tool gravity_get_finance_data    per project: revenue (SO untaxed), purchases (RFQ/PO untaxed), expenses by category, margin
-      → tool gravity_apply_finance_report rules build the table; AI writes conclusions, risks, recommendations
+      → tool opsline_get_finance_data    per project: revenue (SO untaxed), purchases (RFQ/PO untaxed), expenses by category, margin
+      → tool opsline_apply_finance_report rules build the table; AI writes conclusions, risks, recommendations
     → the report is written into the article (and becomes a source the internal assistant can cite)
 
 ## Why split rules and AI

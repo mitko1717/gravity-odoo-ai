@@ -46,7 +46,7 @@ await odoo.write('project.task', [firstTask.id], { date_deadline: '2026-11-01 16
 const [cron] = await odoo.searchRead<{ res_id: number }>('ir.model.data', [['module', '=', 'base_automation'], ['model', '=', 'ir.cron']], ['res_id'], 1);
 
 // on_time rules only process records whose trigger date is after last_run; reset it so the test is repeatable.
-const escalationIds = await odoo.search('base.automation', [['name', '=', 'Gravity: ескалація простроченої задачі']]);
+const escalationIds = await odoo.search('base.automation', [['name', '=', 'Opsline: ескалація простроченої задачі']]);
 await odoo.write('base.automation', escalationIds, { last_run: false });
 
 if (cron) await odoo.call('ir.cron', 'method_direct_trigger', { ids: [cron.res_id] });

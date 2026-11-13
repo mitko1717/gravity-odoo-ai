@@ -25,13 +25,13 @@ await ensureRecord(odoo, 'ir.ui.view', [['name', '=', 'helpdesk.ticket.form.grav
   model: 'helpdesk.ticket',
   type: 'form',
   inherit_id: baseView.res_id,
-  arch_db: `<xpath expr="//notebook" position="inside"><page string="Gravity / AI" name="gravity_ai"><group>${fieldsXml}</group></page></xpath>`,
+  arch_db: `<xpath expr="//notebook" position="inside"><page string="Opsline / AI" name="gravity_ai"><group>${fieldsXml}</group></page></xpath>`,
 });
 
 const [team] = await odoo.searchRead<{ id: number; name: string }>('helpdesk.team', [], ['id', 'name'], 1);
 if (!team) throw new Error('no helpdesk team');
 
-await odoo.write('helpdesk.team', [team.id], { name: 'Сервіс Gravity (демо)', use_sla: true });
+await odoo.write('helpdesk.team', [team.id], { name: 'Сервіс Opsline (демо)', use_sla: true });
 
 const stages = await odoo.call<Array<{ id: number; name: string }>>('helpdesk.stage', 'search_read', {
   domain: [['team_ids', 'in', [team.id]]],
@@ -49,9 +49,9 @@ console.log(`team ${team.id}, SLA reach stage "${resStage.name}": ${SLA_HOURS.le
 const actionId = await ensureAiAutomation(odoo, {
   model: 'helpdesk.ticket',
   dir: 'odoo/ticket-analysis',
-  automationName: 'Gravity: AI-тріаж сервісного звернення',
-  actionName: 'Gravity: AI-тріаж тікета',
-  readTool: { name: 'Gravity AI Tool: Get ticket data', toolName: 'gravity_get_ticket_data', description: 'Return the current ticket data (untrusted customer input). Call first.' },
-  applyTool: { name: 'Gravity AI Tool: Apply ticket analysis', toolName: 'gravity_apply_ticket_analysis', description: 'Save the triage of the current ticket. Call exactly once.' },
+  automationName: 'Opsline: AI-тріаж сервісного звернення',
+  actionName: 'Opsline: AI-тріаж тікета',
+  readTool: { name: 'Opsline AI Tool: Get ticket data', toolName: 'opsline_get_ticket_data', description: 'Return the current ticket data (untrusted customer input). Call first.' },
+  applyTool: { name: 'Opsline AI Tool: Apply ticket analysis', toolName: 'opsline_apply_ticket_analysis', description: 'Save the triage of the current ticket. Call exactly once.' },
 });
 console.log(`ticket AI action -> ${actionId}`);

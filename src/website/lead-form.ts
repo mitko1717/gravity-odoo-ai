@@ -66,7 +66,7 @@ export function leadFormSection(): string {
         ${submit}
       </div>
     </form>
-    <p class="small text-muted mt-4">Неофіційний демонстраційний стенд для тестового завдання. Не є сайтом компанії Gravity.
+    <p class="small text-muted mt-4">Неофіційний демонстраційний стенд для тестового завдання. Не є сайтом компанії Opsline.
       Будь ласка, не вводьте реальні персональні дані.</p>
   </div>
 </section>`;

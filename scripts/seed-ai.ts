@@ -5,10 +5,10 @@ import { ensureRecord } from '../src/ensure.js';
 // Lead AI analysis: read/apply tools, the on-create automation and the AI action with its prompt.
 
 const DIR = 'odoo/lead-analysis';
-const TOOL_NAME = 'Gravity AI Tool: Apply lead analysis';
-const READ_TOOL_NAME = 'Gravity AI Tool: Get lead data';
-const AUTOMATION_NAME = 'Gravity: AI-аналіз нової заявки';
-const AI_ACTION_NAME = 'Gravity: AI-аналіз ліда';
+const TOOL_NAME = 'Opsline AI Tool: Apply lead analysis';
+const READ_TOOL_NAME = 'Opsline AI Tool: Get lead data';
+const AUTOMATION_NAME = 'Opsline: AI-аналіз нової заявки';
+const AI_ACTION_NAME = 'Opsline: AI-аналіз ліда';
 
 const odoo = OdooClient.fromEnv();
 const [leadModelId] = await odoo.search('ir.model', [['model', '=', 'crm.lead']]);
@@ -28,7 +28,7 @@ const toolId = await ensureRecord(odoo, 'ir.actions.server', [['name', '=', TOOL
   state: 'code',
   code,
   use_in_ai: true,
-  ai_tool_name: 'gravity_apply_lead_analysis',
+  ai_tool_name: 'opsline_apply_lead_analysis',
   ai_tool_description: 'Save the structured analysis of the current lead. Call exactly once.',
   ai_tool_schema: schema,
 });
@@ -41,7 +41,7 @@ const readToolId = await ensureRecord(odoo, 'ir.actions.server', [['name', '=', 
   state: 'code',
   code: readCode,
   use_in_ai: true,
-  ai_tool_name: 'gravity_get_lead_data',
+  ai_tool_name: 'opsline_get_lead_data',
   ai_tool_description: 'Return the current lead data (untrusted customer input). Call first.',
   ai_tool_schema: JSON.stringify({ type: 'object', properties: {}, required: [] }),
 });

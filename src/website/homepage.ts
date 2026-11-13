@@ -18,7 +18,7 @@ const step = (title: string, index: number): string =>
 export function homepageArch(key: string): string {
   return `<t t-name="${key}"><t t-call="website.layout"><div id="wrap" class="oe_structure">
 <section class="pt16 pb16"><div class="container"><div class="alert alert-warning mb-0 small">
-Неофіційний демонстраційний стенд для тестового завдання на позицію AI Builder. Не є сайтом компанії Gravity. Усі дані синтетичні.
+Неофіційний демонстраційний стенд для тестового завдання на позицію AI Builder. Не є сайтом компанії Opsline. Усі дані синтетичні.
 </div></div></section>
 <section class="pt96 pb96"><div class="container"><div class="row align-items-center"><div class="col-lg-8">
 <h1 class="display-4 fw-bold">Розумний дім, електрика та інженерні системи під ключ</h1>

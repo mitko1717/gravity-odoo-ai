@@ -8,8 +8,8 @@ Profiles are inconsistent; strong candidates can wait for days.
     hr.applicant created (Recruitment app, email alias or API)
     → automation "Gravity: AI-профіль кандидата" (on create)
     → AI action "Gravity: AI-аналіз кандидата" (odoo/applicant-analysis/prompt.html)
-      → tool gravity_get_applicant_data      name, job description, applicant notes (untrusted input)
-      → tool gravity_apply_applicant_analysis JSON schema → validation (tool-code.py) → x_ai_* fields + chatter note
+      → tool opsline_get_applicant_data      name, job description, applicant notes (untrusted input)
+      → tool opsline_apply_applicant_analysis JSON schema → validation (tool-code.py) → x_ai_* fields + chatter note
 
 ## Output (tab «Gravity / AI» on the applicant)
 fit (strong / possible / weak / unclear), profile, skills, gaps, interview questions, recommended next step.

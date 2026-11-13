@@ -1,5 +1,5 @@
 # Automation (project.task, on create): planned deadlines for tasks copied from the project template.
-# Day offsets from project start are demo assumptions, to be replaced by real Gravity norms.
+# Day offsets from project start are demo assumptions, to be replaced by real Opsline norms.
 DAY_OFFSETS = [2, 5, 12, 15, 25, 35, 40, 42, 45]
 
 for task in records:

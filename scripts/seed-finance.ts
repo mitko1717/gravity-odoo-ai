@@ -16,7 +16,7 @@ const FIELDS = [
 const odoo = OdooClient.fromEnv();
 
 const modelId = await ensureRecord(odoo, 'ir.model', [['model', '=', EXPENSE_MODEL]], {
-  name: 'Gravity: витрати по об’єктах (демо)',
+  name: 'Opsline: витрати по об’єктах (демо)',
   model: EXPENSE_MODEL,
 });
 for (const field of FIELDS) {
@@ -44,7 +44,7 @@ const actionId = await ensureAiButton(odoo, {
   model: 'knowledge.article',
   dir: 'odoo/finance-report',
   actionName: 'AI: управлінський звіт',
-  readTool: { name: 'Gravity AI Tool: Get finance data', toolName: 'gravity_get_finance_data', description: 'Return revenue, purchases, expenses and margin per project. Call first.' },
-  applyTool: { name: 'Gravity AI Tool: Apply finance report', toolName: 'gravity_apply_finance_report', description: 'Write the management report into the current article. Call exactly once.' },
+  readTool: { name: 'Opsline AI Tool: Get finance data', toolName: 'opsline_get_finance_data', description: 'Return revenue, purchases, expenses and margin per project. Call first.' },
+  applyTool: { name: 'Opsline AI Tool: Apply finance report', toolName: 'opsline_apply_finance_report', description: 'Write the management report into the current article. Call exactly once.' },
 });
 console.log(`report article -> ${articleId}, AI button -> ${actionId}`);

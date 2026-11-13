@@ -6,8 +6,8 @@ Reports are irregular and optimistic; delays become visible late.
 
 ## Solution
     Project → Action menu → «AI: звіт по об’єкту» (manual now; can be scheduled weekly)
-    → tool gravity_get_site_data   tasks, stages, deadlines, overdue days, last 2 notes per task (notes untrusted)
-    → tool gravity_apply_site_report
+    → tool opsline_get_site_data   tasks, stages, deadlines, overdue days, last 2 notes per task (notes untrusted)
+    → tool opsline_apply_site_report
         rules compute: progress = done / total, status on_track | at_risk (1 overdue) | off_track (2+ or >7 days) | done
         AI writes only: summary, blockers, next steps (Ukrainian)
     → native Odoo «Project Update» (status page with history) is created

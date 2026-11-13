@@ -5,7 +5,7 @@ import { CONTACT_INTERVAL_DAYS, DEMO_PARTNERS, PARTNER_TAGS } from '../src/confi
 
 // Partners: last-contact field, tags and the 40/90-day reminder automation.
 
-const REMIND_NAME = 'Gravity: нагадування про контакт з партнером';
+const REMIND_NAME = 'Opsline: нагадування про контакт з партнером';
 const MARK_NAME = 'Партнер: контакт відбувся';
 
 const daysAgo = (days: number) => new Date(Date.now() - days * 86_400_000).toISOString().slice(0, 10);

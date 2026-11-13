@@ -4,7 +4,7 @@ import { KNOWLEDGE_ARTICLES } from '../src/config/knowledge-articles.js';
 
 // Internal AI assistant: demo regulation articles and the source-restricted AI agent.
 
-const AGENT_NAME = 'Gravity: внутрішній асистент (демо)';
+const AGENT_NAME = 'Opsline: внутрішній асистент (демо)';
 const SYSTEM_PROMPT = [
   'You answer employees of a smart home installation company, in Ukrainian.',
   'Answer ONLY from the provided sources (internal regulations). Always name the source article.',

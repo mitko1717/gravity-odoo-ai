@@ -45,7 +45,7 @@ export async function buildWeekly(odoo: OdooClient, odooUrl: string): Promise<We
   const article: ArticleRow = latest ?? { id: parent, body: false, write_date: new Date(0).toISOString().slice(0, 19).replace('T', ' ') };
 
   const ageHours = (Date.now() - Date.parse(`${article.write_date.replace(' ', 'T')}Z`)) / 3600000;
-  const staleNote = ageHours > FRESH_HOURS && String(article.body || '').includes('Цифри тижня') ? '\n\n<i>Звіт ще не оновлено цього тижня: Settings → Technical → Scheduled Actions → «Gravity: тижневий звіт керівнику» → Run Manually.</i>' : '';
+  const staleNote = ageHours > FRESH_HOURS && String(article.body || '').includes('Цифри тижня') ? '\n\n<i>Звіт ще не оновлено цього тижня: Settings → Technical → Scheduled Actions → «Opsline: тижневий звіт керівнику» → Run Manually.</i>' : '';
   const rawBody = String(article.body || '');
   const hasReport = rawBody.includes('Цифри тижня');
   const body = hasReport ? htmlToText(rawBody) : '';
@@ -54,7 +54,7 @@ export async function buildWeekly(odoo: OdooClient, odooUrl: string): Promise<We
   // Bold tags are kept for headings; everything else from the article is escaped text.
   const safeBody = escapeHtml(body).replace(/&lt;(\/?)b&gt;/g, '<$1b>');
 
-  return { text: `📈 <b>Тижневий звіт керівнику</b>\n\n${safeBody || 'Звіт ще не згенеровано: Settings → Technical → Scheduled Actions → «Gravity: тижневий звіт керівнику» → Run Manually.'}${staleNote}`, keyboard };
+  return { text: `📈 <b>Тижневий звіт керівнику</b>\n\n${safeBody || 'Звіт ще не згенеровано: Settings → Technical → Scheduled Actions → «Opsline: тижневий звіт керівнику» → Run Manually.'}${staleNote}`, keyboard };
 }
 
 /** Monday after the digest hour, once per week. */

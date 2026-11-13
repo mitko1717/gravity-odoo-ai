@@ -26,7 +26,7 @@ await ensureRecord(odoo, 'ir.ui.view', [['name', '=', 'hr.applicant.form.gravity
   model: 'hr.applicant',
   type: 'form',
   inherit_id: baseView.res_id,
-  arch_db: `<xpath expr="//notebook" position="inside"><page string="Gravity / AI" name="gravity_ai"><group>${fieldsXml}</group></page></xpath>`,
+  arch_db: `<xpath expr="//notebook" position="inside"><page string="Opsline / AI" name="gravity_ai"><group>${fieldsXml}</group></page></xpath>`,
 });
 
 const jobId = await ensureRecord(odoo, 'hr.job', [['name', '=', 'Монтажник-електрик (демо)']], {
@@ -38,10 +38,10 @@ console.log(`job -> ${jobId}`);
 const actionId = await ensureAiAutomation(odoo, {
   model: 'hr.applicant',
   dir: 'odoo/applicant-analysis',
-  automationName: 'Gravity: AI-профіль кандидата',
-  actionName: 'Gravity: AI-аналіз кандидата',
-  readTool: { name: 'Gravity AI Tool: Get applicant data', toolName: 'gravity_get_applicant_data', description: 'Return the current applicant data (untrusted input). Call first.' },
-  applyTool: { name: 'Gravity AI Tool: Apply applicant analysis', toolName: 'gravity_apply_applicant_analysis', description: 'Save the applicant analysis. Call exactly once.' },
+  automationName: 'Opsline: AI-профіль кандидата',
+  actionName: 'Opsline: AI-аналіз кандидата',
+  readTool: { name: 'Opsline AI Tool: Get applicant data', toolName: 'opsline_get_applicant_data', description: 'Return the current applicant data (untrusted input). Call first.' },
+  applyTool: { name: 'Opsline AI Tool: Apply applicant analysis', toolName: 'opsline_apply_applicant_analysis', description: 'Save the applicant analysis. Call exactly once.' },
 });
 console.log(`applicant AI action -> ${actionId}`);
 
@@ -49,8 +49,8 @@ console.log(`applicant AI action -> ${actionId}`);
 const buttonId = await ensureAiButton(odoo, {
   model: 'hr.applicant',
   dir: 'odoo/applicant-analysis',
-  actionName: 'Gravity: AI-аналіз кандидата (повторно)',
-  readTool: { name: 'Gravity AI Tool: Get applicant data', toolName: 'gravity_get_applicant_data', description: 'Return the current applicant data (untrusted input). Call first.' },
-  applyTool: { name: 'Gravity AI Tool: Apply applicant analysis', toolName: 'gravity_apply_applicant_analysis', description: 'Save the applicant analysis. Call exactly once.' },
+  actionName: 'Opsline: AI-аналіз кандидата (повторно)',
+  readTool: { name: 'Opsline AI Tool: Get applicant data', toolName: 'opsline_get_applicant_data', description: 'Return the current applicant data (untrusted input). Call first.' },
+  applyTool: { name: 'Opsline AI Tool: Apply applicant analysis', toolName: 'opsline_apply_applicant_analysis', description: 'Save the applicant analysis. Call exactly once.' },
 });
 console.log(`applicant AI button -> ${buttonId}`);

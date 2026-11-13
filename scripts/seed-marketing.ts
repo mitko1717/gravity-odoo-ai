@@ -36,7 +36,7 @@ const actionId = await ensureAiButton(odoo, {
   model: 'knowledge.article',
   dir: 'odoo/marketing-report',
   actionName: 'AI: маркетинговий звіт',
-  readTool: { name: 'Gravity AI Tool: Get marketing data', toolName: 'gravity_get_marketing_data', description: 'Return per-campaign spend, leads, qualified leads, quotations and requested services. Call first.' },
-  applyTool: { name: 'Gravity AI Tool: Apply marketing report', toolName: 'gravity_apply_marketing_report', description: 'Write the marketing report into the current article. Call exactly once.' },
+  readTool: { name: 'Opsline AI Tool: Get marketing data', toolName: 'opsline_get_marketing_data', description: 'Return per-campaign spend, leads, qualified leads, quotations and requested services. Call first.' },
+  applyTool: { name: 'Opsline AI Tool: Apply marketing report', toolName: 'opsline_apply_marketing_report', description: 'Write the marketing report into the current article. Call exactly once.' },
 });
 console.log(`marketing article -> ${articleId}, AI button -> ${actionId}`);

@@ -28,7 +28,7 @@ const COMMANDS = [
 ];
 
 const HELP = [
-  '<b>Gravity × Odoo — демо-бот</b> (неофіційний стенд, синтетичні дані)',
+  '<b>Opsline × Odoo — демо-бот</b> (неофіційний стенд, синтетичні дані)',
   '',
   ...COMMANDS.map((item) => `/${item.command} — ${item.description}`),
   '',
@@ -81,7 +81,7 @@ const access = createAccess({ bot, state, adminChatId: config.adminChatId, envCh
 const allowedChats = access.allowedChats;
 
 const DESCRIPTION = [
-  'Демо-бот для тестового завдання Gravity × Odoo (неофіційний стенд, усі дані синтетичні).',
+  'Демо-бот для тестового завдання Opsline × Odoo (неофіційний стенд, усі дані синтетичні).',
   '',
   'Що вміє: нові заявки з AI-розбором, погодження специфікацій і закупівель, прострочені задачі, критичні сервісні тікети, статистика й ранковий дайджест.',
   '',
@@ -89,7 +89,7 @@ const DESCRIPTION = [
 ].join('\n');
 
 const WELCOME = [
-  '👋 <b>Вітаю! Це демо-бот Gravity × Odoo.</b>',
+  '👋 <b>Вітаю! Це демо-бот Opsline × Odoo.</b>',
   '',
   'Він показує, як команда може працювати з ERP прямо з Telegram:',
   '• нові заявки з сайту одразу з AI-розбором і кнопкою «Взяти в роботу»;',
@@ -103,7 +103,7 @@ const WELCOME = [
 ].join('\n');
 
 // Public links: available before access is granted, so reviewers can watch the demo first.
-const DEMO_TEXT = '🎬 <b>Демо Gravity × Odoo × AI</b>\nВідео (3 хв, титри): заявка з сайту → AI → CRM → пропозиція → проєкт → закупівлі → перевірки → здача, плюс сервіс, HR, наради й AI-асистент.\nПрезентація: 10 слайдів про проблему, рішення та метрики.\nAI-асистент відповідає лише з внутрішніх регламентів (відкривається для користувачів Odoo-стенду).';
+const DEMO_TEXT = '🎬 <b>Демо Opsline × Odoo × AI</b>\nВідео (3 хв, титри): заявка з сайту → AI → CRM → пропозиція → проєкт → закупівлі → перевірки → здача, плюс сервіс, HR, наради й AI-асистент.\nПрезентація: 10 слайдів про проблему, рішення та метрики.\nAI-асистент відповідає лише з внутрішніх регламентів (відкривається для користувачів Odoo-стенду).';
 const DEMO_KEYBOARD = new InlineKeyboard()
   .url('▶ Відео', 'https://claude.ai/artifact/9mntsBuQdJ38R4xooKN81z')
   .row()

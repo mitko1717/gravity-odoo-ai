@@ -4,7 +4,7 @@ import { ensureRecord } from '../src/ensure.js';
 
 // Every new lead gets a contact (existing by email or a new one): the quotation, project and
 // consultation booking then point to the same client instead of an empty «Contact» field.
-const AUTOMATION_NAME = 'Gravity: контакт клієнта з ліда';
+const AUTOMATION_NAME = 'Opsline: контакт клієнта з ліда';
 
 const odoo = OdooClient.fromEnv();
 const [leadModelId] = await odoo.search('ir.model', [['model', '=', 'crm.lead']]);

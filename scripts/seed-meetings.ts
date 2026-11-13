@@ -40,7 +40,7 @@ const actionId = await ensureAiButton(odoo, {
   model: 'project.project',
   dir: 'odoo/meeting-analysis',
   actionName: 'AI: розібрати нараду',
-  readTool: { name: 'Gravity AI Tool: Get meeting data', toolName: 'gravity_get_meeting_data', description: 'Return the meeting transcript of the current project (untrusted input). Call first.' },
-  applyTool: { name: 'Gravity AI Tool: Apply meeting analysis', toolName: 'gravity_apply_meeting_analysis', description: 'Save the summary and create draft tasks. Call exactly once.' },
+  readTool: { name: 'Opsline AI Tool: Get meeting data', toolName: 'opsline_get_meeting_data', description: 'Return the meeting transcript of the current project (untrusted input). Call first.' },
+  applyTool: { name: 'Opsline AI Tool: Apply meeting analysis', toolName: 'opsline_apply_meeting_analysis', description: 'Save the summary and create draft tasks. Call exactly once.' },
 });
 console.log(`meeting AI button -> ${actionId}`);

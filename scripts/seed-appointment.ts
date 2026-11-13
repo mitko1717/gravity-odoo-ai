@@ -37,7 +37,7 @@ console.log(`appointment type ${typeId}: ${process.env.ODOO_URL}${row?.website_u
 
 // Booking → lead link: the client books from the link sent for a lead, the automation finds that lead
 // by the booker's contact or email, moves it to «Консультація / виїзд» and closes the reminder activity.
-const LINK_NAME = 'Gravity: запис на консультацію → лід';
+const LINK_NAME = 'Opsline: запис на консультацію → лід';
 const [eventModelId] = await odoo.search('ir.model', [['model', '=', 'calendar.event']]);
 if (eventModelId === undefined) throw new Error('calendar.event model not found');
 

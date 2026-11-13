@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { OdooClient } from '../src/odoo-client.js';
 import { ensureRecord } from '../src/ensure.js';
 
-// Synthetic crew: roles and employees for the demo, not Gravity's staff.
+// Synthetic crew: roles and employees for the demo, not Opsline's staff.
 const CREW: Array<{ role: string; employees: string[] }> = [
   { role: 'Монтажник (демо)', employees: ['Монтажник Андрій (демо)', 'Монтажник Богдан (демо)'] },
   { role: 'Інженер-налагоджувальник (демо)', employees: ['Інженер Віктор (демо)'] },

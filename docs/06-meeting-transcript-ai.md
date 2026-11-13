@@ -8,8 +8,8 @@ owners and dates get lost.
     Project «Наради: планування об’єктів (демо)», tab «Наради / AI»
     → PM pastes transcript into «Транскрипція наради (для AI)»
     → Action menu → «AI: розібрати нараду» (manual AI server action, ensureAiButton)
-      → tool gravity_get_meeting_data       transcript + today's date (untrusted input)
-      → tool gravity_apply_meeting_analysis summary, decisions, action_items[] → validation (tool-code.py)
+      → tool opsline_get_meeting_data       transcript + today's date (untrusted input)
+      → tool opsline_apply_meeting_analysis summary, decisions, action_items[] → validation (tool-code.py)
     → summary saved on the project, draft tasks in stage «Чернетки з зустрічей», tag «AI-чернетка»
 
 ## Guardrails
