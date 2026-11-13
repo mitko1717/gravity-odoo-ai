@@ -4,16 +4,22 @@ import { NAMED_MODELS, NAME_PAIRS, RENAME_PAIRS, type RenamePair } from './trans
 // Renames existing Odoo records from Ukrainian to English names (exact match) before seeds run with English names.
 // Usage: npm run translate:records        (dry run)
 //        npm run translate:records -- --apply
+//        npm run translate:records -- --apply --delete-old-actions   (also removes old Ukrainian code actions)
 
 const APPLY = process.argv.includes('--apply');
+const DELETE_OLD_ACTIONS = process.argv.includes('--delete-old-actions');
 const odoo = OdooClient.fromEnv();
 
 let renamed = 0;
 let missing = 0;
 
-const namedPairs: RenamePair[] = NAME_PAIRS.flatMap(([uk, en]) =>
-  NAMED_MODELS.map(([model, field]): RenamePair => [model, field, uk, en]),
-);
+// Code-only server actions are named «<automation name> (code)».
+const CODE_SUFFIX = ' (code)';
+const codeActionPairs: RenamePair[] = NAME_PAIRS.map(([uk, en]) => ['ir.actions.server', 'name', uk + CODE_SUFFIX, en + CODE_SUFFIX]);
+const namedPairs: RenamePair[] = [
+  ...NAME_PAIRS.flatMap(([uk, en]) => NAMED_MODELS.map(([model, field]): RenamePair => [model, field, uk, en])),
+  ...codeActionPairs,
+];
 
 for (const [model, field, uk, en] of [...RENAME_PAIRS, ...namedPairs]) {
   let ids: number[];
@@ -28,6 +34,19 @@ for (const [model, field, uk, en] of [...RENAME_PAIRS, ...namedPairs]) {
 
   if (ids.length === 0) {
     missing++;
+    continue;
+  }
+
+  // A seed may already have created the English record; then renaming would leave two records with one name.
+  const existingEnglish = await odoo.search(model, [[field, '=', en]]);
+  if (existingEnglish.length > 0) {
+    console.log(`CONFLICT ${model}: «${en}» already exists (${existingEnglish.join(',')}), old ${ids.join(',')} not renamed`);
+
+    // Seeds re-created code actions under English names; the old Ukrainian copies would still run from automations.
+    if (APPLY && DELETE_OLD_ACTIONS && model === 'ir.actions.server') {
+      await odoo.call(model, 'unlink', { ids });
+      console.log(`deleted old ${model} ${ids.join(',')}`);
+    }
     continue;
   }
 

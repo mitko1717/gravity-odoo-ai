@@ -56,7 +56,9 @@
     "start": "tsx src/bot/index.ts",
     "rename:brand": "tsx --env-file=.env scripts/rename-brand.ts",
     "translate:records": "tsx --env-file=.env scripts/translate-records.ts",
-    "find:ukrainian": "tsx --env-file=.env scripts/find-ukrainian.ts"
+    "find:ukrainian": "tsx --env-file=.env scripts/find-ukrainian.ts",
+    "archive:ukrainian": "tsx --env-file=.env scripts/archive-ukrainian.ts",
+    "update:sign": "tsx --env-file=.env scripts/update-sign-templates.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
