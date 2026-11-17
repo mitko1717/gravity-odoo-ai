@@ -58,7 +58,8 @@
     "translate:records": "tsx --env-file=.env scripts/translate-records.ts",
     "find:ukrainian": "tsx --env-file=.env scripts/find-ukrainian.ts",
     "archive:ukrainian": "tsx --env-file=.env scripts/archive-ukrainian.ts",
-    "update:sign": "tsx --env-file=.env scripts/update-sign-templates.ts"
+    "update:sign": "tsx --env-file=.env scripts/update-sign-templates.ts",
+    "archive:leads": "tsx --env-file=.env scripts/archive-open-leads.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
