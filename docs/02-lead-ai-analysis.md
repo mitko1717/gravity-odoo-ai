@@ -9,8 +9,8 @@ priority and remembers to follow up. Requests are often incomplete or duplicated
 
 ```text
 Lead created (website form /zayavka, API or manual)
-  → Automation Rule "Gravity: AI-аналіз нової заявки" (On create)
-    → AI action "Gravity: AI-аналіз ліда" (odoo/lead-analysis/prompt.html)
+  → Automation Rule "Opsline: AI analysis of a new request" (On create)
+    → AI action "Opsline: AI lead analysis" (odoo/lead-analysis/prompt.html)
       → tool opsline_get_lead_data        lead fields as untrusted input
       → tool opsline_apply_lead_analysis  structured JSON (tool-schema.json) → validation (tool-code.py)
           → AI fields, title, salesperson if empty, tags, activity, duplicate check, chatter note
@@ -24,7 +24,7 @@ After submitting, the form redirects to an own Ukrainian page `/zayavka-dyakuyem
 
 - **The LLM never writes fields directly.** It can only call a tool with a strict JSON schema
   (enums for client type, services, priority, currency, missing fields). The tool validates
-  every value; rejected values are logged and the lead is marked "Потребує перевірки".
+  every value; rejected values are logged and the lead is marked "Needs review".
 - **No invented data.** Unknown values are `0` / empty string and listed in `missing_fields`.
 - **Priority is a recommendation** (`x_ai_priority`), the native lead priority is untouched.
 - **Prompt injection.** Customer text is delivered through a tool result labelled
@@ -40,7 +40,7 @@ After submitting, the form redirects to an own Ukrainian page `/zayavka-dyakuyem
 | Test | Result |
 |---|---|
 | Lead from the assignment example | high priority, services, summary, timeline extracted, activity due today |
-| Same email submitted again | flagged as duplicate, tag "AI: потрібна перевірка" |
+| Same email submitted again | flagged as duplicate, tag "AI: needs review" |
 | Missing lead data (first iteration bug) | all fields reported as missing instead of invented |
 
 ## Limitations
@@ -50,4 +50,4 @@ After submitting, the form redirects to an own Ukrainian page `/zayavka-dyakuyem
 - Demo currency rates.
 
 ## Contact on create
-Automation «Gravity: контакт клієнта з ліда» (`odoo/lead-contact/assign-partner.py`, `npm run seed:lead-contact`) links every new lead with an email to a contact: an existing one with the same email, or a new one created from the lead. Quotation, project and consultation booking then share one client. See [17](17-telegram-bot.md) for the booking link.
+Automation «Opsline: client contact from lead» (`odoo/lead-contact/assign-partner.py`, `npm run seed:lead-contact`) links every new lead with an email to a contact: an existing one with the same email, or a new one created from the lead. Quotation, project and consultation booking then share one client. See [17](17-telegram-bot.md) for the booking link.

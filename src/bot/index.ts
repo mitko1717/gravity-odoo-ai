@@ -98,20 +98,18 @@ const WELCOME = [
   '• stats and a morning digest.',
   '',
   'Northwind Home Systems is a fictional company; all data is synthetic.',
-  'Demo video and deck: /demo',
+  'Demo video and overview: /demo',
   'To get access, send /request and the administrator will approve it.',
 ].join('\n');
 
 // Public links: available before access is granted, so reviewers can watch the demo first.
-const DEMO_TEXT = '🎬 <b>Opsline demo: Odoo × AI</b>\nVideo (3 min, captions): website request → AI → CRM → quotation → project → purchasing → checks → handover, plus service, HR, meetings and the AI assistant.\nDeck: 10 slides on the problem, the solution and the metrics.\nThe AI assistant answers only from internal regulations (opens for users of the Odoo stand).';
+const DEMO_TEXT = '🎬 <b>Opsline demo: Odoo × AI</b>\nVideo (2:42, captions): website request → AI → CRM → Telegram → quotation → project → specification → purchasing → commissioning → service.\nOverview page: the problem, how it works, measured results and how a pilot runs (EN / UA).';
 const DEMO_KEYBOARD = new InlineKeyboard()
-  .url('▶ Video', 'https://claude.ai/artifact/9mntsBuQdJ38R4xooKN81z')
+  .url('▶ Video and overview', 'https://claude.ai/artifact/AgJkUuwEGH2P4cdSLwK5Nt')
   .row()
-  .url('📊 Deck', 'https://claude.ai/artifact/Jk3Wfpe1ruCBocPP4TTYxf')
+  .url('🇺🇦 Українською', 'https://claude.ai/artifact/AgJkUuwEGH2P4cdSLwK5Nt#uk')
   .row()
-  .url('💻 Repository', 'https://github.com/mitko1717/gravity-odoo-ai')
-  .row()
-  .url('🤖 AI assistant (Odoo, login required)', 'https://test6017.odoo.com/odoo/action-919/discuss?scoped_ai_agent_id=7');
+  .url('💻 Repository', 'https://github.com/mitko1717/gravity-odoo-ai');
 
 bot.command('start', (ctx) => ctx.reply(allowedChats().includes(ctx.chat.id) ? HELP : WELCOME, html));
 

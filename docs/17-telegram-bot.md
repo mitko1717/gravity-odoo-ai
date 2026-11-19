@@ -6,41 +6,41 @@ User guide (stages, roles, commands): [BOT.md](../BOT.md) · in the bot: `/flow`
 Managers, PMs, engineers and buyers do not live in Odoo all day. Events that need a human decision (new lead, spec ready, RFQ drafted, tests passed, overdue task) wait until someone opens the right screen, and the next department learns about a finished stage late, by phone or chat.
 
 ## Solution
-A small Node.js bot (grammY) that polls Odoo over JSON-2 and pushes role-based notifications with action buttons. Odoo stays the single source of truth: every button is an ordinary Odoo write that leaves a chatter note «… через Telegram (@user)», and every reply carries an «Відкрити в Odoo» / «Етап в Odoo» link to the changed record.
+A small Node.js bot (grammY) that polls Odoo over JSON-2 and pushes role-based notifications with action buttons. Odoo stays the single source of truth: every button is an ordinary Odoo write that leaves a chatter note «… via Telegram (@user)», and every reply carries an «Open in Odoo» / «Stage in Odoo» link to the changed record.
 
 ### Notifications (polled every `BOT_POLL_SECONDS`)
 
 | Event | Process map stage | Role | Buttons |
 |---|---|---|---|
-| New website lead with AI summary | 1 → 2 | sales | Взяти в роботу, Чернетка відповіді, 📅 Консультація, Створити пропозицію |
-| Consultation booked (`calendar.event` with `appointment_type_id`, cursor `lastEventId`) | 2 | sales | Відкрити в Odoo |
-| Quotation draft (after «Створити пропозицію») | 2 | sales | Підтвердити замовлення (→ project + 30% prepayment invoice) |
-| Prepayment received | 3 | pm | Відкрити в Odoo |
-| AI specification draft ready | 4 | engineer | Погодити специфікацію (→ draft RFQs) |
-| Draft RFQ per vendor | 5–6 | procurement | Підтвердити закупівлю |
-| Overdue project task | 5–7 | pm | +3 дні, Готово |
-| Handover blocked (open checks) / tests passed | 8–9 | pm | Відкрити в Odoo |
-| Critical helpdesk ticket after AI triage | 10 | service | Беру |
-| SLA breach escalation (`src/bot/sla.ts`): `helpdesk.sla.status` failed, or ongoing past its deadline; each status once; first poll stores existing breaches silently | 10 | pm | Беру |
-| New applicant with AI profile | HR | hr | Відкрити в Odoo |
-| Project stage changed (bot or Odoo UI) | 1–9 | pm | Картка проєкту, Відкрити в Odoo |
-| Previous stage done → «👉 Ваша черга» (only when the stage right before the next open one is finished; out-of-order closes notify the PM only) | 1–9 | owner of the next stage | Взяти в роботу, Картка проєкту, Етап в Odoo |
+| New website lead with AI summary | 1 → 2 | sales | Take it, Reply draft, 📅 Consultation, Create quotation |
+| Consultation booked (`calendar.event` with `appointment_type_id`, cursor `lastEventId`) | 2 | sales | Open in Odoo |
+| Quotation draft (after «Create quotation») | 2 | sales | Confirm order (→ project + 30% prepayment invoice) |
+| Prepayment received | 3 | pm | Open in Odoo |
+| AI specification draft ready | 4 | engineer | Approve specification (→ draft RFQs) |
+| Draft RFQ per vendor | 5–6 | procurement | Confirm purchase |
+| Overdue project task | 5–7 | pm | +3 days, Done |
+| Handover blocked (open checks) / tests passed | 8–9 | pm | Open in Odoo |
+| Critical helpdesk ticket after AI triage | 10 | service | I take it |
+| SLA breach escalation (`src/bot/sla.ts`): `helpdesk.sla.status` failed, or ongoing past its deadline; each status once; first poll stores existing breaches silently | 10 | pm | I take it |
+| New applicant with AI profile | HR | hr | Open in Odoo |
+| Project stage changed (bot or Odoo UI) | 1–9 | pm | Project card, Open in Odoo |
+| Previous stage done → «👉 Your turn» (only when the stage right before the next open one is finished; out-of-order closes notify the PM only) | 1–9 | owner of the next stage | Take it, Project card, Stage in Odoo |
 
 ### Project pipeline and handoffs (`src/bot/pipeline.ts`)
 The 9 tasks of the project template are the stages of one object. Each stage has an owner role:
 
 | Stage (project task) | Owner role |
 |---|---|
-| Уточнення технічних вимог · Погодження специфікації з клієнтом | sales |
-| Виїзд на об’єкт · Проєктування · Налаштування та програмування · Тестування системи | engineer |
-| Закупівля обладнання | procurement |
-| Монтаж · Здача клієнту та навчання | pm |
+| Clarify technical requirements · Specification approval with client | sales |
+| Site visit · System design · Configuration and programming · System testing | engineer |
+| Equipment purchasing | procurement |
+| Installation · Handover and client training | pm |
 
 - `/projects` — objects with progress (done/9), the current stage and its owner, overdue mark.
-- `/project_ID` — every stage with status icon (⏳ До виконання, 🔵 В роботі, 🟣 На перевірці, ✅ Готово), deadline, owner, overdue, «чекає попередній етап», open checks; buttons for the current stage only: В роботу / На перевірку / Готово, 🧪 Чекліст, Оновити.
+- `/project_ID` — every stage with status icon (⏳ To do, 🔵 In progress, 🟣 In review, ✅ Done), deadline, owner, overdue, «waiting for previous stage», open checks; buttons for the current stage only: Start / To review / Done, 🧪 Checklist, Refresh.
 - A stage blocked by an unfinished dependency («Waiting» in Odoo) cannot be moved from the bot.
-- 🧪 Чекліст: open commissioning checks (sub-tasks) as buttons; the engineer closes them on site. Moving «Тестування системи» to «Готово» still runs the Odoo gate automation (doc 16).
-- Transition detection: each tick reads pipeline tasks with `write_date >=` the last seen value and compares the stage with the last known one (`taskStages` in the state file). So changes made in the Odoo UI notify too. The first run only memorises stages (no flood); new tasks in «До виконання» are not announced.
+- 🧪 Checklist: open commissioning checks (sub-tasks) as buttons; the engineer closes them on site. Moving «System testing» to «Done» still runs the Odoo gate automation (doc 16).
+- Transition detection: each tick reads pipeline tasks with `write_date >=` the last seen value and compares the stage with the last known one (`taskStages` in the state file). So changes made in the Odoo UI notify too. The first run only memorises stages (no flood); new tasks in «To do» are not announced.
 - Rules only: no AI in statuses, handoffs or counts.
 
 ### Commands
@@ -58,17 +58,17 @@ The 9 tasks of the project template are the stages of one object. Each stage has
 | `/users` | Admin: roles, close/reopen access, delete |
 
 ## Consultation booking (native Appointments)
-- `npm run seed:appointment` creates «Консультація з інженером (демо)»: 1 h, Europe/Kyiv, Mon–Fri 10:00–18:00, staff = admin, published. Rerun keeps manual slot edits.
+- `npm run seed:appointment` creates «Consultation with an engineer (demo)»: 1 h, Europe/Kyiv, Mon–Fri 10:00–18:00, staff = admin, published. Rerun keeps manual slot edits.
 - `lead_create` is off: the link is sent for an existing lead, so Odoo must not create a second opportunity.
-- «📅 Консультація» on a lead card returns a message draft with the booking link (the manager sends it himself) and a «🔗 Сторінка запису» button and schedules a To-Do activity «Перевірити запис на консультацію» on the lead.
-- A booking on the page → automation «Gravity: запис на консультацію → лід» (`odoo/appointment/link-lead.py`): finds the lead by the booker's contact or email, links the meeting (`opportunity_id`), moves the lead to «Консультація / виїзд», closes the «Перевірити запис на консультацію» activity and logs a note. The bot message «📅 Клієнт записався» shows the lead and a «Лід в Odoo» button; «Лід не знайдено» means a manual check.
-- Matching works because every new lead gets a contact (automation «Gravity: контакт клієнта з ліда», `odoo/lead-contact/assign-partner.py`, `npm run seed:lead-contact`): an existing contact with the same email is reused, otherwise Odoo creates one. Limitation: a client booking with a different email is not matched; `appointment.invite` with the lead in the link would remove that.
+- «📅 Consultation» on a lead card returns a message draft with the booking link (the manager sends it himself) and a «🔗 Booking page» button and schedules a To-Do activity «Check the consultation booking» on the lead.
+- A booking on the page → automation «Opsline: consultation booking → lead» (`odoo/appointment/link-lead.py`): finds the lead by the booker's contact or email, links the meeting (`opportunity_id`), moves the lead to «Consultation / site visit», closes the «Check the consultation booking» activity and logs a note. The bot message «📅 Client booked» shows the lead and a «Lead in Odoo» button; «Lead not found» means a manual check.
+- Matching works because every new lead gets a contact (automation «Opsline: client contact from lead», `odoo/lead-contact/assign-partner.py`, `npm run seed:lead-contact`): an existing contact with the same email is reused, otherwise Odoo creates one. Limitation: a client booking with a different email is not matched; `appointment.invite` with the lead in the link would remove that.
 
 Times in bot messages (SLA deadline, booking start) are converted from Odoo UTC to Kyiv time (`kyivTime` in `src/bot/format.ts`).
 
 ## Guardrails
 - Whitelist: only chat IDs in `TELEGRAM_ALLOWED_CHAT_IDS` or approved via `/request` → admin approve. Others get only `/start`, `/whoami` and `/request`.
-- Button permissions (`src/bot/permissions.ts`): every action button needs its role (lead/order → sales, spec/checks → engineer, RFQ → procurement, overdue → pm, ticket → service, stage → the stage owner); PM and admin may press all; read-only buttons (card, checklist view) need none. Refusal: «Ця дія для ролі …», nothing changes in Odoo.
+- Button permissions (`src/bot/permissions.ts`): every action button needs its role (lead/order → sales, spec/checks → engineer, RFQ → procurement, overdue → pm, ticket → service, stage → the stage owner); PM and admin may press all; read-only buttons (card, checklist view) need none. Refusal: «This action is for the role …», nothing changes in Odoo.
 - Roles route notifications; the admin (`TELEGRAM_ADMIN_CHAT_ID`) receives everything and manages users in `/users`.
 - Nothing is sent to clients or vendors: buttons change Odoo records only (lead stage, quotation, confirmations, task stages and dates, checks).
 - Odoo automations stay in charge: the bot writes the same fields a user would, so spec → RFQs and the tests gate run server-side.
@@ -98,16 +98,16 @@ Times in bot messages (SLA deadline, booking start) are converted from Odoo UTC 
 Deployment: runs locally for the demo. Planned: deploy to Railway for the review period, then delete the service after the assignment.
 
 ## How to test
-1. `/projects` → `/project_ID` → «▶ В роботу» on the current stage → «✅ Готово».
-2. Expected: the card refreshes with a link to the stage; the owner of the next stage gets «👉 Ваша черга»; the PM gets the stage change; the task chatter shows «… через Telegram».
+1. `/projects` → `/project_ID` → «▶ Start» on the current stage → «✅ Done».
+2. Expected: the card refreshes with a link to the stage; the owner of the next stage gets «👉 Your turn»; the PM gets the stage change; the task chatter shows «… via Telegram».
 3. Change a stage in the Odoo UI → the same notifications within one poll interval.
-4. On «Тестування системи»: 🧪 Чекліст → close checks → «Готово» → «Тести пройдено» (or «Здача заблокована» while checks are open).
+4. On «System testing»: 🧪 Checklist → close checks → «Done» → «Tests passed» (or «Handover blocked» while checks are open).
 
 ## Verified
-UI walkthrough on S00014 (2026-11-05): lead push → quotation from the bot → confirm → «Передоплату отримано» → spec approved from the bot → RFQs confirmed from the bot → commissioning checks → «Тести пройдено» after the gate.
+UI walkthrough on S00014 (2026-11-05): lead push → quotation from the bot → confirm → «Prepayment received» → spec approved from the bot → RFQs confirmed from the bot → commissioning checks → «Tests passed» after the gate.
 Pipeline commands (`/projects`, handoffs, checklist, `/flow`): pending a live test.
 
 ## Limits
 - The state file is ephemeral on Railway without a volume (cursors and known stages reset → first run memorises again).
 - Polling adds up to `BOT_POLL_SECONDS` of delay.
-- Stage owners are fixed per task name; real Gravity roles and people need configuration.
+- Stage owners are fixed per task name; the client's real roles and people need configuration.

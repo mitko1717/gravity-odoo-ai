@@ -5,18 +5,18 @@ Partners (interior designers, architects, developers) bring a large share of pro
 depends on the manager's memory. Partners go silent unnoticed.
 
 ## Solution (rule-based, **no AI on purpose**)
-- Contact tags «Партнер: дизайнер / архітектор / забудовник»; responsible manager = native «Salesperson» on the contact.
-- Field «Партнер: останній контакт» (x_partner_last_contact).
-- Daily automation «Gravity: нагадування про контакт з партнером» (on_time, 30 days after last contact):
-  activity «Зв’язатися з партнером» (call) for the manager; skipped if such an activity is already open.
-- Action menu → «Партнер: контакт відбувся»: sets today's date, posts a note, closes the open reminder.
+- Contact tags «Partner: designer / architect / developer»; responsible manager = native «Salesperson» on the contact.
+- Field «Partner: last contact» (x_partner_last_contact).
+- Daily automation «Opsline: partner contact reminder» (on_time, 30 days after last contact):
+  activity «Contact the partner» (call) for the manager; skipped if such an activity is already open.
+- Action menu → «Partner: contact made»: sets today's date, posts a note, closes the open reminder.
 
 ## Setup and test
     npm run seed:partners   # field, tags, 4 synthetic partners (5 / 25 / 40 / 90 days), automation, action
-    npm run e2e:partners    # scheduler twice + «контакт відбувся» on one partner
+    npm run e2e:partners    # scheduler twice + «contact made» on one partner
 
 Verified 2026-11-05: reminders only for 40 and 90 days; second scheduler run created no duplicates;
-«контакт відбувся» → date 2026-11-05, reminder closed.
+«contact made» → date 2026-11-05, reminder closed.
 
 ## Notes
 - on_time automations only process records whose trigger date is after `last_run`; the e2e resets it.

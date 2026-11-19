@@ -7,9 +7,9 @@ installers learn about visits late, and the plan is not linked to the project.
 ## Solution (rule-based, **no AI on purpose**)
 Module `planning_field_service` (in Odoo 20 Field Service is part of Planning).
 
-    Project → Action «Запланувати бригади»
-    → for field tasks with deadlines: «Виїзд на об’єкт» (engineer, 1 day), «Монтаж» (2 installers, 5 days),
-      «Налаштування та програмування» (engineer, 3 days), «Тестування системи» (1), «Здача клієнту та навчання» (1)
+    Project → Action «Plan crews»
+    → for field tasks with deadlines: «Site visit» (engineer, 1 day), «Installation» (2 installers, 5 days),
+      «Configuration and programming» (engineer, 3 days), «System testing» (1), «Handover and client training» (1)
     → DRAFT planning.slot per task (role, resources, dates ending on the task deadline, linked sales order)
     → note on the project: created / skipped / shifts with overlaps; the PM checks and publishes in Planning
 

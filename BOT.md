@@ -2,38 +2,38 @@
 
 Bot: https://t.me/gravity_test_promo_bot · technical details: [docs/17-telegram-bot.md](docs/17-telegram-bot.md) · code: `src/bot/`
 
-The bot is the channel between departments: Odoo holds the data, the bot tells each person when it is their turn and gives buttons for the next step. Every button writes to Odoo and leaves a note «… через Telegram (@user)»; every reply carries an «Відкрити в Odoo» link. Nothing is sent to clients or vendors.
+The bot is the channel between departments: Odoo holds the data, the bot tells each person when it is their turn and gives buttons for the next step. Every button writes to Odoo and leaves a note «… via Telegram (@user)»; every reply carries an «Open in Odoo» link. Nothing is sent to clients or vendors.
 
-## Stages covered (Gravity process map)
+## Stages covered (service-business process map)
 
 | # | Stage | What arrives in Telegram | Role | Buttons |
 |---|---|---|---|---|
-| 1 | Marketing → Sales | New website lead with AI summary (type, services, budget, priority, missing data) | Sales | Взяти в роботу, Чернетка відповіді, 📅 Консультація (booking-link draft + activity), Створити пропозицію |
-| 2 | Sales | «📅 Клієнт записався на консультацію» (booking on the public Appointments page) | Sales | Відкрити в Odoo |
-| 2–3 | Sales → Finance → PM | Quotation draft; order confirmed → project with 9 stages + 30% prepayment invoice; payment → «Передоплату отримано» | Sales, PM | Підтвердити замовлення |
-| 4 | Design | AI draft specification from the catalog | Engineer | Погодити специфікацію (→ draft RFQs) |
-| 5–6 | Procurement | Draft RFQs per vendor | Procurement | Підтвердити закупівлю |
-| 7 | Installation | Overdue task | PM | +3 дні, Готово |
-| 8 | Commissioning | AI checklist; «Здача заблокована» while checks are open | Engineer, PM | 🧪 Чекліст (close checks from the phone) |
-| 9 | Handover | «Тести пройдено» → handover email draft + Sign act (sent by a person) | PM | Відкрити в Odoo |
-| 10 | Service | Critical ticket after AI triage + SLA | Service | Беру |
-| 10 | Service | «🚨 SLA прострочено»: the ticket missed its SLA deadline (escalation) | PM | Беру |
-| — | HR | New applicant with AI profile (no automatic rejection) | HR | Відкрити в Odoo |
+| 1 | Marketing → Sales | New website lead with AI summary (type, services, budget, priority, missing data) | Sales | Take it, Reply draft, 📅 Consultation (booking-link draft + activity), Create quotation |
+| 2 | Sales | «📅 Client booked a consultation» (booking on the public Appointments page) | Sales | Open in Odoo |
+| 2–3 | Sales → Finance → PM | Quotation draft; order confirmed → project with 9 stages + 30% prepayment invoice; payment → «Prepayment received» | Sales, PM | Confirm order |
+| 4 | Design | AI draft specification from the catalog | Engineer | Approve specification (→ draft RFQs) |
+| 5–6 | Procurement | Draft RFQs per vendor | Procurement | Confirm purchase |
+| 7 | Installation | Overdue task | PM | +3 days, Done |
+| 8 | Commissioning | AI checklist; «Handover blocked» while checks are open | Engineer, PM | 🧪 Checklist (close checks from the phone) |
+| 9 | Handover | «Tests passed» → handover email draft + Sign act (sent by a person) | PM | Open in Odoo |
+| 10 | Service | Critical ticket after AI triage + SLA | Service | I take it |
+| 10 | Service | «🚨 SLA breached»: the ticket missed its SLA deadline (escalation) | PM | I take it |
+| — | HR | New applicant with AI profile (no automatic rejection) | HR | Open in Odoo |
 
-All scenarios in Ukrainian (what comes, to whom, how to reproduce): [docs/bot-scenarios-uk.md](docs/bot-scenarios-uk.md).
+Ukrainian guide: [README.uk.md](README.uk.md).
 
 ## Handoff between departments
 
 - `/projects` — all objects: progress (5/9), current stage and who owns it, overdue mark.
-- `/project_ID` — the 9 stages with status, deadline, owner, «waiting for previous stage»; buttons for the current stage: В роботу / На перевірку / Готово, 🧪 Чекліст.
-- A stage set to «Готово» (in the bot or in Odoo) → the owner of the next stage gets «👉 Ваша черга» with «Взяти в роботу» (only when the previous stage in order was finished; stages closed out of order notify the PM only). The PM sees every change.
+- `/project_ID` — the 9 stages with status, deadline, owner, «waiting for previous stage»; buttons for the current stage: Start / To review / Done, 🧪 Checklist.
+- A stage set to «Done» (in the bot or in Odoo) → the owner of the next stage gets «👉 Your turn» with «Take it» (only when the previous stage in order was finished; stages closed out of order notify the PM only). The PM sees every change.
 
 | Stage | Owner role |
 |---|---|
-| Уточнення технічних вимог, Погодження специфікації з клієнтом | Sales |
-| Виїзд на об’єкт, Проєктування, Налаштування та програмування, Тестування системи | Engineer |
-| Закупівля обладнання | Procurement |
-| Монтаж, Здача клієнту та навчання | PM |
+| Clarify technical requirements, Specification approval with client | Sales |
+| Site visit, System design, Configuration and programming, System testing | Engineer |
+| Equipment purchasing | Procurement |
+| Installation, Handover and client training | PM |
 
 ## Commands
 
@@ -43,7 +43,7 @@ All scenarios in Ukrainian (what comes, to whom, how to reproduce): [docs/bot-sc
 
 New user: Start → `/request` → the admin approves and picks roles (Sales, PM, Engineer, Procurement, Service, HR) in `/users`. Users get only their roles' notifications; the admin gets everything. Access can be closed, reopened or deleted.
 
-Buttons are checked by role too: lead and order buttons — Sales; spec approval and checks — Engineer; RFQ — Procurement; overdue tasks — PM; tickets — Service; a stage button — the owner role of that stage. PM and admin may press everything; viewing cards needs no role. A refused press gets «Ця дія для ролі …» and changes nothing.
+Buttons are checked by role too: lead and order buttons — Sales; spec approval and checks — Engineer; RFQ — Procurement; overdue tasks — PM; tickets — Service; a stage button — the owner role of that stage. PM and admin may press everything; viewing cards needs no role. A refused press gets «This action is for the role …» and changes nothing.
 
 ## Run
 

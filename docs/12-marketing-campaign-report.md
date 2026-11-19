@@ -7,9 +7,9 @@ What customers actually ask for is buried in free-text requests.
 ## Solution
 - Native UTM: campaigns (utm.campaign) with source / medium; leads carry campaign_id, source_id, medium_id
   (in production: Link Tracker URLs and website form UTM parameters).
-- Field «Рекламний бюджет, грн (демо)» (x_ad_spend) on the campaign; synthetic spend for 3 demo campaigns.
+- Field «Ad budget, UAH (demo)» (x_ad_spend) on the campaign; synthetic spend for 3 demo campaigns.
 - Every lead is analysed by the existing lead AI (02): priority and requested services.
-- Knowledge article «Маркетинговий звіт по кампаніях (демо)», AI action «AI: маркетинговий звіт»:
+- Knowledge article «Marketing campaign report (demo)», AI action «AI: marketing report»:
   rules compute spend, leads, qualified leads (AI priority high/medium), quotations, cost per lead,
   cost per qualified lead, requested services; AI writes conclusions, demand summary, budget recommendations.
 

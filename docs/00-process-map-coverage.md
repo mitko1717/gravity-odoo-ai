@@ -1,8 +1,8 @@
-# 00. Coverage of Gravity's end-to-end process map
+# 00. Coverage of the company's end-to-end process map
 
-Source: `Gravity_naskrizna_karta_biznes_protsesiv.pdf` (10 stages + supporting processes).
-This is an introductory map, not a confirmed description of Gravity's current tools.
-Presentation (10 slides): https://claude.ai/artifact/Jk3Wfpe1ruCBocPP4TTYxf. Metrics dashboard (measured vs estimated): https://claude.ai/artifact/5xgb9wdaRM36gqQLHX2gT9. All e2e checks in one run: `npm run regression`.
+Source: `the client process map` (10 stages + supporting processes).
+This is an introductory map, not a confirmed description of the company's current tools.
+All e2e checks in one run: `npm run regression`.
 Status: **done** = automated and verified by e2e, **partial** = native Odoo records only, **planned** = in progress.
 
 | # | Stage | Result per map | Odoo modules | Automation | Status | Doc |

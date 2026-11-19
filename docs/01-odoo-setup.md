@@ -8,7 +8,7 @@
   Automation Rules (`base_automation`), Studio (`web_studio`).
 - Studio and API access are part of the trial; on a paid plan Studio requires the Custom plan.
 
-- Appointments: public booking page «Консультація з інженером (демо)» (`npm run seed:appointment`), see [17](17-telegram-bot.md).
+- Appointments: public booking page «Consultation with an engineer (demo)» (`npm run seed:appointment`), see [17](17-telegram-bot.md).
 
 ## Approach: configuration as code
 
@@ -19,7 +19,7 @@ bearer API key), not by clicking. Every script is idempotent and safe to re-run.
 |---|---|
 | `npm run check` | Verifies the API key, installed modules and CRM stages |
 | `npm run seed:crm` | Ukrainian pipeline stages, tags, custom lead fields (form + AI) |
-| `npm run seed:views` | "Gravity / AI" tab on the lead form (inherited view) |
+| `npm run seed:views` | "Opsline / AI" tab on the lead form (inherited view) |
 | `npm run seed:ai` | AI tools, AI action and the automation rule (see 02) |
 | `npm run seed:website` | Allows custom lead fields to be filled by website forms |
 
@@ -34,4 +34,4 @@ npm run seed:crm && npm run seed:views && npm run seed:ai && npm run seed:websit
 
 ## Pipeline stages
 
-Нова заявка → Кваліфікована → Консультація / виїзд → Комерційна пропозиція → Договір підписано.
+New request → Qualified → Consultation / site visit → Quotation → Contract signed.

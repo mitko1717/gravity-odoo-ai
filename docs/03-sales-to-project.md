@@ -3,42 +3,42 @@
 ## Flow
 
 1. Manager opens the qualified lead → **New Quotation** → field **Template** (tab "Other Info")
-   → «Розумний дім — базова пропозиція (демо)». Lines and tags are copied from the lead.
-2. **Confirm** → Odoo natively creates a project from «Шаблон: впровадження розумного дому»
-   (product «Впровадження «Розумний дім» (пакет робіт)» has *Create on Order = Project*).
+   → «Smart home: basic proposal (demo)». Lines and tags are copied from the lead.
+2. **Confirm** → Odoo natively creates a project from «Template: smart home implementation»
+   (product «Smart home implementation (work package)» has *Create on Order = Project*).
    No custom code is involved in this step.
-3. Automation **«Gravity: дедлайни задач проєкту»** (project.task, on create) sets planned deadlines.
-4. Automation **«Gravity: ескалація простроченої задачі»** (1 day after deadline, unfinished tasks)
+3. Automation **«Opsline: project task deadlines»** (project.task, on create) sets planned deadlines.
+4. Automation **«Opsline: overdue task escalation»** (1 day after deadline, unfinished tasks)
    creates an activity for the project manager and posts a chatter note.
 
 ## Project template
 
-9 tasks with sequential dependencies ("Blocked by"), stages: До виконання → В роботі → На перевірці → Готово.
+9 tasks with sequential dependencies ("Blocked by"), stages: To do → In progress → In review → Done.
 
 | # | Task | Deadline (days from start, demo assumption) |
 |---|---|---|
-| 1 | Уточнення технічних вимог | 2 |
-| 2 | Виїзд на об’єкт | 5 |
-| 3 | Проєктування | 12 |
-| 4 | Погодження специфікації з клієнтом | 15 |
-| 5 | Закупівля обладнання | 25 |
-| 6 | Монтаж | 35 |
-| 7 | Налаштування та програмування | 40 |
-| 8 | Тестування системи | 42 |
-| 9 | Здача клієнту та навчання | 45 |
+| 1 | Clarify technical requirements | 2 |
+| 2 | Site visit | 5 |
+| 3 | System design | 12 |
+| 4 | Specification approval with client | 15 |
+| 5 | Equipment purchasing | 25 |
+| 6 | Installation | 35 |
+| 7 | Configuration and programming | 40 |
+| 8 | System testing | 42 |
+| 9 | Handover and client training | 45 |
 
 ## Demo catalog
 
-All products are services marked **[демо-ціна]**; prices are placeholders, not Gravity prices.
+All products are services marked **[demo price]**; prices are placeholders, not real prices.
 The package line (1 ₴) is a technical marker that triggers project creation.
 
 ## Verified (`npm run e2e:project`)
 
 order S00003 -> project 3, tasks: 9
-2026-11-07 blocked by 0 Уточнення технічних вимог
+2026-11-07 blocked by 0 Clarify technical requirements
 ...
-2026-12-20 blocked by 1 Здача клієнту та навчання
-escalation activities: [ 'Прострочено: Уточнення технічних вимог -> dm h' ]
+2026-12-20 blocked by 1 Handover and client training
+escalation activities: [ 'Overdue: Clarify technical requirements -> dm h' ]
 
 
 ## Notes and limitations

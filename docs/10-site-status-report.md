@@ -5,7 +5,7 @@ Management asks PMs «how is the site going?»; the answer is assembled by hand 
 Reports are irregular and optimistic; delays become visible late.
 
 ## Solution
-    Project → Action menu → «AI: звіт по об’єкту» (manual now; can be scheduled weekly)
+    Project → Action menu → «AI: site report» (manual now; can be scheduled weekly)
     → tool opsline_get_site_data   tasks, stages, deadlines, overdue days, last 2 notes per task (notes untrusted)
     → tool opsline_apply_site_report
         rules compute: progress = done / total, status on_track | at_risk (1 overdue) | off_track (2+ or >7 days) | done
