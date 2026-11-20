@@ -1,10 +1,12 @@
+> **👉 Огляд + демо-відео: https://claude.ai/artifact/AgJkUuwEGH2P4cdSLwK5Nt#uk**
+
 <div align="center">
 
 # Opsline
 
 **Odoo + AI для монтажних і сервісних компаній: від заявки з сайту до зданого об'єкта без ручної рутини.**
 
-[▶ Презентаційна сторінка з відео](https://claude.ai/artifact/AgJkUuwEGH2P4cdSLwK5Nt#uk) · [🎬 Демо-відео (2:42, англ.)](docs/opsline-demo.mp4) · [🤖 Telegram-бот](https://t.me/gravity_test_promo_bot) · [🇬🇧 English](README.md)
+[▶ Презентаційна сторінка з відео](https://claude.ai/artifact/AgJkUuwEGH2P4cdSLwK5Nt#uk) · [🎬 Демо-відео (2:42, англ.)](https://claude.ai/artifact/AgJkUuwEGH2P4cdSLwK5Nt#uk) ([завантажити mp4](https://github.com/mitko1717/gravity-odoo-ai/raw/master/docs/opsline-demo.mp4)) · [🤖 Telegram-бот](https://t.me/gravity_test_promo_bot) · [🇬🇧 English](README.md)
 
 </div>
 
